@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Builder
 //implements UserDetails
-public class UserDto  {
+public class UserDto {
 
     private Long id;
 

@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-//implements UserDetailsService
-public class UserService  {
+//implements UserDetailsService 
+public class UserService {
 
     private UserRepository userRepository;
     private AdRepository adRepository;
