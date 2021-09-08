@@ -4,7 +4,6 @@ import com.myTrade.dto.UserDto;
 import com.myTrade.entities.UserEntity;
 import com.myTrade.mappers.UserMapper;
 import com.myTrade.utility.UserRole;
-import com.myTrade.utility.RegistrationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,23 +87,4 @@ public class UserMapperImpl implements UserMapper {
 
         return list;
     }
-
-    @Override
-    public UserEntity registrationRequestToUserEntity(RegistrationRequest registrationRequest) {
-        if (registrationRequest == null) {
-            return null;
-        }
-
-        UserEntity userEntity = new UserEntity();
-
-        userEntity.setUserName(registrationRequest.getUserName());
-        userEntity.setPassword(registrationRequest.getPassword());
-        userEntity.setEmail(registrationRequest.getEmail());
-        userEntity.setRole(UserRole.USER);
-        userEntity.setBirthDate(registrationRequest.getBirthDate());
-
-
-        return userEntity;
-    }
-
 }

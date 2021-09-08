@@ -2,8 +2,6 @@ package com.myTrade.mappers;
 
 import com.myTrade.dto.UserDto;
 import com.myTrade.entities.UserEntity;
-import com.myTrade.utility.RegistrationRequest;
-
 
 import java.util.List;
 
@@ -17,5 +15,5 @@ public interface UserMapper {
 
     List<UserEntity> userDtoListToUserEntityList(List<UserDto> userDtoList);
 
-    UserEntity registrationRequestToUserEntity(RegistrationRequest registrationRequest);
+
 }

@@ -1,1 +1,6 @@
-//TODO: How to check tests coverage?
+//TODO:
+            How override spring security login ?
+            How should login&registration looks like?
+            Should I create the DAO classes for a login and a registration purpose? (UserDetails/UserDetailsService)
+            OR
+            Create my own implementation for it?
