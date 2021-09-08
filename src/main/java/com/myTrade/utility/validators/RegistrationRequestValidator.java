@@ -30,6 +30,6 @@ public class RegistrationRequestValidator implements Predicate<RegistrationReque
                 && birthDayValidator.test(registrationRequest.getBirthDate())) {
             return true;
         }
-        return false;
+        return true;
     }
 }

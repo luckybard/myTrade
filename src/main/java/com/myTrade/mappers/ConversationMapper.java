@@ -13,7 +13,6 @@ public interface ConversationMapper {
 
     ConversationDto conversationEntityToConversationDto(ConversationEntity conversationEntity);
 
-
     List<ConversationDto> conversationEntityListToConversationDtoList(List<ConversationEntity> conversationEntityList);
 
     ConversationEntity conversationDtoToConversationEntity(ConversationDto conversationDto);
