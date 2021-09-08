@@ -6,7 +6,7 @@ import com.myTrade.entities.UserEntity;
 import com.myTrade.mappersImpl.UserMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
-import com.myTrade.utility.RegistrationRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-//implements UserDetailsService
-public class UserService  {
+public class UserService {
 
     private UserRepository userRepository;
     private AdRepository adRepository;
@@ -28,11 +27,7 @@ public class UserService  {
     }
 
     public void saveUserEntity(UserEntity userEntity) {
-            userRepository.save(userEntity);
-    }
-
-    public void singUpUserByRegistrationRequest(RegistrationRequest registrationRequest){
-        saveUserEntity(userMapper.registrationRequestToUserEntity(registrationRequest));
+        userRepository.save(userEntity);
     }
 
     public List<AdEntity> findUserAdEntityList(String userName) {
@@ -64,10 +59,5 @@ public class UserService  {
         user.setAdEntityList(adEntityList);
         userRepository.save(user);
     }
-
-//    @Override //:TODO TO DELETE?
-//    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-//        return userMapper.userEntityToUserDto(userRepository.findByUserName(userName));
-//    }
 }
 

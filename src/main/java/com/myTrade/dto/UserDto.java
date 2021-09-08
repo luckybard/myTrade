@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-//implements UserDetails
 public class UserDto  {
 
     private Long id;
@@ -35,36 +34,4 @@ public class UserDto  {
 
     private List<ConversationDto> conversationDtoList;
 
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
-//        return Collections.singletonList(authority);
-//
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return userName;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
 }

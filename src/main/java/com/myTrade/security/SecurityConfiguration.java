@@ -17,15 +17,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-//    private final PasswordEncoder passwordEncoder;
-//    private final UserService userService;
-//
-//
-//    @Autowired
-//    public SecurityConfiguration(PasswordEncoder passwordEncoder, UserService userService) {
-//        this.passwordEncoder = passwordEncoder;
-//        this.userService = userService;
-//    }
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User.withDefaultPasswordEncoder()
@@ -55,18 +46,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin();
     }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider(daoAuthenticationProvider());
-//    }
-//
-//    @Bean
-//    public DaoAuthenticationProvider daoAuthenticationProvider(){
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-//
-//        provider.setPasswordEncoder(passwordEncoder);
-//        provider.setUserDetailsService(userService);
-//        return provider;
-//    }
 }
