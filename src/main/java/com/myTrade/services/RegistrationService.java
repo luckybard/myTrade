@@ -24,7 +24,6 @@ public class RegistrationService {
        if(requestValidator.test(request)){
            request.setPassword(passwordEncoder.encode(request.getPassword()));
            userService.singUpUserByRegistrationRequest(request);
-           //TODO: send confirmation token?!
        }
 
 

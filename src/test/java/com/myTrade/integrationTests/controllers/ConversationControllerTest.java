@@ -30,7 +30,7 @@ public class ConversationControllerTest {
     ObjectMapper objectMapper = new ObjectMapper();
 
 
-    //TODO: When despite using try-catch,key word throws fails test
+    //TODO: When despite using try-catch,keyword 'throws' fails test
     @Test
     public void whenProperConversationIdIsProvided_thenShouldReturn200() throws Exception {
         //given

@@ -7,7 +7,6 @@ import com.myTrade.utility.RegistrationRequest;
 
 import java.util.List;
 
-
 public interface UserMapper {
     UserDto userEntityToUserDto(UserEntity userEntity);
 

@@ -1,7 +1,6 @@
 package com.myTrade.controllers;
 
 import com.myTrade.dto.AdDto;
-import com.myTrade.repositories.AdRepository;
 import com.myTrade.services.AdService;
 import com.myTrade.utility.AdCategory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +12,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/ad")
 public class AdController {
 
+    //TODO: Maybe I should rethink again endpoints: - Only one endPoint for editing ad (passing whole new AdDto object)
+    //                                              - No information about adId in url?(all information should be passed in RequestBody)
+    //                                              - Should be created verification if user is ad owner? If i'd like to connect it with the fronted,
+    //                                              where verification should be? here in backend or on fronted side?
+    //                                              - Is it possible to pass exception to frontend?
+
+    //TODO: Searching ads by name (main search engine) best implementation is just passing name to stream filter?
+
     private final AdService adService;
-    private final AdRepository adRepository;
 
     @Autowired
-    public AdController(AdService adService, AdRepository adRepository) {
+    public AdController(AdService adService) {
         this.adService = adService;
-        this.adRepository = adRepository;
     }
 
     @GetMapping("/search/{id}")
@@ -35,7 +40,7 @@ public class AdController {
         adService.saveAdDtoWithCreatedAndModifiedDateTime(adDto);
     }
 
-    @PatchMapping("/{id}/editTitle") //TODO: Should be created verification if user is ad owner? If i'd like to connect it with the fronted, where verification should be? here in backend or on fronted?
+    @PatchMapping("/{id}/editTitle")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {
         adService.changeTitle(newTitle,adId);

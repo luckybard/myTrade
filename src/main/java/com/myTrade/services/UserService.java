@@ -65,9 +65,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-//    @Override //:TODO TO DELETE?
-//    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-//        return userMapper.userEntityToUserDto(userRepository.findByUserName(userName));
-//    }
+
 }
 

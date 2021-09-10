@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class MyUserDetails implements UserDetails {
+public class UserDetailsImpl implements UserDetails {
 
     private String userName;
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public MyUserDetails(UserEntity userEntity) {
+    public UserDetailsImpl(UserEntity userEntity) {
         this.userName = userEntity.getUserName();
         this.password = userEntity.getPassword();
         this.authorities = userEntity.getRole().getUserPermissionsSet().stream()

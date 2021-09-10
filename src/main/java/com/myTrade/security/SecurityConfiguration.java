@@ -1,7 +1,7 @@
 package com.myTrade.security;
 
 
-import com.myTrade.services.MyUserDetailsService;
+import com.myTrade.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,19 +13,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+//TODO:Implementing Login, how to approach it? Do I need JWT?
+// Do I need logs? (SLF4J)
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
-    private final MyUserDetailsService myUserDetailsService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
 
     @Autowired
-    public SecurityConfiguration(PasswordEncoder passwordEncoder,MyUserDetailsService myUserDetailsService) {
+    public SecurityConfiguration(PasswordEncoder passwordEncoder, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.passwordEncoder = passwordEncoder;
-        this.myUserDetailsService = myUserDetailsService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 //    @Bean
 //    public UserDetailsService userDetailsService() {
@@ -59,17 +62,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService);
+        auth.userDetailsService(userDetailsServiceImpl);
     }
-
-
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 
         provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(myUserDetailsService);
+        provider.setUserDetailsService(userDetailsServiceImpl);
         return provider;
     }
 

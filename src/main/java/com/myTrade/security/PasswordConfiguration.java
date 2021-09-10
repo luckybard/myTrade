@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class PasswordConfiguration {
 
-    @Bean //TODO:Why it's bean?It's the method (which return interface?), that we inject in security ?
+    @Bean //TODO:Why it's bean?
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder(10);
     }
