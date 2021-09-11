@@ -6,8 +6,8 @@ import com.myTrade.entities.UserEntity;
 import com.myTrade.mappersImpl.UserMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,14 +19,17 @@ public class UserService {
     private UserRepository userRepository;
     private AdRepository adRepository;
     private UserMapperImpl userMapper = new UserMapperImpl();
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, AdRepository adRepository) {
+    public UserService(UserRepository userRepository, AdRepository adRepository,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.adRepository = adRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void saveUserEntity(UserEntity userEntity) {
+        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
         userRepository.save(userEntity);
     }
 
@@ -59,5 +62,7 @@ public class UserService {
         user.setAdEntityList(adEntityList);
         userRepository.save(user);
     }
+
+
 }
 

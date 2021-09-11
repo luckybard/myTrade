@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-public class UserDto  {
+public class UserDto {
 
     private Long id;
 
@@ -24,14 +25,14 @@ public class UserDto  {
 
     private String email;
 
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     private String avatarPath = "default/path";
 
     private LocalDate birthDate;
+    //TODO: [Q] Why after registering new user, relation tables didn't create fields with new relation mapping? Check if new ad will fix it...
+    private List<AdDto> adList = new LinkedList<>();
 
-    private List<AdDto> adList;
-
-    private List<ConversationDto> conversationDtoList;
+    private List<ConversationDto> conversationDtoList = new LinkedList<>();
 
 }

@@ -34,7 +34,7 @@ public class ConversationController {
         return conversationMapper.conversationEntityToConversationDto(conversationRepository.getById(conversationId));
     }
 
-    @GetMapping(path = "/fetch-all/{id}")
+    @GetMapping(path = "/fetch-all/{id}")   //TODO: Change path to /{id}
     public List<MessageDto> fetchAllMessagesDto(@PathVariable (value = "id")Long conversationId) {
         return messageMapper.messageEntityListToMessageDtoList(conversationService.findConversationMessageEntityListByConversationId(conversationId));
     }

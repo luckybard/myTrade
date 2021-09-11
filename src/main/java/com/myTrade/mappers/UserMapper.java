@@ -5,7 +5,6 @@ import com.myTrade.entities.UserEntity;
 
 import java.util.List;
 
-
 public interface UserMapper {
     UserDto userEntityToUserDto(UserEntity userEntity);
 
@@ -14,6 +13,4 @@ public interface UserMapper {
     UserEntity userDtoToUserEntity(UserDto userDto);
 
     List<UserEntity> userDtoListToUserEntityList(List<UserDto> userDtoList);
-
-
 }
