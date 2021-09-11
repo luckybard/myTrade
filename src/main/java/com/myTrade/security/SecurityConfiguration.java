@@ -1,6 +1,7 @@
 package com.myTrade.security;
 
 
+import com.myTrade.jwt.JwtConfiguration;
 import com.myTrade.jwt.JwtTokenVerifier;
 import com.myTrade.jwt.JwtUserNameAndPasswordAuthenticationFilter;
 import com.myTrade.services.UserDetailsServiceImpl;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.crypto.SecretKey;
+
 //TODO:Implementing Login, how to approach it? Do I need JWT?
 // Do I need logs? (SLF4J)
 
@@ -26,12 +29,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final SecretKey secretKey;
+    private final JwtConfiguration jwtConfiguration;
 
 
     @Autowired
-    public SecurityConfiguration(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder passwordEncoder) {
+    public SecurityConfiguration(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder passwordEncoder, SecretKey secretKey, JwtConfiguration jwtConfiguration) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.secretKey = secretKey;
+        this.jwtConfiguration = jwtConfiguration;
     }
 //    @Bean
 //    public UserDetailsService userDetailsService() {
@@ -58,8 +65,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager()))
-                .addFilterAfter(new JwtTokenVerifier(), JwtUserNameAndPasswordAuthenticationFilter.class)
+                .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfiguration, secretKey))
+                .addFilterAfter(new JwtTokenVerifier(secretKey,jwtConfiguration), JwtUserNameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .anyRequest()
                 .permitAll();

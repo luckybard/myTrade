@@ -5,12 +5,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,25 +24,35 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
+
+    private final SecretKey secretKey;
+    private final JwtConfiguration jwtConfiguration;
+
+    @Autowired
+    public JwtTokenVerifier(SecretKey secretKey, JwtConfiguration jwtConfiguration) {
+        this.secretKey = secretKey;
+        this.jwtConfiguration = jwtConfiguration;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String authorizationHeader = httpServletRequest.getHeader("Authorization");
+        String authorizationHeader = httpServletRequest.getHeader(jwtConfiguration.getAuthorizationHeader());
 
-        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith("Bearer ")) {
+        if (Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(jwtConfiguration.getTokenPrefix())) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
             return;
         }
 
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.replace(jwtConfiguration.getTokenPrefix(), "");
 
         try {
-            String key = "@1237s98d&^@*&ysaytg8sed6ft837t*&T@*@^#TR$uwterfduyfg*&^T#*(&^@T$&(^RWFIEUhfgdvskjhg87t(*^#@T&^WEFRIYDTSGH";
+
 
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(key.getBytes())
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token);
 
