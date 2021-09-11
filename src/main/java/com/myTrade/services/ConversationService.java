@@ -24,8 +24,8 @@ public class ConversationService {
     }
 
     public List<MessageEntity> findConversationMessageEntityListByConversationId(Long conversationId) {
-        List<ConversationEntity> conversationMessageEntityListByConversationId = conversationRepository.findConversationMessageEntityListByConversationId(conversationId);
-        return conversationMessageEntityListByConversationId.get(0).getMessageList();
+        return conversationRepository.findConversationMessageEntityListByConversationId(conversationId).get(0).getMessageList();
+
     }
 
 }

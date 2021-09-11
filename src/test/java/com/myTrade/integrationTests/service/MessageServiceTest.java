@@ -2,13 +2,12 @@ package com.myTrade.integrationTests.service;
 
 
 import com.myTrade.dto.MessageDto;
+import com.myTrade.entities.MessageEntity;
 import com.myTrade.repositories.MessageRepository;
 import com.myTrade.services.MessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,10 +30,10 @@ public class MessageServiceTest {
         messageDto.setAuthorId(1L);
         messageDto.setText("Lorem ipsum");
         //when
-        messageService.saveMessage(messageDto);
+        messageService.saveMessage(messageDto); //TODO: [Q] Is it possible to check saved message id?
         //then
-        assertThat(messageDto.getDateTime()).isNotNull();
-        assertThat(messageDto.getDateTime()).isInstanceOf(LocalDateTime.class);
-//      assertThat(messageEntity).isIn(messageRepository);
+        MessageEntity actual = messageRepository.findAll().stream().filter(messageEntity -> messageEntity.getAuthorId().equals(1L)&&messageEntity.getText().equalsIgnoreCase("Lorem ipsum")).findFirst().get();
+        assertThat(actual.getDateTime()).isNotNull();
+
     }
 }

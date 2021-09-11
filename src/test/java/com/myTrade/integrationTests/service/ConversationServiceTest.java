@@ -1,13 +1,16 @@
 package com.myTrade.integrationTests.service;
 
 import com.myTrade.entities.ConversationEntity;
+import com.myTrade.entities.MessageEntity;
 import com.myTrade.repositories.ConversationRepository;
 import com.myTrade.services.ConversationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,14 +42,15 @@ public class ConversationServiceTest {
         assertThat(expectedConversationListSize).isEqualTo(actualConversationListSize);
     }
 
-//    @Test
-//    void findConversationMessageEntityListByConversationId() {
-//        //given
-//        long conversationId = 1L;
-//        //when
-//        List<MessageEntity> conversationEntityList = conversationService.findConversationMessageEntityListByConversationId(conversationId);
-//        //then
-//        assertThat(conversationEntityList).isNotEmpty();
-//
-//    }
+    @Test
+    @Transactional
+    void findConversationMessageEntityListByConversationId() {
+        //given
+        long conversationId = 1L;
+        //when
+        List<MessageEntity> conversationEntityList = conversationService.findConversationMessageEntityListByConversationId(conversationId);
+        //then
+        assertThat(conversationEntityList).isNotEmpty();
+
+    }
 }

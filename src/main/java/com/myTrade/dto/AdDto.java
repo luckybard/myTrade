@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Builder
-
-
 public class AdDto {
 
     private Long id;
@@ -39,7 +37,5 @@ public class AdDto {
     private LocalDateTime modifiedDateTime;
 
     private Boolean isActive;
-
-
 
 }

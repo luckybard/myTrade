@@ -15,4 +15,6 @@ public interface ConversationRepository extends JpaRepository<ConversationEntity
     @Query(value = "SELECT * FROM conversation LEFT JOIN message ON conversation.id = message.id where conversation.id= :conversationId", nativeQuery = true)
     List<ConversationEntity> findConversationMessageEntityListByConversationId(@Param("conversationId")Long conversationId);
 
+
+
 }

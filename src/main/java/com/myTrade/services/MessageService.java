@@ -22,7 +22,7 @@ public class MessageService {
 
     public void saveMessage(MessageDto messageDto) {
         MessageEntity messageEntity = messageMapper.messageDtoToMessageEntity(messageDto);
-        messageDto.setDateTime(LocalDateTime.now());
+        messageEntity.setDateTime(LocalDateTime.now());
         messageRepository.save(messageEntity);
     }
 }
