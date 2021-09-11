@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -14,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-//implements UserDetails
 public class UserDto {
 
     private Long id;
@@ -25,46 +25,14 @@ public class UserDto {
 
     private String email;
 
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     private String avatarPath = "default/path";
 
     private LocalDate birthDate;
+    //TODO: [Q] Why after registering new user, relation tables didn't create fields with new relation mapping? Check if new ad will fix it...
+    private List<AdDto> adList = new LinkedList<>();
 
-    private List<AdDto> adList;
+    private List<ConversationDto> conversationDtoList = new LinkedList<>();
 
-    private List<ConversationDto> conversationDtoList;
-
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
-//        return Collections.singletonList(authority);
-//
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return userName;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
 }

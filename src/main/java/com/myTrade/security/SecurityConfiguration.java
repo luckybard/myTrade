@@ -1,6 +1,8 @@
 package com.myTrade.security;
 
 
+import com.myTrade.jwt.JwtTokenVerifier;
+import com.myTrade.jwt.JwtUserNameAndPasswordAuthenticationFilter;
 import com.myTrade.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 //TODO:Implementing Login, how to approach it? Do I need JWT?
@@ -53,11 +56,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .and()
                 .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager()))
+                .addFilterAfter(new JwtTokenVerifier(), JwtUserNameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .anyRequest()
-                .permitAll()
-                .and()
-                .formLogin();
+                .permitAll();
+
     }
 
     @Override

@@ -45,13 +45,19 @@ public class AdController {
         adService.patchAdDto(adDto);
     }
 
-/*                                     !-Just for learing purpose -!
-
     @PatchMapping("/{id}/editTitle")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {
         adService.changeTitle(newTitle,adId);
     }
+
+/*                                     !-Just for learing purpose -!
+    @PatchMapping("/{id}/editTitle")
+    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
+    public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {
+        adService.changeTitle(newTitle,adId);
+    }
+
     @PatchMapping("/{id}/editCategory")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeCategory(@RequestBody AdCategory adCategory, @PathVariable(value = "id")Long adId)  {
