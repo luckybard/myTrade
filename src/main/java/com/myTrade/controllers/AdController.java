@@ -2,7 +2,6 @@ package com.myTrade.controllers;
 
 import com.myTrade.dto.AdDto;
 import com.myTrade.services.AdService;
-import com.myTrade.utility.AdCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,6 +44,9 @@ public class AdController {
     public void patch(@RequestBody AdDto adDto)  {
         adService.patchAdDto(adDto);
     }
+
+/*                                     !-Just for learing purpose -!
+
     @PatchMapping("/{id}/editTitle")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {
@@ -80,5 +82,5 @@ public class AdController {
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeActiveStatus(@RequestBody Boolean isActive,@PathVariable(value = "id")Long adId)  {
         adService.changeActiveStatus(isActive,adId);
-    }
+    }                                                                                                                 */
 }

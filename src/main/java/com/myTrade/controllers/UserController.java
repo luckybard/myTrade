@@ -10,7 +10,6 @@ import com.myTrade.repositories.UserRepository;
 import com.myTrade.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +33,7 @@ public class UserController {
         this.conversationMapper = new ConversationMapperImpl();
     }
 
-
-    @PostMapping("/save")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveUserDto(@RequestBody UserDto userDto){
         userService.saveUserEntity(userMapper.userDtoToUserEntity(userDto));
@@ -57,7 +55,6 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}/delete")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteUser(@PathVariable(value = "username")String username)  {
         userService.deleteUser(username);
     }
@@ -67,8 +64,8 @@ public class UserController {
         userService.deleteAdFromAdList(username, adId);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{username}/adList/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public void addAdToAdList(@PathVariable(value = "username")String username,@RequestBody AdDto adDto) {
         userService.addAdToAdList(username, adMapper.adDtoAdEntity(adDto));
     }
