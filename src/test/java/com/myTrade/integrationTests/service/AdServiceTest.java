@@ -53,19 +53,6 @@ class AdServiceTest {
         assertThat(ad.getModifiedDateTime()).isNotNull();
     }
 
-    //TODO:[Q] Why it can't be like that? NullPointerException occurs
-//    AdEntity adEntity = adRepository.getById(1L);
-//    @Test
-//    void changeTitle() {
-//        //given
-//        String newTitle = "NewTitle";
-//        //when
-//        adService.changeTitle(newTitle, adEntity.getId());
-//        System.out.println(adEntity.getTitle());
-//        //then
-//        assertThat(adRepository.getById(1L).getTitle()).isEqualTo(newTitle);
-//    }
-
     @Test
     @Transactional
     void changeTitle() {

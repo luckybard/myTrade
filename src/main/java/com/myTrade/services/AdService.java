@@ -25,6 +25,12 @@ public class AdService {
         return adMapper.adEntityToAdDto(adRepository.getById(adId));
     }
 
+    public void patchAdDto(AdDto adDto){
+       AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
+       setModifiedDate(adEntity);
+       adRepository.save(adEntity);
+    }
+
     public void saveAdDtoWithCreatedAndModifiedDateTime(AdDto adDto){
         AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
         setCreatedDate(adEntity);

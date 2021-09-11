@@ -32,6 +32,8 @@ public class UserControllerTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
+    //TODO: Mock repository request.
+
     @Test
     public void whenProperUserEntityIsProvided_thenShouldReturnStatus201() {
         //given
@@ -122,7 +124,7 @@ public class UserControllerTest {
  @Test
  public void whenUserNameAndAdDtoIsProvided_thenShouldSaveAdAndReturnStatus201(){
         //given
-     String userName = "XXXXXXXXXXXXXXXXXXX";
+     String userName = "bart";
      AdDto ad = new AdDto();
      ad.setOwnerId(1L);
      ad.setAdCategory(AdCategory.BOOKS);
@@ -133,10 +135,13 @@ public class UserControllerTest {
      ad.setCity("Warsaw");
      ad.setIsActive(Boolean.FALSE);
      try {
-         mockMvc.perform(post("/user/{username}/adList/add").contentType(MediaType.APPLICATION_JSON).param("username",userName).content(objectMapper.writeValueAsString(ad)))
+         mockMvc.perform(post("/user/{username}/adList/add",userName).contentType(MediaType.APPLICATION_JSON)
+                         .content(objectMapper.writeValueAsString(ad)))
                  .andExpect(status().is(201));
-         //TODO: Despite not including param username, test passed.
-         // IllegalArgumentException occurs, check that! java.lang.IllegalArgumentException: Not enough variable values available to expand 'username'
+
+//         mockMvc.perform(post("/user/{username}/adList/add").contentType(MediaType.APPLICATION_JSON)
+//                         .param("username",userName).content(objectMapper.writeValueAsString(ad)))
+//                 .andExpect(status().is(201));
      } catch (Exception e) {
          e.printStackTrace();
      }

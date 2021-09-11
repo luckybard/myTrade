@@ -33,13 +33,18 @@ public class AdController {
         return adService.fetchAdDtoById(adId);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
-    public void saveAd(@RequestBody AdDto adDto){
+    public void create(@RequestBody AdDto adDto){
         adService.saveAdDtoWithCreatedAndModifiedDateTime(adDto);
     }
 
+    @PatchMapping("/{id}/edit")
+    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
+    public void patch(@RequestBody AdDto adDto)  {
+        adService.patchAdDto(adDto);
+    }
     @PatchMapping("/{id}/editTitle")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {
@@ -70,6 +75,7 @@ public class AdController {
     public void changeCity(@RequestBody String newCity,@PathVariable(value = "id")Long adId){
         adService.changeCity(newCity,adId);
     }
+
     @PatchMapping("/{id}/editStatus")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeActiveStatus(@RequestBody Boolean isActive,@PathVariable(value = "id")Long adId)  {

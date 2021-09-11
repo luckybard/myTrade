@@ -69,7 +69,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{username}/adList/add")
-    public void addAdToAdList(@RequestBody AdDto adDto, @PathVariable(value = "username")String username) {
+    public void addAdToAdList(@PathVariable(value = "username")String username,@RequestBody AdDto adDto) {
         userService.addAdToAdList(username, adMapper.adDtoAdEntity(adDto));
     }
 }

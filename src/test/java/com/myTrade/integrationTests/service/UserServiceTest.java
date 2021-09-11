@@ -51,7 +51,6 @@ public class UserServiceTest {
         UserEntity expectedEntity = userRepository.findByUserName("xxx");
         //then
         assertThat(expectedEntity).isNotNull();
-//        assertThat(expectedEntity).isIn(userRepository); //TODO:[Q] IsIn? Is it checks if something is in there?  is it working the way i'm thinking?
     }
 
     @Test
@@ -129,6 +128,5 @@ public class UserServiceTest {
         userService.deleteUser(userName);
         //then
         assertThat(userRepository.count()).isEqualTo(expectedUserRepositorySize);
-//      assertThat(userRepository.findByUserName(userName)).isNotIn(userRepository); //???????????????????????????????????????????
     }
 }
