@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -33,13 +35,13 @@ class AdServiceTest {
     }
 
     @Test
-    @Transactional
     void saveAdDtoWithCreatedAndModifiedDateTime() {
         //given
+        String titleAsAKeyToFindAd = "The Lord of the 123";
         AdDto ad = new AdDto();
         ad.setOwnerId(1L);
         ad.setAdCategory(AdCategory.BOOKS);
-        ad.setTitle("The Lord of the rings");
+        ad.setTitle(titleAsAKeyToFindAd);
         ad.setImagePath("myTrade.com/image");
         ad.setDescription("The best book ever!");
         ad.setPrice(100.00);
@@ -48,9 +50,11 @@ class AdServiceTest {
         //when
         adService.saveAdDtoWithCreatedAndModifiedDateTime(ad);
         //then
-        assertThat(adRepository.getById(ad.getId())).isNotNull();
-        assertThat(ad.getCreatedDateTime()).isNotNull();
-        assertThat(ad.getModifiedDateTime()).isNotNull();
+        AdEntity actual = adRepository.findAll().stream().filter(adEntity -> adEntity.getTitle().equalsIgnoreCase(titleAsAKeyToFindAd)).collect(Collectors.toList()).get(0);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getCreatedDateTime()).isNotNull();
+        assertThat(actual.getModifiedDateTime()).isNotNull();
+        assertThat(actual.getId()).isNotNull();
     }
 
     @Test

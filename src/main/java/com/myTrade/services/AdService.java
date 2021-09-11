@@ -53,12 +53,6 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    public void changeTitle2(String newTitle, AdEntity adEntity) {
-        adEntity.setTitle(newTitle);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }
-
     public void changeAdCategory(AdCategory newAdCategory, Long adId)  {
         AdEntity adEntity = adRepository.getById(adId);
         adEntity.setAdCategory(newAdCategory);

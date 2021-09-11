@@ -5,7 +5,6 @@ import com.myTrade.entities.MessageEntity;
 import com.myTrade.repositories.ConversationRepository;
 import com.myTrade.services.ConversationService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +27,7 @@ class ConversationServiceUnitTest {
     @InjectMocks
     ConversationService conversationService;
 
-    private ConversationEntity conversationEntity = new ConversationEntity();;
+    private ConversationEntity conversationEntity = new ConversationEntity();
 
     @BeforeEach
     private void setUpConversationEntity(){
@@ -64,17 +63,16 @@ class ConversationServiceUnitTest {
         assertThat(result.getClass()).isEqualTo(conversationEntity.getClass());
     }
 
-    @Test
-    @Disabled
-    public void whenConversationEntityIdIsProvided_thenRetrievedNumberOfMessagesIsCorrect() {
-        //given
-        Long expectedMessageNumber = 2L;
-        given(conversationRepository.getById(conversationEntity.getId())).willReturn(conversationEntity);
-        //when
-        Long result = Long.valueOf(conversationService.findConversationMessageEntityListByConversationId(conversationEntity.getId()).size());
-        //then
-        assertThat(result).isEqualTo(expectedMessageNumber);
-    }
+//    @Test TODO:[P]Problem :/
+//    public void whenConversationEntityIdIsProvided_thenRetrievedNumberOfMessagesIsCorrect() {
+//        //given
+//        Long expectedMessageNumber = 2L;
+//        given(conversationRepository.getById(conversationEntity.getId())).willReturn(conversationEntity);
+//        //when
+//        Long result = Long.valueOf(conversationService.findConversationMessageEntityListByConversationId(conversationEntity.getId()).size());
+//        //then
+//        assertThat(result).isEqualTo(expectedMessageNumber);
+//    }
 
 
 }

@@ -1,6 +1,7 @@
 package com.myTrade.unitTests.services;
 
 import com.myTrade.entities.AdEntity;
+import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.services.AdService;
 import com.myTrade.utility.AdCategory;
@@ -24,6 +25,7 @@ class AdServiceUnitTest {
     @InjectMocks
     AdService adService;
 
+    AdMapperImpl adMapper = new AdMapperImpl();
 
     private AdEntity ad = new AdEntity();
 
@@ -51,11 +53,11 @@ class AdServiceUnitTest {
         assertThat(result.getClass()).isEqualTo(AdEntity.class);
     }
 
-//    @Test
+//    @Test //TODO: How can i verify saved object?
 //    public void whenAdEntityIsProvided_thenEntityShouldBeSavedToRepository() {
 //        //given
 //        //when
-//        adService.saveAdEntityWithCreatedAndModifiedDateTime(ad);
+//        adService.saveAdDtoWithCreatedAndModifiedDateTime(adMapper.adEntityToAdDto(ad));
 //        //then
 //        verify(adRepository).save(ad);
 //    }

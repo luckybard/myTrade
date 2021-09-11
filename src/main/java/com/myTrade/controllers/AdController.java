@@ -26,21 +26,21 @@ public class AdController {
         this.adService = adService;
     }
 
-    @GetMapping("/search/{id}")
-    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
-    public AdDto fetchAd(@PathVariable(value = "id")Long adId) {
-        return adService.fetchAdDtoById(adId);
-    }
-
     @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
+    @PreAuthorize("hasAnyAuthority('ad:write')")
     public void create(@RequestBody AdDto adDto){
         adService.saveAdDtoWithCreatedAndModifiedDateTime(adDto);
     }
 
-    @PatchMapping("/{id}/edit")
-    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
+    @GetMapping("/search/{id}")
+    @PreAuthorize("hasAnyAuthority('ad:read')")
+    public AdDto fetchAd(@PathVariable(value = "id")Long adId) {
+        return adService.fetchAdDtoById(adId);
+    }
+
+    @PatchMapping("/edit/{id}")
+    @PreAuthorize("hasAnyAuthority('ad:write')")
     public void patch(@RequestBody AdDto adDto)  {
         adService.patchAdDto(adDto);
     }
