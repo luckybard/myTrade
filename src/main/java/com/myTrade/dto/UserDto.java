@@ -35,4 +35,5 @@ public class UserDto {
 
     private List<ConversationDto> conversationDtoList = new LinkedList<>();
 
+    private Integer highlightPoint;
 }

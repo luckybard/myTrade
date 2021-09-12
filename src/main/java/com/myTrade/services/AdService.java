@@ -4,7 +4,6 @@ import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
-import com.myTrade.utility.AdCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,14 +45,20 @@ public class AdService {
         adEntity.setCreatedDateTime(LocalDateTime.now());
     }
 
-    public void changeTitle(String newTitle, Long adId) {
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setTitle(newTitle);
-        setModifiedDate(adEntity);
+    public void highlightAd(Long adId){
+        AdEntity adEntity = adRepository.findById(adId).get();
+        adEntity.setExpirationHighlightTime(LocalDateTime.now().plusMinutes(1));
         adRepository.save(adEntity);
     }
 
-    public void changeTitle2(String newTitle, AdEntity adEntity) {
+    public void refreshAd(Long adId){
+        AdEntity adEntity = adRepository.findById(adId).get();
+        adEntity.setRefreshTime(LocalDateTime.now());
+        adRepository.save(adEntity);
+    }
+
+ /*   public void changeTitle(String newTitle, Long adId) {
+        AdEntity adEntity = adRepository.getById(adId);
         adEntity.setTitle(newTitle);
         setModifiedDate(adEntity);
         adRepository.save(adEntity);
@@ -99,7 +104,7 @@ public class AdService {
         adEntity.setIsActive(isActive);
         setModifiedDate(adEntity);
         adRepository.save(adEntity);
-    }
+    }*/
 }
 
 

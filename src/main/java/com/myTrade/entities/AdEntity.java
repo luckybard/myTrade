@@ -52,6 +52,11 @@ public class AdEntity {
     @Column(nullable = false)
     private Boolean isActive;
 
+    private LocalDateTime expirationHighlightTime;
+
+    private LocalDateTime refreshTime;
+
+
 
 
 }
