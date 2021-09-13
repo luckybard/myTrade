@@ -4,10 +4,13 @@ import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
+import com.myTrade.utility.searchEngine.AdSearchRequest;
+import com.myTrade.utility.searchEngine.SearchEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class AdService {
@@ -20,17 +23,17 @@ public class AdService {
         this.adRepository = adRepository;
     }
 
-    public AdDto fetchAdDtoById(Long adId){
+    public AdDto fetchAdDtoById(Long adId) {
         return adMapper.adEntityToAdDto(adRepository.getById(adId));
     }
 
-    public void patchAdDto(AdDto adDto){
-       AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
-       setModifiedDate(adEntity);
-       adRepository.save(adEntity);
+    public void patchAdDto(AdDto adDto) {
+        AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
+        setModifiedDate(adEntity);
+        adRepository.save(adEntity);
     }
 
-    public void saveAdDtoWithCreatedAndModifiedDateTime(AdDto adDto){
+    public void saveAdDtoWithCreatedAndModifiedDateTime(AdDto adDto) {
         AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
         setCreatedDate(adEntity);
         setModifiedDate(adEntity);
@@ -41,20 +44,44 @@ public class AdService {
         adEntity.setModifiedDateTime(LocalDateTime.now());
     }
 
-    private void setCreatedDate(AdEntity adEntity){
+    private void setCreatedDate(AdEntity adEntity) {
         adEntity.setCreatedDateTime(LocalDateTime.now());
     }
 
-    public void highlightAd(Long adId){
+    public void highlightAd(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setExpirationHighlightTime(LocalDateTime.now().plusMinutes(1));
         adRepository.save(adEntity);
     }
 
-    public void refreshAd(Long adId){
+    public void refreshAd(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setRefreshTime(LocalDateTime.now());
         adRepository.save(adEntity);
+    }
+
+//    public List<AdDto> fetchAllAdsWhichContainsProvidedWords(String word) {
+//        String [] providedWords = word.toLowerCase(Locale.ROOT).split(" ");
+//        List<AdEntity> adEntityList = adRepository.findAll();
+//        List<AdEntity> result = new LinkedList<>();
+//        for(String key:providedWords) {
+//            result.addAll(adEntityList.stream().filter(ad -> ad.getTitle().toLowerCase(Locale.ROOT).contains(key) || ad.getDescription().toLowerCase(Locale.ROOT).contains(key)).collect(Collectors.toList()));
+//        }
+//        result = result.stream().distinct().collect(Collectors.toList());
+//        return adMapper.adEntityListToAdDtoList(result);
+//    }
+//
+//    public List<AdDto> fetchAllAdsWhichContainsProvidedWordsVersionFromDB(String word){
+//        String [] providedWords = word.toLowerCase(Locale.ROOT).split(" ");
+//        List<AdEntity> result = new LinkedList<>();
+//        for(String key:providedWords) {
+//           result.addAll(adRepository.findAdEntitiesByProvidedValue("%"+key.toLowerCase(Locale.ROOT)+"%"));
+//        }
+//        return adMapper.adEntityListToAdDtoList(result.stream().distinct().collect(Collectors.toList()));
+//    }
+
+    public List<AdDto> fetchByAllAdSearchRequest(AdSearchRequest adSearchRequest) {
+       return adMapper.adEntityListToAdDtoList(SearchEngine.search(adSearchRequest, adRepository.findAdEntitiesByActiveTrue()));
     }
 
  /*   public void changeTitle(String newTitle, Long adId) {

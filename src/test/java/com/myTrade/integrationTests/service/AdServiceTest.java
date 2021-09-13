@@ -53,7 +53,7 @@ class AdServiceTest {
         assertThat(ad.getModifiedDateTime()).isNotNull();
     }
 
-    @Test
+    /*@Test
     @Transactional
     void changeTitle() {
         //given
@@ -130,5 +130,5 @@ class AdServiceTest {
         //then
         assertThat(adRepository.getById(1L).getIsActive()).isEqualTo(newStatus);
 
-    }
+    }*/
 }

@@ -3,10 +3,13 @@ package com.myTrade.controllers;
 import com.myTrade.dto.AdDto;
 import com.myTrade.services.AdService;
 import com.myTrade.services.UserService;
+import com.myTrade.utility.searchEngine.AdSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/ad")
@@ -29,11 +32,26 @@ public class AdController {
         this.userService = userService;
     }
 
+    @GetMapping("/search")
+    public List<AdDto> search(@RequestBody AdSearchRequest adSearchRequest)  {
+        return adService.fetchByAllAdSearchRequest(adSearchRequest);
+    }
+
     @GetMapping("/search/{id}")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public AdDto fetchAd(@PathVariable(value = "id")Long adId) {
         return adService.fetchAdDtoById(adId);
     }
+
+//    @GetMapping("/1")
+//    public List<AdDto> fetch(@RequestBody String word) {
+//        return adService.fetchAllAdsWhichContainsProvidedWords(word);
+//    }
+//
+//    @GetMapping("/3")
+//    public List<AdDto> fetch3(@RequestBody String word) {
+//        return adService.fetchAllAdsWhichContainsProvidedWordsVersionFromDB(word);
+//    }
 
     @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -60,6 +78,8 @@ public class AdController {
         adService.highlightAd(adId);
         userService.deductHighlightPoint(userName);
     }
+
+
 
 /*                                     !-Just for learing purpose -!
     @PatchMapping("/{id}/editTitle")
