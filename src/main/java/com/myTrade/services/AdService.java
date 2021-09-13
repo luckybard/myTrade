@@ -41,6 +41,8 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
+
+
     private void setModifiedDate(AdEntity adEntity) {
         adEntity.setModifiedDateTime(LocalDateTime.now());
     }

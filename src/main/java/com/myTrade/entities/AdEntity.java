@@ -2,6 +2,7 @@ package com.myTrade.entities;
 
 
 import com.myTrade.utility.AdCategory;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
@@ -49,30 +51,12 @@ public class AdEntity {
     @Column(nullable = false)
     private Boolean isActive;
 
+    @Column(nullable = false)
     private LocalDateTime expirationHighlightTime;
 
     @Transient
     private Boolean isHighlighted;
 
-    private LocalDateTime refreshTime;
+    private LocalDateTime refreshTime = LocalDateTime.now().minusYears(50);
 
-    public AdEntity(Long id, Long ownerId, AdCategory adCategory, String title, String imagePath,
-                    String description, Double price, String city, LocalDateTime createdDateTime,
-                    LocalDateTime modifiedDateTime, Boolean isActive, LocalDateTime expirationHighlightTime,
-                    Boolean isHighlighted, LocalDateTime refreshTime) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.adCategory = adCategory;
-        this.title = title;
-        this.imagePath = imagePath;
-        this.description = description;
-        this.price = price;
-        this.city = city;
-        this.createdDateTime = createdDateTime;
-        this.modifiedDateTime = modifiedDateTime;
-        this.isActive = isActive;
-        this.expirationHighlightTime = expirationHighlightTime;
-        this.isHighlighted = expirationHighlightTime.isBefore(LocalDateTime.now());
-        this.refreshTime = refreshTime;
-    }
 }

@@ -3,7 +3,6 @@ package com.myTrade.utility.searchEngine;
 import com.myTrade.utility.AdCategory;
 import lombok.Data;
 
-
 @Data
 public class AdSearchRequest {
 
@@ -13,5 +12,6 @@ public class AdSearchRequest {
     private Boolean searchInDescription;
     private String city;
     private SortType sortType;
-
 }
+
+
