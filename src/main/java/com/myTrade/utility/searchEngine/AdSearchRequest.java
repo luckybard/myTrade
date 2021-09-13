@@ -12,5 +12,6 @@ public class AdSearchRequest {
     private PriceRange priceRange;
     private Boolean searchInDescription;
     private String city;
+    private SortType sortType;
 
 }

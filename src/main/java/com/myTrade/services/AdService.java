@@ -5,12 +5,13 @@ import com.myTrade.entities.AdEntity;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.utility.searchEngine.AdSearchRequest;
-import com.myTrade.utility.searchEngine.SearchEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.myTrade.utility.searchEngine.SearchEngine.search;
 
 @Service
 public class AdService {
@@ -60,6 +61,10 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
+    public List<AdDto> fetchByAllAdSearchRequest(AdSearchRequest adSearchRequest) {
+        return adMapper.adEntityListToAdDtoList(search(adSearchRequest, adRepository.findAdEntitiesByIsActiveTrue()));
+    }
+
 //    public List<AdDto> fetchAllAdsWhichContainsProvidedWords(String word) {
 //        String [] providedWords = word.toLowerCase(Locale.ROOT).split(" ");
 //        List<AdEntity> adEntityList = adRepository.findAll();
@@ -80,9 +85,7 @@ public class AdService {
 //        return adMapper.adEntityListToAdDtoList(result.stream().distinct().collect(Collectors.toList()));
 //    }
 
-    public List<AdDto> fetchByAllAdSearchRequest(AdSearchRequest adSearchRequest) {
-       return adMapper.adEntityListToAdDtoList(SearchEngine.search(adSearchRequest, adRepository.findAdEntitiesByActiveTrue()));
-    }
+
 
  /*   public void changeTitle(String newTitle, Long adId) {
         AdEntity adEntity = adRepository.getById(adId);

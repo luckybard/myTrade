@@ -15,5 +15,8 @@ public interface AdRepository extends JpaRepository<AdEntity,Long> {
     @Query(value = "SELECT * FROM ad WHERE lower(title) LIKE :word OR lower(description) LIKE :word", nativeQuery = true)
     Set<AdEntity> findAdEntitiesByProvidedValue(@Param("word")String word);
 
-    List<AdEntity> findAdEntitiesByActiveTrue();
+    List<AdEntity> findAdEntitiesByIsActiveTrue();
+
+    @Query(value = "query" , nativeQuery = true)
+    List<AdEntity> customQuery(@Param("query")String query);
 }

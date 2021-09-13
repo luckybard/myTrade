@@ -42,6 +42,8 @@ public class AdDto {
 
     private LocalDateTime expirationHighlightTime;
 
+    private Boolean isHighlighted;
+
     private LocalDateTime refreshTime;
 
 
