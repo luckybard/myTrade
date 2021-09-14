@@ -14,8 +14,6 @@ public class AdSearchRequest {
     private Optional<Boolean> searchInDescription;
     private Optional<String> city;
     private SortType sortType;
-    private Optional<Integer> pageNumber;
-    private Optional<Integer> pageSizeNumber;
 }
 
 
