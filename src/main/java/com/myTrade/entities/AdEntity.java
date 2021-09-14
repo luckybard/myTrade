@@ -54,9 +54,16 @@ public class AdEntity {
     @Column(nullable = false)
     private LocalDateTime expirationHighlightTime;
 
+    @Column(nullable = false)
+    private LocalDateTime refreshTime;
+
     @Transient
     private Boolean isHighlighted;
 
-    private LocalDateTime refreshTime = LocalDateTime.now().minusYears(50);
-
+    @PostLoad
+    public void checkIsHighlighted(){
+        if(expirationHighlightTime.isBefore(LocalDateTime.now())){
+            setIsHighlighted(true);
+        }
+    }
 }
