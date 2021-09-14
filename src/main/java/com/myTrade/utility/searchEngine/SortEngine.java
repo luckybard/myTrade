@@ -23,7 +23,7 @@ public class SortEngine {
                 return normalSort(adEntityList);
         }
     }
-
+    //TODO: How to improve this code?
     private static List<AdEntity> check(List<AdEntity> adEntityList) {
         List<AdEntity> adEntities = adEntityList;
         for(AdEntity adEntity: adEntities)

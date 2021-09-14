@@ -43,16 +43,6 @@ public class AdController {
         return adService.fetchAdDtoById(adId);
     }
 
-//    @GetMapping("/1")
-//    public List<AdDto> fetch(@RequestBody String word) {
-//        return adService.fetchAllAdsWhichContainsProvidedWords(word);
-//    }
-//
-//    @GetMapping("/3")
-//    public List<AdDto> fetch3(@RequestBody String word) {
-//        return adService.fetchAllAdsWhichContainsProvidedWordsVersionFromDB(word);
-//    }
-
     @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
@@ -76,12 +66,12 @@ public class AdController {
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void highlightAd(@RequestBody String userName,@PathVariable(value = "id")Long adId) {
         adService.highlightAd(adId);
-        userService.deductHighlightPoint(userName);
+        userService.deductHighlightPoint(userName);    //TODO:Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch?
     }
 
 
 
-/*                                     !-Just for learing purpose -!
+/*                                     !-Just for learning purpose -!
     @PatchMapping("/{id}/editTitle")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {
