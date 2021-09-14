@@ -46,7 +46,7 @@ class AdServiceTest {
         ad.setCity("Warsaw");
         ad.setIsActive(Boolean.FALSE);
         //when
-        adService.saveAdDtoWithCreatedAndModifiedDateTime(ad);
+        adService.saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(ad);
         //then
         assertThat(adRepository.getById(ad.getId())).isNotNull();
         assertThat(ad.getCreatedDateTime()).isNotNull();

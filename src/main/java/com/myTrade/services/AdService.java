@@ -8,7 +8,9 @@ import com.myTrade.utility.searchEngine.AdSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.myTrade.utility.searchEngine.SearchEngine.search;
@@ -34,14 +36,14 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    public void saveAdDtoWithCreatedAndModifiedDateTime(AdDto adDto) {
+    public void saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(AdDto adDto) {
         AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
         setCreatedDate(adEntity);
         setModifiedDate(adEntity);
+        setRefreshDate(adEntity);
+        setHighlightExpirationTime(adEntity);
         adRepository.save(adEntity);
     }
-
-
 
     private void setModifiedDate(AdEntity adEntity) {
         adEntity.setModifiedDateTime(LocalDateTime.now());
@@ -51,9 +53,17 @@ public class AdService {
         adEntity.setCreatedDateTime(LocalDateTime.now());
     }
 
+    private void setRefreshDate(AdEntity adEntity) {
+        adEntity.setRefreshTime(LocalDateTime.now());
+    }
+
+    private void setHighlightExpirationTime(AdEntity adEntity) {
+        adEntity.setExpirationHighlightTime(LocalDateTime.of(LocalDate.of(1990, 1, 1), LocalTime.of(1, 0)));
+    }
+
     public void highlightAd(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
-        adEntity.setExpirationHighlightTime(LocalDateTime.now().plusMinutes(1));
+        adEntity.setExpirationHighlightTime(LocalDateTime.now().plusMinutes(5));
         adRepository.save(adEntity);
     }
 

@@ -47,7 +47,7 @@ public class AdController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void create(@RequestBody AdDto adDto){
-        adService.saveAdDtoWithCreatedAndModifiedDateTime(adDto);
+        adService.saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(adDto);
     }
 
     @PatchMapping("/{id}/edit")
