@@ -1,5 +1,4 @@
-package com.myTrade.utility.searchEngine;
-
+package com.myTrade.utility;
 
 import lombok.Data;
 

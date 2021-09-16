@@ -1,6 +1,7 @@
 package com.myTrade.utility.searchEngine;
 
 import com.myTrade.entities.AdEntity;
+import com.myTrade.utility.SortType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +25,6 @@ public class SortEngine {
     }
 
     private static List<AdEntity> normalSort(List<AdEntity> adEntityList) {
-        System.out.println(adEntityList);
         return adEntityList.stream().sorted(Comparator.comparing(AdEntity::getIsHighlighted).thenComparing(AdEntity::getRefreshTime)).collect(Collectors.toList());
     }
 
