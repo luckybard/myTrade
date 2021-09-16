@@ -83,6 +83,9 @@ public class AdService {
         if(city.equals("All")){
             city = "%_%";
         }
+        if(category.equals("All")){
+            category = "%_%";
+        }
         int priceFrom = request.getPriceRange().getFrom();
         int priceTo = request.getPriceRange().getTo();
         return adMapper.adEntityListToAdDtoList(search(request,adRepository.findAdEntitiesByAdRequest(category, city, priceFrom, priceTo)));
