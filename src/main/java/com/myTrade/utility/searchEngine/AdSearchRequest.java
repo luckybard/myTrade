@@ -1,18 +1,17 @@
 package com.myTrade.utility.searchEngine;
 
 import com.myTrade.utility.AdCategory;
+import com.myTrade.utility.City;
 import lombok.Data;
-
-import java.util.Optional;
 
 @Data
 public class AdSearchRequest {
 
     private String searchByName;
-    private Optional<AdCategory> adCategory;
-    private Optional<PriceRange> priceRange;
-    private Optional<Boolean> searchInDescription;
-    private Optional<String> city;
+    private AdCategory adCategory;
+    private PriceRange priceRange;
+    private Boolean searchInDescription;
+    private City city;
     private SortType sortType;
 }
 

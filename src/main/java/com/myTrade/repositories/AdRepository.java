@@ -17,6 +17,6 @@ public interface AdRepository extends JpaRepository<AdEntity,Long> {
 
     List<AdEntity> findAdEntitiesByIsActiveTrue();
 
-    @Query(value = "query" , nativeQuery = true)
-    List<AdEntity> customQuery(@Param("query")String query);
+    @Query(value ="SELECT * FROM ad WHERE lower(ad_category) LIKE :category AND lower(city) LIKE :city AND lower(price) BETWEEN :price_from AND :price_to", nativeQuery = true)
+    List<AdEntity> findAdEntitiesByAdRequest(@Param("category")String category,@Param("city")String city,@Param("price_from")int priceFrom,@Param("price_to")int priceTo);
 }

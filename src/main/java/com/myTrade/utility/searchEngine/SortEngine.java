@@ -22,16 +22,6 @@ public class SortEngine {
                 return normalSort(adEntityList);
         }
     }
-//    //TODO: How to improve this code?
-//    private static List<AdEntity> check(List<AdEntity> adEntityList) {
-//        List<AdEntity> adEntities = adEntityList;
-//        for(AdEntity adEntity: adEntities)
-//            if (adEntity.getExpirationHighlightTime().isBefore(LocalDateTime.now())) {
-//                adEntity.setIsHighlighted(true);
-//            }else adEntity.setIsHighlighted(false);
-//        return adEntities;
-//    }
-
 
     private static List<AdEntity> normalSort(List<AdEntity> adEntityList) {
         System.out.println(adEntityList);

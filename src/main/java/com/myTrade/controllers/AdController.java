@@ -37,6 +37,11 @@ public class AdController {
         return adService.fetchByAllAdSearchRequest(adSearchRequest);
     }
 
+    @GetMapping("/searchV2")
+    public List<AdDto> searchV2(@RequestBody AdSearchRequest adSearchRequest)  {
+        return adService.fetchByAdSearchRequest(adSearchRequest);
+    }
+
     @GetMapping("/search/{id}")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public AdDto fetchAd(@PathVariable(value = "id")Long adId) {

@@ -62,8 +62,8 @@ public class AdEntity {
 
     @PostLoad
     public void checkIsHighlighted(){
-        if(expirationHighlightTime.isBefore(LocalDateTime.now())){
+        if(expirationHighlightTime.isAfter(LocalDateTime.now())){
             setIsHighlighted(true);
-        }
+        }else setIsHighlighted(false);
     }
 }

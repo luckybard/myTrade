@@ -77,76 +77,16 @@ public class AdService {
         return adMapper.adEntityListToAdDtoList(search(adSearchRequest, adRepository.findAdEntitiesByIsActiveTrue()));
     }
 
-//    public List<AdDto> fetchAllAdsWhichContainsProvidedWords(String word) {
-//        String [] providedWords = word.toLowerCase(Locale.ROOT).split(" ");
-//        List<AdEntity> adEntityList = adRepository.findAll();
-//        List<AdEntity> result = new LinkedList<>();
-//        for(String key:providedWords) {
-//            result.addAll(adEntityList.stream().filter(ad -> ad.getTitle().toLowerCase(Locale.ROOT).contains(key) || ad.getDescription().toLowerCase(Locale.ROOT).contains(key)).collect(Collectors.toList()));
-//        }
-//        result = result.stream().distinct().collect(Collectors.toList());
-//        return adMapper.adEntityListToAdDtoList(result);
-//    }
-//
-//    public List<AdDto> fetchAllAdsWhichContainsProvidedWordsVersionFromDB(String word){
-//        String [] providedWords = word.toLowerCase(Locale.ROOT).split(" ");
-//        List<AdEntity> result = new LinkedList<>();
-//        for(String key:providedWords) {
-//           result.addAll(adRepository.findAdEntitiesByProvidedValue("%"+key.toLowerCase(Locale.ROOT)+"%"));
-//        }
-//        return adMapper.adEntityListToAdDtoList(result.stream().distinct().collect(Collectors.toList()));
-//    }
-
-
-
- /*   public void changeTitle(String newTitle, Long adId) {
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setTitle(newTitle);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
+    public List<AdDto> fetchByAdSearchRequest(AdSearchRequest request) {
+        String category = request.getAdCategory().toString();
+        String city = request.getCity().toString();
+        if(city.equals("All")){
+            city = "%_%";
+        }
+        int priceFrom = request.getPriceRange().getFrom();
+        int priceTo = request.getPriceRange().getTo();
+        return adMapper.adEntityListToAdDtoList(search(request,adRepository.findAdEntitiesByAdRequest(category, city, priceFrom, priceTo)));
     }
-
-    public void changeAdCategory(AdCategory newAdCategory, Long adId)  {
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setAdCategory(newAdCategory);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }
-
-    public void changeImagePath(String newImagePath, Long adId) {
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setImagePath(newImagePath);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }
-
-    public void changeDescription(String newDescription, Long adId){
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setDescription(newDescription);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }
-
-    public void changePrice(Double newPrice, Long adId){
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setPrice(newPrice);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }
-
-    public void changeCity(String newCity, Long adId){
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setCity(newCity);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }
-
-    public void changeActiveStatus(Boolean isActive, Long adId){
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setIsActive(isActive);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }*/
 }
 
 
