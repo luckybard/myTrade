@@ -46,20 +46,4 @@ public class FilterEngine {
         } else result = adList;
         return result;
     }
-
-
-/*    public List<AdEntity> searchByDB(AdSearchRequest request, List<AdEntity> adEntityList){
-        String query = "SELECT * FROM ad WHERE isActive = true";
-        if(request.getAdCategory() != null) {
-            query = query + " AND ad_category= " + request.getAdCategory().toString();
-        }
-        if(request.getPriceRange() != null) {
-            query = query + " AND price BETWEEN " + request.getPriceRange().getFrom() + " AND " + request.getPriceRange().getTo();
-        }
-        if(request.getCity() != null) {
-            query = query + " AND city= " + request.getCity();
-        }
-        return ;
-    }*/
-
 }
