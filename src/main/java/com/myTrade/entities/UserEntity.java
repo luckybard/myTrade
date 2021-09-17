@@ -48,5 +48,5 @@ public class UserEntity {
     @ManyToMany
     private List<ConversationEntity> conversationEntityList = new LinkedList<>();
 
-
+    private Integer highlightPoint;
 }

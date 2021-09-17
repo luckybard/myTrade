@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AdServiceUnitTest {
@@ -62,7 +61,7 @@ class AdServiceUnitTest {
 //        verify(adRepository).save(ad);
 //    }
 
-    @Test
+  /*  @Test
     public void whenNewTitleIsProvided_thenTitleShouldBeChangedAndBeSaveToRepository() {
         //given
         String newTitle = "NewTitle";
@@ -144,5 +143,5 @@ class AdServiceUnitTest {
         //then
         assertThat(ad.getIsActive()).isEqualTo(newStatus);
         verify(adRepository).save(ad);
-    }
+    }*/
 }

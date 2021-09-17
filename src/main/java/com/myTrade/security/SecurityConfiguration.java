@@ -19,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
 
-//TODO:Implementing Login, how to approach it? Do I need JWT?
-// Do I need logs? (SLF4J)
+
+// TODO:SLF4J
 
 @Configuration
 @EnableWebSecurity

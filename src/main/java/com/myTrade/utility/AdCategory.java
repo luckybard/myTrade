@@ -6,5 +6,6 @@ public enum AdCategory {
     APPLIANCES,
     BOOKS,
     FURNITURE,
-    OTHER
+    OTHER,
+    ALL
 }

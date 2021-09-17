@@ -38,4 +38,14 @@ public class AdDto {
 
     private Boolean isActive;
 
+<<<<<<< HEAD
+=======
+    private LocalDateTime expirationHighlightTime;
+
+    private Boolean isHighlighted;
+
+    private LocalDateTime refreshTime;
+
+
+>>>>>>> development
 }

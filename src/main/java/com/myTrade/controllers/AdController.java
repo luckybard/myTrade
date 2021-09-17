@@ -2,10 +2,14 @@ package com.myTrade.controllers;
 
 import com.myTrade.dto.AdDto;
 import com.myTrade.services.AdService;
+import com.myTrade.services.UserService;
+import com.myTrade.utility.searchEngine.AdSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/ad")
@@ -20,17 +24,29 @@ public class AdController {
     //TODO: Searching ads by name (main search engine) best implementation is just passing name to stream filter?
 
     private final AdService adService;
+    private final UserService userService;
 
     @Autowired
-    public AdController(AdService adService) {
+    public AdController(AdService adService, UserService userService) {
         this.adService = adService;
+        this.userService = userService;
+    }
+
+    @GetMapping("/search")
+    public List<AdDto> search(@RequestBody AdSearchRequest adSearchRequest)  {
+        return adService.fetchByAllAdSearchRequest(adSearchRequest);
+    }
+
+    @GetMapping("/searchV2")
+    public List<AdDto> searchV2(@RequestBody AdSearchRequest adSearchRequest)  {
+        return adService.fetchByAdSearchRequest(adSearchRequest);
     }
 
     @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ad:write')")
     public void create(@RequestBody AdDto adDto){
-        adService.saveAdDtoWithCreatedAndModifiedDateTime(adDto);
+        adService.saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(adDto);
     }
 
     @GetMapping("/search/{id}")
@@ -45,13 +61,22 @@ public class AdController {
         adService.patchAdDto(adDto);
     }
 
-    @PatchMapping("/{id}/editTitle")
+    @PatchMapping("/{id}/refresh")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
-    public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {
-        adService.changeTitle(newTitle,adId);
+    public void refreshAd(@PathVariable(value = "id")Long adId) {
+        adService.refreshAd(adId);
     }
 
-/*                                     !-Just for learing purpose -!
+    @PatchMapping("/{id}/highlight")
+    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
+    public void highlightAd(@RequestBody String userName,@PathVariable(value = "id")Long adId) {
+        adService.highlightAd(adId);
+        userService.deductHighlightPoint(userName);    //TODO:Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch?
+    }
+
+
+
+/*                                     !-Just for learning purpose -!
     @PatchMapping("/{id}/editTitle")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
     public void changeTitle(@RequestBody String newTitle,@PathVariable(value = "id")Long adId) {

@@ -63,6 +63,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void deductHighlightPoint(String userName){
+        UserEntity userEntity = userRepository.findByUserName(userName);
+        int userHighlightPoints = userEntity.getHighlightPoint();
+        userEntity.setHighlightPoint(--userHighlightPoints);
+        userRepository.save(userEntity);
+    }
+
 
 }
 

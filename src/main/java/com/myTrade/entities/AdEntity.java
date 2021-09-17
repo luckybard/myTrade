@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -52,6 +51,19 @@ public class AdEntity {
     @Column(nullable = false)
     private Boolean isActive;
 
+    @Column(nullable = false)
+    private LocalDateTime expirationHighlightTime;
 
+    @Column(nullable = false)
+    private LocalDateTime refreshTime;
 
+    @Transient
+    private Boolean isHighlighted;
+
+    @PostLoad
+    public void checkIsHighlighted(){
+        if(expirationHighlightTime.isAfter(LocalDateTime.now())){
+            setIsHighlighted(true);
+        }else setIsHighlighted(false);
+    }
 }

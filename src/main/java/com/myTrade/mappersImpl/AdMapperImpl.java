@@ -28,6 +28,9 @@ public class AdMapperImpl implements AdMapper {
         adDto.setCreatedDateTime(adEntity.getCreatedDateTime());
         adDto.setModifiedDateTime(adEntity.getModifiedDateTime());
         adDto.setIsActive(adEntity.getIsActive());
+        adDto.setExpirationHighlightTime(adEntity.getExpirationHighlightTime());
+        adDto.setIsHighlighted(adEntity.getIsHighlighted());
+        adDto.setRefreshTime(adEntity.getRefreshTime());
 
         return adDto;
     }
@@ -65,6 +68,9 @@ public class AdMapperImpl implements AdMapper {
         adEntity.setCreatedDateTime(adDto.getCreatedDateTime());
         adEntity.setModifiedDateTime(adDto.getModifiedDateTime());
         adEntity.setIsActive(adDto.getIsActive());
+        adEntity.setExpirationHighlightTime(adDto.getExpirationHighlightTime());
+        adEntity.setIsHighlighted(adDto.getIsHighlighted());
+        adEntity.setRefreshTime(adDto.getRefreshTime());
 
         return adEntity;
     }
