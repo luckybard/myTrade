@@ -53,23 +53,8 @@ public class AdService {
         adEntity.setCreatedDateTime(LocalDateTime.now());
     }
 
-<<<<<<< HEAD
-    public void changeTitle(String newTitle, Long adId) {
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setTitle(newTitle);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-    }
-
-    public void changeAdCategory(AdCategory newAdCategory, Long adId)  {
-        AdEntity adEntity = adRepository.getById(adId);
-        adEntity.setAdCategory(newAdCategory);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
-=======
     private void setRefreshDate(AdEntity adEntity) {
         adEntity.setRefreshTime(LocalDateTime.now());
->>>>>>> development
     }
 
     private void setHighlightExpirationTime(AdEntity adEntity) {
