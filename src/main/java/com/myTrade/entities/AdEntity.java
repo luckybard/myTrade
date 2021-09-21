@@ -24,7 +24,7 @@ public class AdEntity {
     @Column(nullable = false,updatable = false)
     private Long id;
     @Column(nullable = false,updatable = false)
-    private Long ownerId;
+    private String ownerUsername;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

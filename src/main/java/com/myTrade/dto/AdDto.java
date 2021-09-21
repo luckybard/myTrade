@@ -18,7 +18,7 @@ public class AdDto {
 
     private Long id;
 
-    private Long ownerId;
+    private String ownerUsername;
 
     private AdCategory adCategory;
 

@@ -45,7 +45,7 @@ public class AdService {
 
     public void saveAdDtoAndAddAdToUserAdList(AdDto adDto) {
         Long adEntityId = saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(adDto);
-        UserEntity adOwner = userRepository.findById(adDto.getOwnerId()).get();//TODO: differance between .get() and adding Optional<UserEntity>
+        UserEntity adOwner = userRepository.findByUsername(adDto.getOwnerUsername());//TODO: differance between .get() and adding Optional<UserEntity>
         List<AdEntity> adEntityList = adOwner.getAdEntityList().stream().collect(Collectors.toList());
         adEntityList.add(adRepository.getById(adEntityId));
         adOwner.setAdEntityList(adEntityList);
