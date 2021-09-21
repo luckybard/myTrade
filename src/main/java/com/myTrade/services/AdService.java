@@ -4,16 +4,17 @@ import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
-import com.myTrade.utility.searchEngine.AdSearchRequest;
+import com.myTrade.utility.AdCategory;
+import com.myTrade.utility.City;
+import com.myTrade.utility.PriceRange;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-
-import static com.myTrade.utility.searchEngine.SearchEngine.search;
 
 @Service
 public class AdService {
@@ -73,22 +74,27 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    public List<AdDto> fetchByAllAdSearchRequest(AdSearchRequest adSearchRequest) {
-        return adMapper.adEntityListToAdDtoList(search(adSearchRequest, adRepository.findAdEntitiesByIsActiveTrue()));
+    //TODO: Fronted, maximum search is by 10 words.
+    public Page<AdEntity> findAllActiveByAdSearchRequest(String searchText, City city, AdCategory category, PriceRange priceRange, PageRequest pageRequest) {
+
+        return adRepository.findBySearchRequest(category.getCategory(), city.getCityName(), priceRange.getFrom(), priceRange.getTo(), searchText.toLowerCase(), pageRequest);
     }
 
-    public List<AdDto> fetchByAdSearchRequest(AdSearchRequest request) {
-        String category = request.getAdCategory().toString();
-        String city = request.getCity().toString();
-        if(city.equals("All")){
-            city = "%_%";
+
+    public Page<AdEntity> findAllActiveByAdSearchRequestUpgraded(String searchText, City city, AdCategory category, PriceRange priceRange, PageRequest pageRequest) {
+        String[] textsToBeSearched = searchText.toLowerCase().split(" ");
+        String[] texts = new String[10];
+        if(textsToBeSearched.length<10){
+            for(int i = 0; i<textsToBeSearched.length-1; i++){
+                texts[i] = "%" + textsToBeSearched[i] +"%"  ;
+            }
+            for(int i = textsToBeSearched.length-1; i<10;i++){
+                texts[i] = "%" +  textsToBeSearched[textsToBeSearched.length-1] +"%"  ;
+            }
         }
-        if(category.equals("All")){
-            category = "%_%";
-        }
-        int priceFrom = request.getPriceRange().getFrom();
-        int priceTo = request.getPriceRange().getTo();
-        return adMapper.adEntityListToAdDtoList(search(request,adRepository.findAdEntitiesByAdRequest(category, city, priceFrom, priceTo)));
+        return adRepository.findBySearchRequestUpgraded(city.getCityName(), category.getCategory(),
+                priceRange.getFrom(), priceRange.getTo(), texts[0], texts[1], texts[2], texts[3], texts[4], texts[5],
+                texts[6], texts[7], texts[8], texts[9], pageRequest);
     }
 }
 

@@ -69,6 +69,8 @@ public class UserServiceTest {
         ad.setCity("Warsaw");
         ad.setCreatedDateTime(LocalDateTime.of(LocalDate.of(2020, 8, 21), LocalTime.of(20, 18)));
         ad.setModifiedDateTime(LocalDateTime.now());
+        ad.setExpirationHighlightTime(LocalDateTime.now());
+        ad.setRefreshTime(LocalDateTime.now());
         ad.setIsActive(Boolean.TRUE);
         //when
         userService.addAdToAdList(userName, ad);
@@ -111,7 +113,7 @@ public class UserServiceTest {
     public void whenUserNameIsProvided_thenShouldRetrievedCorrectConversationListSize() {
         //given
         String userName = "bart";
-        int expectedUserConversationListSize = 3;
+        int expectedUserConversationListSize = 4;
         //when
         int actualUserConversationListSize = userService.findUserConversationEntityList(userName).size();
         //then

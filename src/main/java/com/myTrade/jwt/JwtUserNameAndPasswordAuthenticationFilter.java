@@ -31,7 +31,6 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
         LoginCredentials loginCredentials = null;
         try {
             loginCredentials = new ObjectMapper().readValue(request.getInputStream(), LoginCredentials.class);
@@ -47,7 +46,6 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())

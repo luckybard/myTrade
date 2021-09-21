@@ -26,7 +26,7 @@ public class MessageEntity {
     private Long authorId;
 
     @Column(nullable = false)
-    private String text;//change to message
+    private String text;
 
     private String imagePath;
 

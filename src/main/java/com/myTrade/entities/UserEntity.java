@@ -48,5 +48,8 @@ public class UserEntity {
     @ManyToMany
     private List<ConversationEntity> conversationEntityList = new LinkedList<>();
 
+    @OneToMany
+    private List<AdEntity> favouriteAdEntityList = new LinkedList<>();
+
     private Integer highlightPoint;
 }

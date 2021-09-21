@@ -40,6 +40,7 @@ public class AdEntity {
 
     private Double price;
 
+    @Column(nullable = false)
     private String city;
 
     @Column(nullable = false)

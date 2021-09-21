@@ -88,4 +88,5 @@ public class AdMapperImpl implements AdMapper {
 
         return list;
     }
+
 }
