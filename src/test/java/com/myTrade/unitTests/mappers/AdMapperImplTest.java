@@ -22,7 +22,7 @@ public class AdMapperImplTest {
     @BeforeEach
     public void setUpAdEntity(){
         adEntity.setId(1L);
-        adEntity.setOwnerId(1L);
+        adEntity.setOwnerUsername("john");
         adEntity.setAdCategory(AdCategory.BOOKS);
         adEntity.setTitle("The Lord of the rings");
         adEntity.setImagePath("image/path");
@@ -42,7 +42,7 @@ public class AdMapperImplTest {
         assertThat(adDto).isNotNull();
         assertThat(adDto).isInstanceOf(AdDto.class);
         assertThat(adDto.getId()).isEqualTo(adEntity.getId());
-        assertThat(adDto.getOwnerId()).isEqualTo(adEntity.getOwnerId());
+        assertThat(adDto.getOwnerUsername().equals(adEntity.getOwnerUsername()));
         assertThat(adDto.getTitle()).isEqualTo(adEntity.getTitle());
         assertThat(adDto.getDescription()).isEqualTo(adEntity.getDescription());
         assertThat(adDto.getImagePath()).isEqualTo(adEntity.getImagePath());
@@ -64,7 +64,7 @@ public class AdMapperImplTest {
         assertThat(adEntity).isNotNull();
         assertThat(adEntity).isInstanceOf(AdEntity.class);
         assertThat(adEntity.getId()).isEqualTo(adEntity.getId());
-        assertThat(adEntity.getOwnerId()).isEqualTo(adDto.getOwnerId());
+        assertThat(adEntity.getOwnerUsername()).isEqualTo(adEntity.getOwnerUsername());
         assertThat(adEntity.getTitle()).isEqualTo(adDto.getTitle());
         assertThat(adEntity.getDescription()).isEqualTo(adDto.getDescription());
         assertThat(adEntity.getImagePath()).isEqualTo(adDto.getImagePath());

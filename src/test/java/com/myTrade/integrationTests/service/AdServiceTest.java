@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
@@ -39,7 +38,7 @@ class AdServiceTest {
         //given
         String titleAsAKeyToFindAd = "The Lord of the 123";
         AdDto ad = new AdDto();
-        ad.setOwnerId(1L);
+        ad.setOwnerUsername("john");
         ad.setAdCategory(AdCategory.BOOKS);
         ad.setTitle(titleAsAKeyToFindAd);
         ad.setImagePath("myTrade.com/image");

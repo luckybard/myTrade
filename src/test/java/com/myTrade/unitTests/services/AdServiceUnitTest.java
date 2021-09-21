@@ -31,7 +31,7 @@ class AdServiceUnitTest {
     @BeforeEach
     public void setUpAd() {
         ad.setId(1L);
-        ad.setOwnerId(1L);
+        ad.setOwnerUsername("mark");
         ad.setAdCategory(AdCategory.BOOKS);
         ad.setTitle("The Lord of the rings");
         ad.setImagePath("myTrade.com/image");

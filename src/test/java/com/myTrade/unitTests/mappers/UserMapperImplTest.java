@@ -41,7 +41,7 @@ class UserMapperImplTest {
     private List<AdEntity> setUpAdEntityList() {
         AdEntity adEntity1 = new AdEntity();
         adEntity1.setId(1L);
-        adEntity1.setOwnerId(1L);
+        adEntity1.setOwnerUsername("john");
         adEntity1.setAdCategory(AdCategory.BOOKS);
         adEntity1.setTitle("The Lord of the rings");
         adEntity1.setImagePath("image/path");
@@ -53,7 +53,7 @@ class UserMapperImplTest {
 
         AdEntity adEntity2 = new AdEntity();
         adEntity2.setId(2L);
-        adEntity2.setOwnerId(1L);
+        adEntity2.setOwnerUsername("mark");
         adEntity2.setAdCategory(AdCategory.FURNITURE);
         adEntity2.setTitle("Antique chair");
         adEntity2.setImagePath("image/path");
@@ -65,7 +65,7 @@ class UserMapperImplTest {
 
         AdEntity adEntity3 = new AdEntity();
         adEntity3.setId(3L);
-        adEntity3.setOwnerId(1L);
+        adEntity3.setOwnerUsername("mat");
         adEntity3.setAdCategory(AdCategory.CLOTHES);
         adEntity3.setTitle("AC/DC T-shirt");
         adEntity3.setImagePath("image/path");

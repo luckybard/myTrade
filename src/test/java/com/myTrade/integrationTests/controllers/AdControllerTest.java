@@ -38,7 +38,7 @@ public class AdControllerTest {
     @BeforeEach
     public void setUpAd() {
         ad.setId(1L);
-        ad.setOwnerId(1L);
+        ad.setOwnerUsername("bart");
         ad.setAdCategory(AdCategory.BOOKS);
         ad.setTitle("The Lord of the rings");
         ad.setImagePath("myTrade.com/image");
