@@ -38,7 +38,7 @@ public class UserControllerTest {
     public void whenProperUserEntityIsProvided_thenShouldReturnStatus201() {
         //given
         UserEntity user = new UserEntity();
-        user.setUserName("xxx");
+        user.setUsername("xxx");
         user.setPassword("uniquePassword");
         user.setEmail("axxc");
         user.setAvatarPath(" sd");

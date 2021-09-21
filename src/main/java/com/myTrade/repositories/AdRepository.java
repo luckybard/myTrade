@@ -32,4 +32,12 @@ public interface AdRepository extends JpaRepository<AdEntity, Long> {
     Page<AdEntity> findBySearchRequest(@Param("category") String category, @Param("city") String city,
                                        @Param("price_from") int priceFrom, @Param("price_to") int priceTo,
                                        @Param("title") String title, Pageable pageable);
+
+
+
+    @Query(value = "SELECT * FROM ad WHERE is_active = TRUE AND ad_category LIKE :category AND city LIKE :city " +
+            "AND price BETWEEN :price_from AND :price_to AND (lower(title) LIKE :title)", nativeQuery = true)
+    Page<AdEntity> findBySearchRequestWithoutDescription(@Param("category") String category, @Param("city") String city,
+                                                         @Param("price_from") int priceFrom, @Param("price_to") int priceTo,
+                                                         @Param("title") String title, Pageable pageable);
 }

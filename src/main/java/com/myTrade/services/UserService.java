@@ -34,42 +34,48 @@ public class UserService {
     }
 
     public List<AdEntity> findUserAdEntityList(String userName) {
-        return userRepository.findByUserName(userName).getAdEntityList();
+        return userRepository.findByUsername(userName).getAdEntityList();
     }
 
     public List<ConversationEntity> findUserConversationEntityList(String userName) {
-        return userRepository.findByUserName(userName).getConversationEntityList();
+        return userRepository.findByUsername(userName).getConversationEntityList();
     }
 
     public void deleteUser(String userName) {
-        userRepository.delete(userRepository.findByUserName(userName));
+        userRepository.delete(userRepository.findByUsername(userName));
     }
 
-    public void deleteAdFromAdList(String userName, Long adId) {
-        UserEntity user = userRepository.findByUserName(userName);
-        List<AdEntity> adEntityList = user.getAdEntityList().stream().collect(Collectors.toList());
-        user.setAdEntityList(adEntityList.stream().filter(adEntity -> !adEntity.getId().equals(adId)).collect(Collectors.toList())); // better use stream to avoid using adRepository (findById)? due to this I don't need mock adrepository
-        userRepository.save(user);
-        adRepository.deleteById(adId);
-
-    }
-
-    public void addAdToAdList(String userName, AdEntity adEntity) {
-        UserEntity user = userRepository.findByUserName(userName);
-        List<AdEntity> adEntityList = user.getAdEntityList().stream().collect(Collectors.toList());
-        adRepository.save(adEntity); // first of all i have to save adEntity to db and then add adEntity to UserAdList?
-        adEntityList.add(adEntity);
-        user.setAdEntityList(adEntityList);
-        userRepository.save(user);
-    }
+//    public void deleteAdFromAdList(String userName, Long adId) {
+//        UserEntity user = userRepository.findByUserName(userName);
+//        List<AdEntity> adEntityList = user.getAdEntityList().stream().collect(Collectors.toList());
+//        user.setAdEntityList(adEntityList.stream().filter(adEntity -> !adEntity.getId().equals(adId)).collect(Collectors.toList())); // better use stream to avoid using adRepository (findById)? due to this I don't need mock adrepository
+//        userRepository.save(user);
+//        adRepository.deleteById(adId);
+//
+//    }
+//
+//    public void addAdToAdList(String userName, AdEntity adEntity) {
+//        UserEntity user = userRepository.findByUserName(userName);
+//        List<AdEntity> adEntityList = user.getAdEntityList().stream().collect(Collectors.toList());
+//        adRepository.save(adEntity); // first of all i have to save adEntity to db and then add adEntity to UserAdList?
+//        adEntityList.add(adEntity);
+//        user.setAdEntityList(adEntityList);
+//        userRepository.save(user);
+//    }
 
     public void deductHighlightPoint(String userName){
-        UserEntity userEntity = userRepository.findByUserName(userName);
+        UserEntity userEntity = userRepository.findByUsername(userName);
         int userHighlightPoints = userEntity.getHighlightPoint();
         userEntity.setHighlightPoint(--userHighlightPoints);
         userRepository.save(userEntity);
     }
 
-
+    public void addAdToFavourite(String username, Long adId) {
+        UserEntity user = userRepository.findByUsername(username);
+        List<AdEntity> adEntityList = user.getAdEntityList().stream().collect(Collectors.toList());
+        adEntityList.add(adRepository.findById(adId).get());
+        user.setAdEntityList(adEntityList);
+        userRepository.save(user);
+    }
 }
 

@@ -30,7 +30,7 @@ class UserMapperImplTest {
 
     @BeforeEach
     private void setUpUserEntity() {
-        user.setUserName("bart");
+        user.setUsername("bart");
         user.setPassword("uniquePassword");
         user.setEmail("bart@bart.com");
         user.setBirthDate(LocalDate.of(1990,8,10));

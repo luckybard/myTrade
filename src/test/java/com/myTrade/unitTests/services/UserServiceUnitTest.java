@@ -41,7 +41,7 @@ public class UserServiceUnitTest {
 
     @BeforeEach
     public void setUpUserEntity() {
-        user.setUserName("bart");
+        user.setUsername("bart");
         user.setPassword("uniquePassword");
         user.setEmail("bart@bart.com");
         user.setBirthDate(LocalDate.of(1990,8,10));
@@ -127,10 +127,10 @@ public class UserServiceUnitTest {
     @Test
     public void whenUserNameIsProvided_thenRetrievedEmailIsCorrect() {
         //given
-        given(userRepository.findByUserName(user.getUserName())).willReturn(user);
+        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
         String expected = "bart@bart.com";
         //when
-        String resultEmail = userRepository.findByUserName(user.getUserName()).getEmail();
+        String resultEmail = userRepository.findByUsername(user.getUsername()).getEmail();
 
         //then
         assertThat(resultEmail).isEqualTo(expected);
@@ -139,10 +139,10 @@ public class UserServiceUnitTest {
     @Test
     public void whenUserNameIsProvided_thenRetrievedNumberOfAdsIsCorrect() {
         //given
-        given(userRepository.findByUserName(user.getUserName())).willReturn(user);
+        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
         int expected = 3;
         //when
-        int result = userService.findUserAdEntityList(user.getUserName()).stream().collect(Collectors.toList()).size();
+        int result = userService.findUserAdEntityList(user.getUsername()).stream().collect(Collectors.toList()).size();
         //then
         assertThat(result).isEqualTo(expected);
     }
@@ -150,10 +150,10 @@ public class UserServiceUnitTest {
     @Test
     public void whenUserNameIsProvided_thenRetrievedNumberOfConversationsIsCorrect() {
         //given
-        given(userRepository.findByUserName(user.getUserName())).willReturn(user);
+        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
         int expected = 1;
         //when
-        int result = userService.findUserConversationEntityList(user.getUserName()).size();
+        int result = userService.findUserConversationEntityList(user.getUsername()).size();
         //then
         assertThat(result).isEqualTo(expected);
     }
@@ -161,9 +161,9 @@ public class UserServiceUnitTest {
     @Test
     public void whenUserNameIsProvided_thenUserShouldBeRemovedFromDataBase() {
         //given
-        given(userRepository.findByUserName(user.getUserName())).willReturn(user);
+        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
         //when
-        userService.deleteUser(user.getUserName());
+        userService.deleteUser(user.getUsername());
         //then
         verify(userRepository).delete(user);
 
@@ -172,11 +172,11 @@ public class UserServiceUnitTest {
     @Test
     public void whenUserNameAndAdIdIsProvided_shouldDeleteAdFromAdList() {
         //given
-        given(userRepository.findByUserName(user.getUserName())).willReturn(user);
+        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
         int expectedListSize = 2;
         //when
-        userService.deleteAdFromAdList(user.getUserName(), 1L);
-        int result = userRepository.findByUserName(user.getUserName()).getAdEntityList().size();
+        userService.deleteAdFromAdList(user.getUsername(), 1L);
+        int result = userRepository.findByUsername(user.getUsername()).getAdEntityList().size();
         //then
         assertThat(result).isEqualTo(expectedListSize);
         verify(adRepository).deleteById(1L);

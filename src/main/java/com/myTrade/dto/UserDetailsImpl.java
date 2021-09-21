@@ -13,12 +13,12 @@ import java.util.stream.Collectors;
 @Data
 public class UserDetailsImpl implements UserDetails {
 
-    private String userName;
+    private String username;
     private String password;
     private List<GrantedAuthority> authorities;
 
     public UserDetailsImpl(UserEntity userEntity) {
-        this.userName = userEntity.getUserName();
+        this.username = userEntity.getUsername();
         this.password = userEntity.getPassword();
         this.authorities = userEntity.getRole().getUserPermissionsSet().stream()
                 .map(userPermission -> new SimpleGrantedAuthority(userPermission.getPermission())).collect(Collectors.toList());
@@ -36,7 +36,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     @Override

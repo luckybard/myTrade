@@ -30,11 +30,18 @@ public class AdController {
         this.userService = userService;
     }
 
+    @PostMapping("/create")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ad:write')")
+    public void create(@RequestBody AdDto adDto) {
+        adService.saveAdDtoAndAddAdToUserAdList(adDto);
+    }
+
     @GetMapping("/search")
-    public Page<AdEntity> search(@RequestParam String searchText, @RequestParam Optional<City> city,
+    public Page<AdEntity> search(@RequestParam String searchText, @RequestParam Optional<Boolean> searchInDescription, @RequestParam Optional<City> city,
                                  @RequestParam Optional<AdCategory> category, @RequestParam Optional<PriceRange> priceRange,
                                  @RequestParam Optional<PageRequest> pageRequest) {
-        return adService.findAllActiveByAdSearchRequest(searchText, city.orElse(City.EVERYWHERE), category.orElse(AdCategory.ALL),
+        return adService.findAllActiveByAdSearchRequest(searchText,searchInDescription.orElse(false), city.orElse(City.EVERYWHERE), category.orElse(AdCategory.ALL),
                 priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageRequest.orElse(PageRequest.of(0, 25, Sort.by("refresh_time").descending())));
     }
 
@@ -44,13 +51,6 @@ public class AdController {
                                          @RequestParam Optional<PageRequest> pageRequest) {
         return adService.findAllActiveByAdSearchRequestUpgraded(searchText, city.orElse(City.EVERYWHERE), category.orElse(AdCategory.ALL),
                 priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageRequest.orElse(PageRequest.of(0, 25, Sort.by("refresh_time").descending())));
-    }
-
-    @PostMapping("/create")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ad:write')")
-    public void create(@RequestBody AdDto adDto) {
-        adService.saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(adDto);
     }
 
     @GetMapping("/search/{id}")
@@ -73,9 +73,9 @@ public class AdController {
 
     @PatchMapping("/{id}/highlight")
     @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
-    public void highlightAd(@RequestBody String userName, @PathVariable(value = "id") Long adId) {
+    public void highlightAd(@RequestBody String username, @PathVariable(value = "id") Long adId) {
         adService.highlightAd(adId);
-        userService.deductHighlightPoint(userName);    //TODO:Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch?
+        userService.deductHighlightPoint(username);    //TODO:Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch?
     }
 
 }

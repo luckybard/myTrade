@@ -2,8 +2,10 @@ package com.myTrade.services;
 
 import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
+import com.myTrade.entities.UserEntity;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
+import com.myTrade.repositories.UserRepository;
 import com.myTrade.utility.AdCategory;
 import com.myTrade.utility.City;
 import com.myTrade.utility.PriceRange;
@@ -15,16 +17,20 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdService {
 
     private AdRepository adRepository;
+    private UserRepository userRepository;
     private final AdMapperImpl adMapper = new AdMapperImpl();
 
     @Autowired
-    public AdService(AdRepository adRepository) {
+    public AdService(AdRepository adRepository, UserRepository userRepository) {
         this.adRepository = adRepository;
+        this.userRepository = userRepository;
     }
 
     public AdDto fetchAdDtoById(Long adId) {
@@ -37,13 +43,22 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    public void saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(AdDto adDto) {
+    public void saveAdDtoAndAddAdToUserAdList(AdDto adDto) {
+        Long adEntityId = saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(adDto);
+        UserEntity adOwner = userRepository.findById(adDto.getOwnerId()).get();//TODO: differance between .get() and adding Optional<UserEntity>
+        List<AdEntity> adEntityList = adOwner.getAdEntityList().stream().collect(Collectors.toList());
+        adEntityList.add(adRepository.getById(adEntityId));
+        adOwner.setAdEntityList(adEntityList);
+        userRepository.save(adOwner);
+    }
+
+    public Long saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(AdDto adDto) {
         AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
         setCreatedDate(adEntity);
         setModifiedDate(adEntity);
         setRefreshDate(adEntity);
         setHighlightExpirationTime(adEntity);
-        adRepository.save(adEntity);
+        return adRepository.save(adEntity).getId();
     }
 
     private void setModifiedDate(AdEntity adEntity) {
@@ -74,22 +89,27 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    //TODO: Fronted, maximum search is by 10 words.
-    public Page<AdEntity> findAllActiveByAdSearchRequest(String searchText, City city, AdCategory category, PriceRange priceRange, PageRequest pageRequest) {
-
-        return adRepository.findBySearchRequest(category.getCategory(), city.getCityName(), priceRange.getFrom(), priceRange.getTo(), searchText.toLowerCase(), pageRequest);
+    public Page<AdEntity> findAllActiveByAdSearchRequest(String searchText, Boolean searchInDescription, City city,
+                                                         AdCategory category, PriceRange priceRange, PageRequest pageRequest) {
+        if (searchInDescription) {
+            return adRepository.findBySearchRequest(category.getCategory(), city.getCityName(), priceRange.getFrom(),
+                    priceRange.getTo(), searchText.toLowerCase(), pageRequest);
+        } else
+            return adRepository.findBySearchRequestWithoutDescription(category.getCategory(), city.getCityName(), priceRange.getFrom(),
+                    priceRange.getTo(), searchText.toLowerCase(), pageRequest);
     }
 
-
-    public Page<AdEntity> findAllActiveByAdSearchRequestUpgraded(String searchText, City city, AdCategory category, PriceRange priceRange, PageRequest pageRequest) {
+    //TODO: Fronted, maximum search is by 10 words.
+    public Page<AdEntity> findAllActiveByAdSearchRequestUpgraded(String searchText, City city, AdCategory
+            category, PriceRange priceRange, PageRequest pageRequest) {
         String[] textsToBeSearched = searchText.toLowerCase().split(" ");
         String[] texts = new String[10];
-        if(textsToBeSearched.length<10){
-            for(int i = 0; i<textsToBeSearched.length-1; i++){
-                texts[i] = "%" + textsToBeSearched[i] +"%"  ;
+        if (textsToBeSearched.length < 10) {
+            for (int i = 0; i < textsToBeSearched.length - 1; i++) {
+                texts[i] = "%" + textsToBeSearched[i] + "%";
             }
-            for(int i = textsToBeSearched.length-1; i<10;i++){
-                texts[i] = "%" +  textsToBeSearched[textsToBeSearched.length-1] +"%"  ;
+            for (int i = textsToBeSearched.length - 1; i < 10; i++) {
+                texts[i] = "%" + textsToBeSearched[textsToBeSearched.length - 1] + "%";
             }
         }
         return adRepository.findBySearchRequestUpgraded(city.getCityName(), category.getCategory(),

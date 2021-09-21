@@ -1,5 +1,6 @@
 package com.myTrade.dto;
 
+import com.myTrade.entities.AdEntity;
 import com.myTrade.utility.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +20,7 @@ public class UserDto {
 
     private Long id;
 
-    private String userName;
+    private String username;
 
     private String password;
 
@@ -34,6 +35,8 @@ public class UserDto {
     private List<AdDto> adList = new LinkedList<>();
 
     private List<ConversationDto> conversationDtoList = new LinkedList<>();
+
+    private List<AdEntity> favouriteAdEntityList = new LinkedList<>();
 
     private Integer highlightPoint;
 }

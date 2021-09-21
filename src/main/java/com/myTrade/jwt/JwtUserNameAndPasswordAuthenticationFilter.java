@@ -37,7 +37,7 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Authentication authentication = new UsernamePasswordAuthenticationToken(loginCredentials.getUserName(), loginCredentials.getPassword());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginCredentials.getUsername(), loginCredentials.getPassword());
         return authenticationManager.authenticate(authentication);
 
         //TODO: [Q] Is it better to locate whole code in try-catch clause?

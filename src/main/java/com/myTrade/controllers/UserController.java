@@ -41,7 +41,7 @@ public class UserController {
 
     @GetMapping("/{username}")
     public UserDto fetchUserDto(@PathVariable(value = "username") String userName) {
-        return userMapper.userEntityToUserDto(userRepository.findByUserName(userName));
+        return userMapper.userEntityToUserDto(userRepository.findByUsername(userName));
     }
 
     @GetMapping("/{username}/adList")
@@ -59,14 +59,21 @@ public class UserController {
         userService.deleteUser(username);
     }
 
-    @PatchMapping("/{username}/adList/delete/{id}")
-    public void deleteAdFromAdList(@PathVariable(value = "username") String username, @PathVariable(value = "id") Long adId) {
-        userService.deleteAdFromAdList(username, adId);
+    @PatchMapping("/{username}/addToFavourite")
+    public void addAdToFavourite(@PathVariable(value = "username")String username, Long adId){
+        userService.addAdToFavourite(username,adId);
     }
 
-    @PostMapping("/{username}/adList/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addAdToAdList(@PathVariable(value = "username") String username, @RequestBody AdDto adDto) {
-        userService.addAdToAdList(username, adMapper.adDtoAdEntity(adDto));
-    }
+//    @PatchMapping("/{username}/adList/delete/{id}")
+//    public void deleteAdFromAdList(@PathVariable(value = "username") String username, @PathVariable(value = "id") Long adId) {
+//        userService.deleteAdFromAdList(username, adId);
+//    }
+//
+//    @PostMapping("/{username}/adList/add")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public void addAdToAdList(@PathVariable(value = "username") String username, @RequestBody AdDto adDto) {
+//        userService.addAdToAdList(username, adMapper.adDtoAdEntity(adDto));
+//    }
+
+
 }

@@ -40,7 +40,7 @@ public class UserServiceTest {
     public void whenUserEntityIsProvided_thenEntityShouldBeSaved() {
         //given
         UserEntity user = new UserEntity();
-        user.setUserName("xxx");
+        user.setUsername("xxx");
         user.setPassword("uniquePassword");
         user.setEmail("axxc");
         user.setAvatarPath(" sd");
@@ -48,7 +48,7 @@ public class UserServiceTest {
         user.setRole(UserRole.USER);
         ///when
         userService.saveUserEntity(user);
-        UserEntity expectedEntity = userRepository.findByUserName("xxx");
+        UserEntity expectedEntity = userRepository.findByUsername("xxx");
         //then
         assertThat(expectedEntity).isNotNull();
     }
@@ -74,7 +74,7 @@ public class UserServiceTest {
         ad.setIsActive(Boolean.TRUE);
         //when
         userService.addAdToAdList(userName, ad);
-        int actualUserAdListSize = userRepository.findByUserName(userName).getAdEntityList().size();
+        int actualUserAdListSize = userRepository.findByUsername(userName).getAdEntityList().size();
         int expectedUserAdListSize = 4;
         Long actualRepositorySize = adRepository.count();
         //then

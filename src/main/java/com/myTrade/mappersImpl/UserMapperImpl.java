@@ -3,7 +3,6 @@ package com.myTrade.mappersImpl;
 import com.myTrade.dto.UserDto;
 import com.myTrade.entities.UserEntity;
 import com.myTrade.mappers.UserMapper;
-import com.myTrade.utility.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class UserMapperImpl implements UserMapper {
         UserDto userDto = new UserDto();
 
         userDto.setId(userEntity.getId());
-        userDto.setUserName(userEntity.getUserName());
+        userDto.setUsername(userEntity.getUsername());
         userDto.setPassword(userEntity.getPassword());
         userDto.setEmail(userEntity.getEmail());
         userDto.setRole(userEntity.getRole());
@@ -62,7 +61,7 @@ public class UserMapperImpl implements UserMapper {
         UserEntity userEntity = new UserEntity();
 
         userEntity.setId(userDto.getId());
-        userEntity.setUserName(userDto.getUserName());
+        userEntity.setUsername(userDto.getUsername());
         userEntity.setPassword(userDto.getPassword());
         userEntity.setEmail(userDto.getEmail());
         userEntity.setRole(userDto.getRole());
