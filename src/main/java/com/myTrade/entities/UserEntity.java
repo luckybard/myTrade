@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @Entity
 @AllArgsConstructor
@@ -50,6 +51,9 @@ public class UserEntity {
 
     @OneToMany
     private List<AdEntity> favouriteAdEntityList = new LinkedList<>();
+
+    @OneToMany
+    private Queue<AdEntity> lastViewedAdEntityQueueList = new LinkedList<>();
 
     private Integer highlightPoint;
 }

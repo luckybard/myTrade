@@ -60,6 +60,14 @@ public class AdController {
         return adService.fetchAdDtoById(adId);
     }
 
+    @GetMapping("/fetch/{id}")
+    @PreAuthorize("hasAnyAuthority('ad:read')")
+    public AdDto fetchAd(@PathVariable(value = "id") Long adId, @PathVariable String username) {
+        adService.addAdView(adId);
+        adService.addAdEntityToLastViewedQueue(adId, username);
+        return adService.fetchAdDtoById(adId);
+    }
+
     @PatchMapping("/edit/{id}")
     @PreAuthorize("hasAnyAuthority('ad:write')")
     public void patch(@RequestBody AdDto adDto) {

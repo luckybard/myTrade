@@ -4,6 +4,7 @@ import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
 
 import java.util.List;
+import java.util.Queue;
 
 
 public interface AdMapper {
@@ -15,6 +16,11 @@ public interface AdMapper {
     AdEntity adDtoAdEntity(AdDto adDto);
 
     List<AdEntity> adDtoListToAdEntityList(List<AdDto> adDtoList);
+
+    Queue<AdDto> adEntityQueueToAdDtoQueue(Queue<AdEntity> adEntityQueue);
+
+    Queue<AdEntity> adDtoQueueToAdEntityQueue(Queue<AdDto> adDtoQueue);
+
 
 
 

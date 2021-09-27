@@ -5,7 +5,9 @@ import com.myTrade.entities.AdEntity;
 import com.myTrade.mappers.AdMapper;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class AdMapperImpl implements AdMapper {
 
@@ -83,7 +85,7 @@ public class AdMapperImpl implements AdMapper {
             return null;
         }
 
-        List<AdEntity> list = new ArrayList<AdEntity>(adDtoList.size());
+        List<AdEntity> list = new ArrayList<AdEntity>(adDtoList.size()); //TODO: [Q] Why it's important to pass size value? (it was generate via MapStruct)
         for (AdDto adDto : adDtoList) {
             list.add(adDtoAdEntity(adDto));
         }
@@ -91,4 +93,31 @@ public class AdMapperImpl implements AdMapper {
         return list;
     }
 
+    @Override
+    public Queue<AdDto> adEntityQueueToAdDtoQueue(Queue<AdEntity> adEntityQueue) { //TODO: [Q] Is it proper transformation? Will it be better to change it to list? (stream)
+        if (adEntityQueue == null) {
+            return null;
+        }
+
+        Queue<AdDto> queue = new LinkedList<AdDto>();
+        for (AdEntity adEntity : adEntityQueue) {
+            queue.add(adEntityToAdDto(adEntity));
+        }
+        return queue;
+    }
+
+    @Override
+    public Queue<AdEntity> adDtoQueueToAdEntityQueue(Queue<AdDto> adDtoQueue) {
+        if (adDtoQueue == null) {
+            return null;
+        }
+
+        Queue<AdEntity> queue = new LinkedList<AdEntity>();
+        for (AdDto adDto : adDtoQueue) {
+            queue.add(adDtoAdEntity(adDto));
+        }
+
+        return queue;
+
+    }
 }

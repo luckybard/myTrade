@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 
 @AllArgsConstructor
@@ -37,6 +38,8 @@ public class UserDto {
     private List<ConversationDto> conversationDtoList = new LinkedList<>();
 
     private List<AdEntity> favouriteAdEntityList = new LinkedList<>();
+
+    private Queue<AdDto> lastViewedAdDtoQueueList = new LinkedList<>();
 
     private Integer highlightPoint;
 }
