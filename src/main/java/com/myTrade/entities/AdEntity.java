@@ -58,6 +58,8 @@ public class AdEntity {
     @Column(nullable = false)
     private LocalDateTime refreshTime;
 
+    private Long countView;
+
     @Transient
     private Boolean isHighlighted;
 

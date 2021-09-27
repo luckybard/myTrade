@@ -89,6 +89,13 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
+    public void addAdView(Long adId){
+        AdEntity adEntity = adRepository.findById(adId).get();
+        adEntity.setCountView(adEntity.getCountView() + 1);
+        adRepository.save(adEntity);
+    }
+
+
     public Page<AdEntity> findAllActiveByAdSearchRequest(String searchText, Boolean searchInDescription, City city,
                                                          AdCategory category, PriceRange priceRange, PageRequest pageRequest) {
         if (searchInDescription) {

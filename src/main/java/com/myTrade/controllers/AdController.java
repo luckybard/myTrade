@@ -53,9 +53,10 @@ public class AdController {
                 priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageRequest.orElse(PageRequest.of(0, 25, Sort.by("refresh_time").descending())));
     }
 
-    @GetMapping("/search/{id}")
+    @GetMapping("/fetch/{id}")
     @PreAuthorize("hasAnyAuthority('ad:read')")
     public AdDto fetchAd(@PathVariable(value = "id") Long adId) {
+        adService.addAdView(adId);
         return adService.fetchAdDtoById(adId);
     }
 
