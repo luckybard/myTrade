@@ -31,6 +31,7 @@ public class AdMapperImpl implements AdMapper {
         adDto.setExpirationHighlightTime(adEntity.getExpirationHighlightTime());
         adDto.setIsHighlighted(adEntity.getIsHighlighted());
         adDto.setRefreshTime(adEntity.getRefreshTime());
+        adDto.setCountView(adEntity.getCountView());
 
         return adDto;
     }
@@ -71,6 +72,7 @@ public class AdMapperImpl implements AdMapper {
         adEntity.setExpirationHighlightTime(adDto.getExpirationHighlightTime());
         adEntity.setIsHighlighted(adDto.getIsHighlighted());
         adEntity.setRefreshTime(adDto.getRefreshTime());
+        adEntity.setCountView(adDto.getCountView());
 
         return adEntity;
     }

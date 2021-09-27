@@ -44,4 +44,5 @@ public class AdDto {
 
     private LocalDateTime refreshTime;
 
+    private Long countView;
 }
