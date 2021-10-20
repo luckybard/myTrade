@@ -34,8 +34,7 @@ public class UserMapperImpl implements UserMapper {
         userDto.setBirthDate(userEntity.getBirthDate());
         userDto.setAdList(adMapper.adEntityListToAdDtoList(userEntity.getAdEntityList()));
         userDto.setConversationDtoList(conversationMapper.conversationEntityListToConversationDtoList((userEntity.getConversationEntityList())));
-        userDto.setLastViewedAdDtoQueueList(adMapper.adEntityQueueToAdDtoQueue(userEntity.getLastViewedAdEntityQueueList()));
-
+        userDto.setLastViewedAdDtoQueueList(adMapper.adEntityListToAdDtoList(userEntity.getLastViewedAdEntityQueueList()));
         return userDto;
     }
 
@@ -70,7 +69,7 @@ public class UserMapperImpl implements UserMapper {
         userEntity.setBirthDate(userDto.getBirthDate());
         userEntity.setAdEntityList(adMapper.adDtoListToAdEntityList(userDto.getAdList()));
         userEntity.setConversationEntityList(conversationMapper.conversationDtoListToConversationEntityList(userDto.getConversationDtoList()));
-        userEntity.setLastViewedAdEntityQueueList(adMapper.adDtoQueueToAdEntityQueue(userDto.getLastViewedAdDtoQueueList()));
+        userEntity.setLastViewedAdEntityQueueList(adMapper.adDtoListToAdEntityList(userDto.getLastViewedAdDtoQueueList()));
 
         return userEntity;
     }

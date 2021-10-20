@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(path = "/ad")
 public class AdController {
 
@@ -60,13 +61,13 @@ public class AdController {
         return adService.fetchAdDtoById(adId);
     }
 
-    @GetMapping("/fetch/{id}")
-    @PreAuthorize("hasAnyAuthority('ad:read')")
-    public AdDto fetchAd(@PathVariable(value = "id") Long adId, @PathVariable String username) {
-        adService.addAdView(adId);
-        adService.addAdEntityToLastViewedQueue(adId, username);
-        return adService.fetchAdDtoById(adId);
-    }
+//    @GetMapping("/fetch/{id}")
+//    @PreAuthorize("hasAnyAuthority('ad:read')")
+//    public AdDto fetchAd(@PathVariable(value = "id") Long adId, @PathVariable String username) {
+//        adService.addAdView(adId);
+////        adService.addAdEntityToLastViewedQueue(adId, username); //TODO: to be fixed
+//        return adService.fetchAdDtoById(adId);
+//    }
 
     @PatchMapping("/edit/{id}")
     @PreAuthorize("hasAnyAuthority('ad:write')")

@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,16 +95,17 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    public void addAdEntityToLastViewedQueue(Long adId,String username){
-        UserEntity userEntity = userRepository.findByUsername(username);
-        Queue<AdEntity> adEntityQueue = userRepository.findByUsername(username).getLastViewedAdEntityQueueList();
-        if(adEntityQueue.size() > 10){
-            adEntityQueue.remove();
-        }
-        adEntityQueue.add(adRepository.findById(adId).get());
-        userEntity.setLastViewedAdEntityQueueList(adEntityQueue);
-        userRepository.save(userEntity);
-    }
+    //TODO: Fix queue! mapper, dto, entity related things
+//    public void addAdEntityToLastViewedQueue(Long adId,String username){
+//        UserEntity userEntity = userRepository.findByUsername(username);
+//        Queue<AdEntity> adEntityQueue = userRepository.findByUsername(username).getLastViewedAdEntityQueueList();
+//        if(adEntityQueue.size() > 10){
+//            adEntityQueue.remove();
+//        }
+//        adEntityQueue.add(adRepository.findById(adId).get());
+//        userEntity.setLastViewedAdEntityQueueList(adEntityQueue);
+//        userRepository.save(userEntity);
+//    }
 
 
     public Page<AdEntity> findAllActiveByAdSearchRequest(String searchText, Boolean searchInDescription, City city,

@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 @Entity
 @AllArgsConstructor
@@ -53,7 +52,7 @@ public class UserEntity {
     private List<AdEntity> favouriteAdEntityList = new LinkedList<>();
 
     @OneToMany
-    private Queue<AdEntity> lastViewedAdEntityQueueList = new LinkedList<>();
+    private List<AdEntity> lastViewedAdEntityQueueList = new LinkedList<>(); //change to LIFO queue
 
     private Integer highlightPoint;
 }
