@@ -54,6 +54,11 @@ public class AdController {
                 priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageRequest.orElse(PageRequest.of(0, 25, Sort.by("refresh_time").descending())));
     }
 
+    @GetMapping("/fetch-random")
+    public Page<AdEntity> fetchRandom(){
+        return adService.fetchRandom();
+    }
+
     @GetMapping("/fetch/{id}")
     @PreAuthorize("hasAnyAuthority('ad:read')")
     public AdDto fetchAd(@PathVariable(value = "id") Long adId) {

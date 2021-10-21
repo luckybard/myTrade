@@ -135,6 +135,10 @@ public class AdService {
                 priceRange.getFrom(), priceRange.getTo(), texts[0], texts[1], texts[2], texts[3], texts[4], texts[5],
                 texts[6], texts[7], texts[8], texts[9], pageRequest);
     }
+
+    public Page<AdEntity> fetchRandom(){
+        return adRepository.findAll(PageRequest.of(0,10));
+    }
 }
 
 
