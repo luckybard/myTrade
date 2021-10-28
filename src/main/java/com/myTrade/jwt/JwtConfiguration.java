@@ -18,4 +18,8 @@ public class JwtConfiguration {
     public String getAuthorizationHeader(){
         return HttpHeaders.AUTHORIZATION;
     }
+
+    public String getRefreshHeader(){
+        return HttpHeaders.REFRESH;
+    }
 }

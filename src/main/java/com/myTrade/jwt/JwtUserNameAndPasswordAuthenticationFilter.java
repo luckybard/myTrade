@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 
 public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -46,14 +45,25 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-        String token = Jwts.builder()
+
+        //TODO: Add different
+
+        String authToken = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
-                .setIssuedAt(new Date())
+//                .setIssuedAt(new Date())   //TODO:Unnecessary param?
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationAfterDays())))
                 .signWith(secretKey)
                 .compact();
 
-        response.addHeader(jwtConfiguration.getAuthorizationHeader(), jwtConfiguration.getTokenPrefix() + token);
+        String refreshToken = Jwts.builder()
+                .setSubject(authResult.getName())
+//              .setIssuedAt(new Date())
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationAfterDays())))
+                .signWith(secretKey)
+                .compact();
+
+        response.addHeader(jwtConfiguration.getAuthorizationHeader(), jwtConfiguration.getTokenPrefix() + authToken);
+        response.addHeader(jwtConfiguration.getRefreshHeader(), jwtConfiguration.getTokenPrefix() + refreshToken);
     }
 }
