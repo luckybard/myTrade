@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @RestController
 @RequestMapping(path = "/ad")
 public class AdController {
@@ -54,9 +56,12 @@ public class AdController {
     }
 
     @GetMapping("/fetch-random")
-    public Page<AdEntity> fetchRandom(){
+    public Page<AdEntity> fetchRandom(@CookieValue(value = "authToken") String authToken){
+        System.out.println(authToken);
         return adService.fetchRandom();
     }
+
+
 
     @GetMapping("/fetch/{id}")
     @PreAuthorize("hasAnyAuthority('ad:read')")
@@ -73,10 +78,17 @@ public class AdController {
 //        return adService.fetchAdDtoById(adId);
 //    }
 
-    @PatchMapping("/edit/{id}")
+    @GetMapping("/edit/fetch/{id}")
     @PreAuthorize("hasAnyAuthority('ad:write')")
-    public void patch(@RequestBody AdDto adDto) {
-        adService.patchAdDto(adDto);
+    public AdDto fetchAdForEdit(@PathVariable(value = "id") Long adId) {
+        return adService.fetchAdDtoById(adId);
+    }
+
+    @PatchMapping("/edit/patch/{id}")
+    @PreAuthorize("hasAnyAuthority('ad:write')")
+    public void patch(@RequestHeader(AUTHORIZATION)String authorizationHeader,@RequestBody AdDto adDto) {
+        System.out.println(authorizationHeader);
+        adService.patchAdDto(adDto, authorizationHeader);
     }
 
     @PatchMapping("/{id}/refresh")

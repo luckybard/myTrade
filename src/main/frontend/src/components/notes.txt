@@ -1,0 +1,31 @@
+https://fonts.google.com/specimen/Andada+Pro
+font-family: 'Andada Pro', serif;
+
+
+-----------------------------------------------------------Pobieranie danych----------------------------------------------------
+
+  const [ads, setAds] = useState([]);
+
+  const encodedValue = encodeURIComponent('%watch%');
+  function fetchAdsByRequestParams(){
+    fetch(`http://localhost:8080/ad/search?searchText=${encodedValue}`).then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      setAds(data.content)
+    })
+  }
+  fetchAdsByRequestParams();
+
+
+  --------------------------------------------------------------------------------------------------------------------------------
+
+
+  Do not store the token in localStorage, the token can be compromised using xss attack. I think the best solution will
+   be to provide both access token and refresh token to the client on login action. save the access token in memory (e.g redux state) 
+   and the refresh token should be created on the server with httpOnly flag (and also secure flag if possible). 
+   The access token should be set to expire every 2-3 minutes. In order to make sure that the user will not have to enter his credentials 
+   every 2-3 minutes I have an interval which calls the /refreshToken endpoint before the current token expires (silent refresh token).
+
+that way, the access token cannot be compromised using xss/csrf. but using an xss attack, the attacker can make a call on your behalf to the /refreshToken endpoint,
+ but this will not be harmful because the returned token cannot be compromised.

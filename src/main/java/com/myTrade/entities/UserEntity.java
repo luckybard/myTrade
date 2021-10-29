@@ -24,22 +24,20 @@ public class UserEntity {
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
     private String avatarPath = "default/path";
 
-    @Column(nullable = false)
     private LocalDate birthDate;
 
     @OneToMany

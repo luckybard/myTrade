@@ -3,12 +3,17 @@ package com.myTrade.services;
 import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.entities.UserEntity;
+import com.myTrade.jwt.JwtConfiguration;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
 import com.myTrade.utility.AdCategory;
 import com.myTrade.utility.City;
 import com.myTrade.utility.PriceRange;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,22 +30,44 @@ public class AdService {
 
     private AdRepository adRepository;
     private UserRepository userRepository;
+    private JwtConfiguration jwtConfiguration;
     private final AdMapperImpl adMapper = new AdMapperImpl();
 
     @Autowired
-    public AdService(AdRepository adRepository, UserRepository userRepository) {
+    public AdService(AdRepository adRepository, UserRepository userRepository, JwtConfiguration jwtConfiguration) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
+        this.jwtConfiguration = jwtConfiguration;
     }
 
     public AdDto fetchAdDtoById(Long adId) {
         return adMapper.adEntityToAdDto(adRepository.getById(adId));
     }
 
-    public void patchAdDto(AdDto adDto) {
-        AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
-        setModifiedDate(adEntity);
-        adRepository.save(adEntity);
+    public void patchAdDto(AdDto adDto, String authToken) {
+        //TODO: Method to be extracted, verification each sensitive request!
+        System.out.println(authToken);
+        String token = authToken.replace(jwtConfiguration.getTokenPrefix(), "");
+        System.out.println(token);
+        try {
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(jwtConfiguration.getSecretKey())
+                    .build()
+                    .parseClaimsJws(token);
+
+            Claims claimsJwsBody = claimsJws.getBody();
+            String username = claimsJwsBody.getSubject();
+
+            System.out.println(username);
+            System.out.println(adDto.getOwnerUsername().contentEquals(username));
+            if(adDto.getOwnerUsername().contentEquals(username)) {
+                AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
+                setModifiedDate(adEntity);
+                adRepository.save(adEntity);
+            }
+        } catch (JwtException e) {
+            throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
+        }
     }
 
     public void saveAdDtoAndAddAdToUserAdList(AdDto adDto) {

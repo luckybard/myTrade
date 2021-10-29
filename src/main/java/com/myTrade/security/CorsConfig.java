@@ -14,7 +14,8 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
              registry.addMapping("/**").allowedOrigins("http://localhost:3000")
-                     .exposedHeaders("Authorization","Access-Control-Allow-Headers");
+                     .exposedHeaders("Authorization","Access-Control-Allow-Headers","Set-Cookie","Cookie","Access-Control-Allow-Credentials")
+                     .allowCredentials(true);
             }
         };
     }
