@@ -17,6 +17,7 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -136,13 +137,13 @@ public class AdService {
 
 
     public Page<AdEntity> findAllActiveByAdSearchRequest(String searchText, Boolean searchInDescription, City city,
-                                                         AdCategory category, PriceRange priceRange, PageRequest pageRequest) {
+                                                         AdCategory category, PriceRange priceRange, Integer pageNumber, Integer pageSize) {
         if (searchInDescription) {
             return adRepository.findBySearchRequest(category.getCategory(), city.getCityName(), priceRange.getFrom(),
-                    priceRange.getTo(), searchText.toLowerCase(), pageRequest);
+                    priceRange.getTo(), searchText.toLowerCase(), PageRequest.of(pageNumber, pageSize, Sort.by("refresh_time").descending()));
         } else
             return adRepository.findBySearchRequestWithoutDescription(category.getCategory(), city.getCityName(), priceRange.getFrom(),
-                    priceRange.getTo(), searchText.toLowerCase(), pageRequest);
+                    priceRange.getTo(), searchText.toLowerCase(), PageRequest.of(pageNumber, pageSize, Sort.by("refresh_time").descending()));
     }
 
     //TODO: Fronted, maximum search is by 10 words.

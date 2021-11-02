@@ -42,9 +42,10 @@ public class AdController {
     @GetMapping("/search")
     public Page<AdEntity> search(@RequestParam String searchText, @RequestParam Optional<Boolean> searchInDescription, @RequestParam Optional<City> city,
                                  @RequestParam Optional<AdCategory> category, @RequestParam Optional<PriceRange> priceRange,
-                                 @RequestParam Optional<PageRequest> pageRequest) {
+                                 @RequestParam Optional<Integer> pageNumber,@RequestParam Optional<Integer> pageSize ) {
+        System.out.println(searchText);
         return adService.findAllActiveByAdSearchRequest(searchText,searchInDescription.orElse(false), city.orElse(City.EVERYWHERE), category.orElse(AdCategory.ALL),
-                priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageRequest.orElse(PageRequest.of(0, 25, Sort.by("refresh_time").descending())));
+                priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageNumber.orElse(0), pageSize.orElse(10));
     }
 
     @GetMapping("/searchUpgraded")
