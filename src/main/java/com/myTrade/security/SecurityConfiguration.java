@@ -2,6 +2,7 @@ package com.myTrade.security;
 
 
 import com.myTrade.jwt.JwtConfiguration;
+import com.myTrade.jwt.JwtSecretKey;
 import com.myTrade.jwt.JwtTokenVerifier;
 import com.myTrade.jwt.JwtUserNameAndPasswordAuthenticationFilter;
 import com.myTrade.services.UserDetailsServiceImpl;
@@ -17,8 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.crypto.SecretKey;
-
 
 // TODO:SLF4J
 
@@ -29,15 +28,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
-    private final SecretKey secretKey;
+    private final JwtSecretKey jwtSecretKey;
     private final JwtConfiguration jwtConfiguration;
 
 
     @Autowired
-    public SecurityConfiguration(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder passwordEncoder, SecretKey secretKey, JwtConfiguration jwtConfiguration) {
+    public SecurityConfiguration(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder passwordEncoder, JwtSecretKey jwtSecretKey, JwtConfiguration jwtConfiguration) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
-        this.secretKey = secretKey;
+        this.jwtSecretKey = jwtSecretKey;
         this.jwtConfiguration = jwtConfiguration;
     }
 //    @Bean
@@ -60,14 +59,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and()
+              .cors().and()
                 .httpBasic()
                 .and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfiguration, secretKey))
-                .addFilterAfter(new JwtTokenVerifier(secretKey,jwtConfiguration), JwtUserNameAndPasswordAuthenticationFilter.class)
+                .addFilter(new JwtUserNameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfiguration, jwtSecretKey))
+                .addFilterAfter(new JwtTokenVerifier(jwtConfiguration, jwtSecretKey), JwtUserNameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .anyRequest()
                 .permitAll();
@@ -87,7 +86,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(userDetailsServiceImpl);
         return provider;
     }
-
-
-
 }

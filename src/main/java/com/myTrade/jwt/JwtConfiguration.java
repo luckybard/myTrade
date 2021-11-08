@@ -13,6 +13,7 @@ public class JwtConfiguration {
 
     private String secretKey;
     private String tokenPrefix;
+    private String authTokenPrefixCookie;
     private Integer tokenExpirationAfterDays;
 
     public String getAuthorizationHeader(){
@@ -21,5 +22,9 @@ public class JwtConfiguration {
 
     public String getRefreshHeader(){
         return HttpHeaders.REFRESH;
+    }
+
+    public String getCookieHeader(){
+        return HttpHeaders.COOKIE;
     }
 }
