@@ -39,22 +39,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.jwtSecretKey = jwtSecretKey;
         this.jwtConfiguration = jwtConfiguration;
     }
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user = User.builder()
-//                .username("user")
-//                .password(passwordEncoder.encode("password"))
-//                .roles("USER")
-//                .build();
-//
-//        UserDetails admin = User.builder()
-//                .username("admin")
-//                .password(passwordEncoder.encode("password"))
-//                .roles("ADMIN")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(user, admin);
-//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -69,8 +53,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(new JwtTokenVerifier(jwtConfiguration, jwtSecretKey), JwtUserNameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .anyRequest()
-                .permitAll();
-
+                .permitAll()
+                .and()
+                .logout()
+                .clearAuthentication(true)
+                .deleteCookies("authToken");
     }
 
     @Override

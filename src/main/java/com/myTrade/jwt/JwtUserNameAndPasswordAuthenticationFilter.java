@@ -47,19 +47,10 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
 
-
-
-
         String authToken = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
 //                .setIssuedAt(new Date())   //TODO:[Q] Unnecessary param?
-                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationAfterDays())))
-                .signWith(jwtSecretKey.secretKey())
-                .compact();
-
-        String refreshToken = Jwts.builder()
-                .setSubject(authResult.getName())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationAfterDays())))
                 .signWith(jwtSecretKey.secretKey())
                 .compact();
@@ -69,13 +60,9 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
         authCookie.setSecure(true);
         authCookie.setHttpOnly(true);
 
-        Cookie refreshCookie = new Cookie("refreshToken", refreshToken ); //TODO[Q] Do i need refreshToken? (while i'm storing authToken in httpOnly)
-        refreshCookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-        refreshCookie.setSecure(true);
-        refreshCookie.setHttpOnly(true);
-
         response.addCookie(authCookie);
-        response.addCookie(refreshCookie);
         response.addHeader(HttpHeaders.AUTHORIZATION, authResult.getName()); //TODO:[Q] How to send username to webpage? (for context purpose)
     }
+
+    
 }

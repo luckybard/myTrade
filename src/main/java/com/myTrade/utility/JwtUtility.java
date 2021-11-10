@@ -29,8 +29,6 @@ public class JwtUtility {
 
     public String prepareAuthToken(String authorizationCookie) {
         String token = authorizationCookie.replace(jwtConfiguration.getAuthTokenPrefixCookie(), "");
-        int semiColonIndex = token.indexOf(";");
-        token = token.substring(0, semiColonIndex);
         return token;
     }
 
