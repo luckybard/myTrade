@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class AdDto {
-
-    private Long id;
+                            //TODO: [Q]Which values should be forbidden?
+    private Long id; //X add extra id just for frontend?
 
     private String ownerUsername;
 
@@ -38,11 +38,13 @@ public class AdDto {
 
     private Boolean isActive;
 
-    private LocalDateTime expirationHighlightTime;
+//  private LocalDateTime expirationHighlightTime;
 
     private Boolean isHighlighted;
 
-    private LocalDateTime refreshTime;
+    private LocalDateTime refreshTime; //X pass only boolean information about it?
 
     private Long countView;
+
+    private Boolean isUserFavourite;
 }

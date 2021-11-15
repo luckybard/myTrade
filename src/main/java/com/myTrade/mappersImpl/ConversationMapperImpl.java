@@ -26,8 +26,8 @@ public class ConversationMapperImpl implements ConversationMapper {
         ConversationDto conversationDto = new ConversationDto();
 
         conversationDto.setId(conversationEntity.getId());
-        conversationDto.setSenderId(conversationEntity.getSenderId());
-        conversationDto.setRecipientId(conversationEntity.getRecipientId());
+        conversationDto.setSenderUsername(conversationEntity.getSenderUsername());
+        conversationDto.setRecipientUsername(conversationEntity.getRecipientUsername());
         conversationDto.setTitle(conversationEntity.getTitle());
         conversationDto.setMessageDtoList(messageMapper.messageEntityListToMessageDtoList(conversationEntity.getMessageList()));
 
@@ -57,8 +57,8 @@ public class ConversationMapperImpl implements ConversationMapper {
         ConversationEntity conversationEntity = new ConversationEntity();
 
         conversationEntity.setId(conversationDto.getId());
-        conversationEntity.setSenderId(conversationDto.getSenderId());
-        conversationEntity.setRecipientId(conversationDto.getRecipientId());
+        conversationEntity.setSenderUsername(conversationDto.getSenderUsername());
+        conversationEntity.setRecipientUsername(conversationDto.getRecipientUsername());
         conversationEntity.setTitle(conversationDto.getTitle());
         conversationEntity.setMessageList(messageMapper.messageDtoListToMessageEntityList(conversationDto.getMessageDtoList()));
 

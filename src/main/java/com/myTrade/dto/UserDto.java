@@ -17,8 +17,8 @@ import java.util.List;
 @Data
 @Builder
 public class UserDto {
-
-    private Long id;
+    //TODO: [Q] Unnecessary class? && mapper
+    private Long id; //x
 
     private String username;
 
@@ -30,7 +30,7 @@ public class UserDto {
 
     private String avatarPath = "default/path";
 
-    private LocalDate birthDate;
+    private LocalDate birthDate; //x sensitive
     //TODO: [Q] Why after registering new user, relation tables didn't create fields with new relation mapping? Check if new ad will fix it...
     private List<AdDto> adList = new LinkedList<>();
 
@@ -40,5 +40,5 @@ public class UserDto {
 
     private List<AdDto> lastViewedAdDtoQueueList = new LinkedList<>(); //change to LIFO queue
 
-    private Integer highlightPoint;
+    private Integer highlightPoint; //x useless
 }

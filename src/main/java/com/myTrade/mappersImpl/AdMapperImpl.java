@@ -5,9 +5,7 @@ import com.myTrade.entities.AdEntity;
 import com.myTrade.mappers.AdMapper;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class AdMapperImpl implements AdMapper {
 
@@ -30,10 +28,11 @@ public class AdMapperImpl implements AdMapper {
         adDto.setCreatedDateTime(adEntity.getCreatedDateTime());
         adDto.setModifiedDateTime(adEntity.getModifiedDateTime());
         adDto.setIsActive(adEntity.getIsActive());
-        adDto.setExpirationHighlightTime(adEntity.getExpirationHighlightTime());
+//      adDto.setExpirationHighlightTime(adEntity.getExpirationHighlightTime());
         adDto.setIsHighlighted(adEntity.getIsHighlighted());
         adDto.setRefreshTime(adEntity.getRefreshTime());
         adDto.setCountView(adEntity.getCountView());
+        adDto.setIsUserFavourite(adEntity.getIsUserFavourite());
 
         return adDto;
     }
@@ -71,10 +70,11 @@ public class AdMapperImpl implements AdMapper {
         adEntity.setCreatedDateTime(adDto.getCreatedDateTime());
         adEntity.setModifiedDateTime(adDto.getModifiedDateTime());
         adEntity.setIsActive(adDto.getIsActive());
-        adEntity.setExpirationHighlightTime(adDto.getExpirationHighlightTime());
+//      adEntity.setExpirationHighlightTime(adDto.getExpirationHighlightTime());
         adEntity.setIsHighlighted(adDto.getIsHighlighted());
         adEntity.setRefreshTime(adDto.getRefreshTime());
         adEntity.setCountView(adDto.getCountView());
+        adEntity.setIsUserFavourite(adDto.getIsUserFavourite());
 
         return adEntity;
     }
@@ -91,33 +91,5 @@ public class AdMapperImpl implements AdMapper {
         }
 
         return list;
-    }
-
-    @Override
-    public Queue<AdDto> adEntityQueueToAdDtoQueue(Queue<AdEntity> adEntityQueue) { //TODO: [Q] Is it proper transformation? Will it be better to change it to list? (stream)
-        if (adEntityQueue == null) {
-            return null;
-        }
-
-        Queue<AdDto> queue = new LinkedList<AdDto>();
-        for (AdEntity adEntity : adEntityQueue) {
-            queue.add(adEntityToAdDto(adEntity));
-        }
-        return queue;
-    }
-
-    @Override
-    public Queue<AdEntity> adDtoQueueToAdEntityQueue(Queue<AdDto> adDtoQueue) {
-        if (adDtoQueue == null) {
-            return null;
-        }
-
-        Queue<AdEntity> queue = new LinkedList<AdEntity>();
-        for (AdDto adDto : adDtoQueue) {
-            queue.add(adDtoAdEntity(adDto));
-        }
-
-        return queue;
-
     }
 }

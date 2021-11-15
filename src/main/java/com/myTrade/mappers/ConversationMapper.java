@@ -8,9 +8,6 @@ import java.util.List;
 
 
 public interface ConversationMapper {
-
-//    ConversationMapper INSTANCE = Mappers.getMapper(ConversationMapper.class);
-
     ConversationDto conversationEntityToConversationDto(ConversationEntity conversationEntity);
 
     List<ConversationDto> conversationEntityListToConversationDtoList(List<ConversationEntity> conversationEntityList);

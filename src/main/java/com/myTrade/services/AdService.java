@@ -3,21 +3,17 @@ package com.myTrade.services;
 import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.entities.UserEntity;
-import com.myTrade.jwt.JwtConfiguration;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
 import com.myTrade.utility.AdCategory;
 import com.myTrade.utility.City;
 import com.myTrade.utility.PriceRange;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,49 +27,41 @@ public class AdService {
 
     private AdRepository adRepository;
     private UserRepository userRepository;
-    private JwtConfiguration jwtConfiguration;
     private final AdMapperImpl adMapper = new AdMapperImpl();
 
     @Autowired
-    public AdService(AdRepository adRepository, UserRepository userRepository, JwtConfiguration jwtConfiguration) {
+    public AdService(AdRepository adRepository, UserRepository userRepository) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
-        this.jwtConfiguration = jwtConfiguration;
     }
 
     public AdDto fetchAdDtoById(Long adId) {
-        return adMapper.adEntityToAdDto(adRepository.getById(adId));
+        return adMapper.adEntityToAdDto(setIsUserFavouriteAd(adRepository.getById(adId)));
     }
 
-    public void patchAdDto(AdDto adDto, String authToken) {
-        //TODO: Method to be extracted, verification each sensitive request!
-        System.out.println(authToken);
-        String token = authToken.replace(jwtConfiguration.getTokenPrefix(), "");
-        System.out.println(token);
-        try {
-            Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(jwtConfiguration.getSecretKey())
-                    .build()
-                    .parseClaimsJws(token);
-
-            Claims claimsJwsBody = claimsJws.getBody();
-            String username = claimsJwsBody.getSubject();
-
-            System.out.println(username);
-            System.out.println(adDto.getOwnerUsername().contentEquals(username));
-            if(adDto.getOwnerUsername().contentEquals(username)) {
-                AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
-                setModifiedDate(adEntity);
-                adRepository.save(adEntity);
-            }
-        } catch (JwtException e) {
-            throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
+    public AdDto fetchAdForEdit(Long adId) {
+        AdDto fetchedAdDto = adMapper.adEntityToAdDto(setIsUserFavouriteAd(adRepository.getById(adId)));
+        if(fetchedAdDto.getOwnerUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())){
+            return fetchedAdDto;
         }
+        else return null; //TODO: [Q] How about to add exception here about unauthorized user? Or response status 401?
     }
 
+    public void patchAdDto(AdDto adDto) { //TODO: [Q] How to properly updateEntity
+        AdEntity toBeSaved = adRepository.findById(adDto.getId()).get();
+        toBeSaved.setTitle(adDto.getTitle());
+        toBeSaved.setDescription(adDto.getDescription());
+        toBeSaved.setPrice(adDto.getPrice());
+        toBeSaved.setAdCategory(adDto.getAdCategory());
+        setModifiedDate(toBeSaved);
+        adRepository.save(toBeSaved);
+    }
+
+    //TODO: Change process of creating ad
     public void saveAdDtoAndAddAdToUserAdList(AdDto adDto) {
         Long adEntityId = saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(adDto);
-        UserEntity adOwner = userRepository.findByUsername(adDto.getOwnerUsername());//TODO: differance between .get() and adding Optional<UserEntity>
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity adOwner = userRepository.findByUsername(username);//TODO: [Q] Differance between .get() and adding Optional<UserEntity>
         List<AdEntity> adEntityList = adOwner.getAdEntityList().stream().collect(Collectors.toList());
         adEntityList.add(adRepository.getById(adEntityId));
         adOwner.setAdEntityList(adEntityList);
@@ -81,15 +69,19 @@ public class AdService {
     }
 
     public Long saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(AdDto adDto) {
-        AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
+        AdEntity adEntity = adMapper.adDtoAdEntity(adDto); //TODO:[Q] Better to save AdDto via upper method with (cascade = {CascadeType.ALL})
         setCreatedDate(adEntity);
         setModifiedDate(adEntity);
         setRefreshDate(adEntity);
         setHighlightExpirationTime(adEntity);
+        adEntity.setIsActive(true);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        adEntity.setOwnerUsername(username);
+
         return adRepository.save(adEntity).getId();
     }
 
-    private void setModifiedDate(AdEntity adEntity) {
+    private void setModifiedDate(AdEntity adEntity) { //TODO:[Q] Should these methods be extract to other classes as utility?
         adEntity.setModifiedDateTime(LocalDateTime.now());
     }
 
@@ -109,6 +101,7 @@ public class AdService {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setExpirationHighlightTime(LocalDateTime.now().plusMinutes(5));
         adRepository.save(adEntity);
+        //        userService.deductHighlightPoint();    //TODO:Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch? @Transactional
     }
 
     public void refreshAd(Long adId) {
@@ -117,13 +110,13 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    public void addAdView(Long adId){
+    public void addAdView(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setCountView(adEntity.getCountView() + 1);
         adRepository.save(adEntity);
     }
 
-    //TODO: Fix queue! mapper, dto, entity related things
+    //TODO: LastViewed (Lately Fetched Ads, limit to 20), form of queue?
 //    public void addAdEntityToLastViewedQueue(Long adId,String username){
 //        UserEntity userEntity = userRepository.findByUsername(username);
 //        Queue<AdEntity> adEntityQueue = userRepository.findByUsername(username).getLastViewedAdEntityQueueList();
@@ -136,36 +129,65 @@ public class AdService {
 //    }
 
 
-    public Page<AdEntity> findAllActiveByAdSearchRequest(String searchText, Boolean searchInDescription, City city,
-                                                         AdCategory category, PriceRange priceRange, Integer pageNumber, Integer pageSize) {
+    public Page<AdDto> findAllActiveByAdSearchRequest(String searchText, Boolean searchInDescription, City city,
+                                                      AdCategory category, PriceRange priceRange, Integer pageNumber, Integer pageSize) {
+        Page<AdEntity> adEntityPage = null;
         if (searchInDescription) {
-            return adRepository.findBySearchRequest(category.getCategory(), city.getCityName(), priceRange.getFrom(),
+            adEntityPage = adRepository.findBySearchRequest(category.getCategory(), city.getCityName(), priceRange.getFrom(),
                     priceRange.getTo(), searchText.toLowerCase(), PageRequest.of(pageNumber, pageSize, Sort.by("refresh_time").descending()));
-        } else
-            return adRepository.findBySearchRequestWithoutDescription(category.getCategory(), city.getCityName(), priceRange.getFrom(),
+        } else {
+            adEntityPage = adRepository.findBySearchRequestWithoutDescription(category.getCategory(), city.getCityName(), priceRange.getFrom(),
                     priceRange.getTo(), searchText.toLowerCase(), PageRequest.of(pageNumber, pageSize, Sort.by("refresh_time").descending()));
+        }
+        setIsUserFavouriteAds(adEntityPage);
+        return adEntityPage.map(adEntity -> adMapper.adEntityToAdDto(adEntity));
     }
 
-    //TODO: Fronted, maximum search is by 10 words.
-    public Page<AdEntity> findAllActiveByAdSearchRequestUpgraded(String searchText, City city, AdCategory
-            category, PriceRange priceRange, PageRequest pageRequest) {
-        String[] textsToBeSearched = searchText.toLowerCase().split(" ");
-        String[] texts = new String[10];
-        if (textsToBeSearched.length < 10) {
-            for (int i = 0; i < textsToBeSearched.length - 1; i++) {
-                texts[i] = "%" + textsToBeSearched[i] + "%";
-            }
-            for (int i = textsToBeSearched.length - 1; i < 10; i++) {
-                texts[i] = "%" + textsToBeSearched[textsToBeSearched.length - 1] + "%";
+//    //TODO: Fronted, maximum search is by 10 words.
+//    public Page<AdDto> findAllActiveByAdSearchRequestUpgraded(String searchText, City city, AdCategory
+//            category, PriceRange priceRange, PageRequest pageRequest) {
+//        String[] textsToBeSearched = searchText.toLowerCase().split(" ");
+//        String[] texts = new String[10];
+//        if (textsToBeSearched.length < 10) {
+//            for (int i = 0; i < textsToBeSearched.length - 1; i++) {
+//                texts[i] = "%" + textsToBeSearched[i] + "%";
+//            }
+//            for (int i = textsToBeSearched.length - 1; i < 10; i++) {
+//                texts[i] = "%" + textsToBeSearched[textsToBeSearched.length - 1] + "%";
+//            }
+//        }
+//        Page<AdEntity> adEntityPage = adRepository.findBySearchRequestUpgraded(city.getCityName(), category.getCategory(),
+//                priceRange.getFrom(), priceRange.getTo(), texts[0], texts[1], texts[2], texts[3], texts[4], texts[5],
+//                texts[6], texts[7], texts[8], texts[9], pageRequest);
+//        return adEntityPage.map(adEntity -> adMapper.adEntityToAdDto(adEntity));
+//    }
+
+    public Page<AdEntity> fetchRandom(Integer pageSize) {
+        return adRepository.findAll(PageRequest.of(0,pageSize));
+    }
+
+    public AdEntity setIsUserFavouriteAd(AdEntity adEntity){ //TODO: [Q] Extract predicate?
+        String username = "anonymousUser"; //TODO: [Q] Replace for static instance from prop?
+        if(!SecurityContextHolder.getContext().getAuthentication().getName().equalsIgnoreCase(username)){
+            username = SecurityContextHolder.getContext().getAuthentication().getName();
+            List<Long> userFavouriteAdsByAdId = userRepository.findByUsername(username).getFavouriteAdEntityList()
+                    .stream().map(ad -> ad.getId()).collect(Collectors.toList());
+            if(userFavouriteAdsByAdId.contains(adEntity.getId().longValue())) {
+                adEntity.setIsUserFavourite(true);
             }
         }
-        return adRepository.findBySearchRequestUpgraded(city.getCityName(), category.getCategory(),
-                priceRange.getFrom(), priceRange.getTo(), texts[0], texts[1], texts[2], texts[3], texts[4], texts[5],
-                texts[6], texts[7], texts[8], texts[9], pageRequest);
+        return adEntity;
     }
 
-    public Page<AdEntity> fetchRandom(){
-        return adRepository.findAll(PageRequest.of(0,10));
+    public Page<AdEntity> setIsUserFavouriteAds(Page<AdEntity> adEntityPage){
+        String username = "anonymousUser";
+        if(!SecurityContextHolder.getContext().getAuthentication().getName().equalsIgnoreCase(username)){
+            username = SecurityContextHolder.getContext().getAuthentication().getName();
+            List<Long> userFavouriteAdsByAdId = userRepository.findByUsername(username).getFavouriteAdEntityList()
+                    .stream().map(adEntity -> adEntity.getId()).collect(Collectors.toList());
+            adEntityPage.stream().filter(adEntity ->  userFavouriteAdsByAdId.contains(adEntity.getId().longValue())).forEach(adEntity -> adEntity.setIsUserFavourite(true));
+        }
+        return adEntityPage;
     }
 }
 

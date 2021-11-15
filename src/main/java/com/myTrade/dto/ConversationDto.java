@@ -19,9 +19,9 @@ public class ConversationDto {
 
     private Long id;
 
-    private Long senderId;
+    private String senderUsername;
 
-    private Long recipientId;
+    private String recipientUsername;
 
     private String title;
 

@@ -23,12 +23,12 @@ public class MessageEntity {
     private Long id;
 
     @Column(nullable = false,updatable = false)
-    private Long authorId;
+    private String authorUsername;
 
     @Column(nullable = false)
     private String text;
 
-    private String imagePath;
+    private String imagePath; //TODO: [Q] AWS for saving images? For now, just placeholder images based on adCategory
 
     @Column(nullable = false)
     private LocalDateTime dateTime;

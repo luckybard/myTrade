@@ -18,7 +18,7 @@ public class MessageMapperImpl implements MessageMapper {
         MessageDto messageDto = new MessageDto();
 
         messageDto.setId(messageEntity.getId());
-        messageDto.setAuthorId(messageEntity.getAuthorId());
+        messageDto.setAuthorUsername(messageEntity.getAuthorUsername());
         messageDto.setText(messageEntity.getText());
         messageDto.setImagePath(messageEntity.getImagePath());
         messageDto.setDateTime(messageEntity.getDateTime());
@@ -49,7 +49,7 @@ public class MessageMapperImpl implements MessageMapper {
         MessageEntity messageEntity = new MessageEntity();
 
         messageEntity.setId(messageDto.getId());
-        messageEntity.setAuthorId(messageDto.getAuthorId());
+        messageEntity.setAuthorUsername(messageDto.getAuthorUsername());
         messageEntity.setText(messageDto.getText());
         messageEntity.setImagePath(messageDto.getImagePath());
         messageEntity.setDateTime(messageDto.getDateTime());

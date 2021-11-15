@@ -18,8 +18,8 @@ public class MessageController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/save")
-    public void saveMessage(@RequestBody MessageDto messageDto){
-        messageService.saveMessage(messageDto);
+    @PostMapping("/save/{id}")
+    public void saveMessage(@RequestBody MessageDto messageDto, @PathVariable(value = "id") Long conversationId){
+        messageService.saveMessage(messageDto,conversationId);
     }
 }

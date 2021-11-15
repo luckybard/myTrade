@@ -17,7 +17,7 @@ public class MessageDto {
 
     private Long id;
 
-    private Long authorId;
+    private String authorUsername;
 
     private String text;
 

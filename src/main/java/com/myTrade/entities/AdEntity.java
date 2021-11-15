@@ -2,10 +2,7 @@ package com.myTrade.entities;
 
 
 import com.myTrade.utility.AdCategory;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -52,10 +49,8 @@ public class AdEntity {
     @Column(nullable = false)
     private Boolean isActive;
 
-    @Column(nullable = false)
     private LocalDateTime expirationHighlightTime;
 
-    @Column(nullable = false)
     private LocalDateTime refreshTime;
 
     private Long countView;
@@ -63,8 +58,11 @@ public class AdEntity {
     @Transient
     private Boolean isHighlighted;
 
+    @Transient
+    private Boolean isUserFavourite = false;
+
     @PostLoad
-    public void checkIsHighlighted(){
+    public void checkIsAdHighlighted(){
         if(expirationHighlightTime.isAfter(LocalDateTime.now())){
             setIsHighlighted(true);
         }else setIsHighlighted(false);

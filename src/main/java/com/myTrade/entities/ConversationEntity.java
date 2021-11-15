@@ -25,15 +25,15 @@ public class ConversationEntity {
     private Long id;
 
     @Column(nullable = false,updatable = false)
-    private Long senderId;
+    private String senderUsername;
 
     @Column(nullable = false,updatable = false)
-    private Long recipientId;
+    private String recipientUsername;
 
     @Column(nullable = false)
     private String title;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL}) //TODO: [Q] Should i use cascade for saving messageEntity?
     private List<MessageEntity> messageList  = new LinkedList<>();
 }
 

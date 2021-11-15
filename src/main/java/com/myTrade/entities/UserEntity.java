@@ -46,11 +46,11 @@ public class UserEntity {
     @ManyToMany
     private List<ConversationEntity> conversationEntityList = new LinkedList<>();
 
-    @OneToMany
+    @ManyToMany //TODO: [Q] java.sql.SQLIntegrityConstraintViolationException: Duplicate entry '1' for key 'user_favourite_ad_entity_list.UK_iftkoyxv2utjlvjl9ayu4nc0g' (when was OnetoMany)
     private List<AdEntity> favouriteAdEntityList = new LinkedList<>();
 
     @OneToMany
-    private List<AdEntity> lastViewedAdEntityQueueList = new LinkedList<>(); //change to LIFO queue
+    private List<AdEntity> lastViewedAdEntityQueueList = new LinkedList<>(); //TODO: Change to LIFO queue
 
     private Integer highlightPoint;
 }
