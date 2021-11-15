@@ -80,4 +80,11 @@ public class AdController {
     public void highlightAd(@PathVariable(value = "id") Long adId) {
         adService.highlightAd(adId);
     }
+
+    @PatchMapping("/active/{id}")
+    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
+    public void changeActiveStatus(@PathVariable(value = "id") Long adId){
+        adService.changeActiveStatus(adId);
+    }
+
 }

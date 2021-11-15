@@ -36,15 +36,17 @@ public class AdService {
     }
 
     public AdDto fetchAdDtoById(Long adId) {
-        return adMapper.adEntityToAdDto(setIsUserFavouriteAd(adRepository.getById(adId)));
+        AdEntity adEntity = adRepository.getById(adId);
+        addAdView(adEntity);
+        setIsUserFavouriteAd(adEntity);
+        return adMapper.adEntityToAdDto(adEntity);
     }
 
     public AdDto fetchAdForEdit(Long adId) {
         AdDto fetchedAdDto = adMapper.adEntityToAdDto(setIsUserFavouriteAd(adRepository.getById(adId)));
-        if(fetchedAdDto.getOwnerUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())){
+        if (fetchedAdDto.getOwnerUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
             return fetchedAdDto;
-        }
-        else return null; //TODO: [Q] How about to add exception here about unauthorized user? Or response status 401?
+        } else return null; //TODO: [Q] How about to add exception here about unauthorized user? Or response status 401?
     }
 
     public void patchAdDto(AdDto adDto) { //TODO: [Q] How to properly updateEntity
@@ -110,8 +112,7 @@ public class AdService {
         adRepository.save(adEntity);
     }
 
-    public void addAdView(Long adId) {
-        AdEntity adEntity = adRepository.findById(adId).get();
+    public void addAdView(AdEntity adEntity) {
         adEntity.setCountView(adEntity.getCountView() + 1);
         adRepository.save(adEntity);
     }
@@ -163,31 +164,41 @@ public class AdService {
 //    }
 
     public Page<AdEntity> fetchRandom(Integer pageSize) {
-        return adRepository.findAll(PageRequest.of(0,pageSize));
+        return adRepository.findAll(PageRequest.of(0, pageSize));
     }
 
-    public AdEntity setIsUserFavouriteAd(AdEntity adEntity){ //TODO: [Q] Extract predicate?
+    public AdEntity setIsUserFavouriteAd(AdEntity adEntity) { //TODO: [Q] Extract predicate?
         String username = "anonymousUser"; //TODO: [Q] Replace for static instance from prop?
-        if(!SecurityContextHolder.getContext().getAuthentication().getName().equalsIgnoreCase(username)){
+        if (!SecurityContextHolder.getContext().getAuthentication().getName().equalsIgnoreCase(username)) {
             username = SecurityContextHolder.getContext().getAuthentication().getName();
             List<Long> userFavouriteAdsByAdId = userRepository.findByUsername(username).getFavouriteAdEntityList()
                     .stream().map(ad -> ad.getId()).collect(Collectors.toList());
-            if(userFavouriteAdsByAdId.contains(adEntity.getId().longValue())) {
+            if (userFavouriteAdsByAdId.contains(adEntity.getId().longValue())) {
                 adEntity.setIsUserFavourite(true);
             }
         }
         return adEntity;
     }
 
-    public Page<AdEntity> setIsUserFavouriteAds(Page<AdEntity> adEntityPage){
+    public Page<AdEntity> setIsUserFavouriteAds(Page<AdEntity> adEntityPage) {
         String username = "anonymousUser";
-        if(!SecurityContextHolder.getContext().getAuthentication().getName().equalsIgnoreCase(username)){
+        if (!SecurityContextHolder.getContext().getAuthentication().getName().equalsIgnoreCase(username)) {
             username = SecurityContextHolder.getContext().getAuthentication().getName();
             List<Long> userFavouriteAdsByAdId = userRepository.findByUsername(username).getFavouriteAdEntityList()
                     .stream().map(adEntity -> adEntity.getId()).collect(Collectors.toList());
-            adEntityPage.stream().filter(adEntity ->  userFavouriteAdsByAdId.contains(adEntity.getId().longValue())).forEach(adEntity -> adEntity.setIsUserFavourite(true));
+            adEntityPage.stream().filter(adEntity -> userFavouriteAdsByAdId.contains(adEntity.getId().longValue())).forEach(adEntity -> adEntity.setIsUserFavourite(true));
         }
         return adEntityPage;
+    }
+
+    public void changeActiveStatus(Long adId) {
+        AdEntity adEntity = adRepository.findById(adId).get();
+        if (adEntity.getIsActive()) {
+            adEntity.setIsActive(false);
+        } else {
+            adEntity.setIsActive(true);
+        }
+        adRepository.save(adEntity);
     }
 }
 
