@@ -27,14 +27,13 @@ public class AdService {
 
     private AdRepository adRepository;
     private UserRepository userRepository;
-    private UserService userService;
     private final AdMapperImpl adMapper = new AdMapperImpl();
 
     @Autowired
-    public AdService(AdRepository adRepository, UserRepository userRepository, UserService userService) {
+    public AdService(AdRepository adRepository, UserRepository userRepository) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
-        this.userService = userService;
+
     }
 
     public AdDto fetchAdDtoById(Long adId) {
@@ -113,7 +112,16 @@ public class AdService {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setExpirationHighlightTime(LocalDateTime.now().plusDays(1));
         adRepository.save(adEntity);
-        userService.deductHighlightPoint();    //TODO:[Q]Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch? @Transactional
+        deductHighlightPoint();    //TODO:[Q]Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch? @Transactional
+    }
+    private void deductHighlightPoint() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity userEntity = userRepository.findByUsername(username);
+        int userHighlightPoints = userEntity.getHighlightPoint();
+        if(userHighlightPoints > 0) {
+            userEntity.setHighlightPoint(--userHighlightPoints);
+        }else throw new RuntimeException(); //TODO:[Q] How to send exception to frontend?
+        userRepository.save(userEntity);
     }
 
     public void refreshAd(Long adId) {

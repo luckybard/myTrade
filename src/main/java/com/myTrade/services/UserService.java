@@ -50,15 +50,7 @@ public class UserService {
         userRepository.delete(userRepository.findByUsername(username));
     }
 
-    public void deductHighlightPoint() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity userEntity = userRepository.findByUsername(username);
-        int userHighlightPoints = userEntity.getHighlightPoint();
-        if(userHighlightPoints > 0) {
-            userEntity.setHighlightPoint(--userHighlightPoints);
-        }else throw new RuntimeException(); //TODO:[Q] How to send exception to frontend?
-        userRepository.save(userEntity);
-    }
+
 
     public void addOrRemoveFromFavouriteList(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get(); //TODO:[Q] Better Optional?
