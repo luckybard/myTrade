@@ -1,22 +1,34 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 
 const AuthContext = React.createContext({
-  username: '',
+  username: "",
   isLoggedIn: false,
   login: (username) => {},
   logout: () => {},
 });
 
+const retrieveStoredUsername = () => {
+  const storedUsername = localStorage.getItem("username");
+  return { username: storedUsername };
+};
+
 export const AuthContextProvider = (props) => {
-  const [username, setUsername] = useState('');
+  const usernameData = retrieveStoredUsername();
+  let initialUsername;
+  if(usernameData){
+    initialUsername = usernameData.username;
+  }
+  const [username, setUsername] = useState(initialUsername);
   const userIsLoggedIn = !!username;
 
-  const logoutHandler = () => {
+  const logoutHandler = useCallback(() => {
     setUsername(null);
-  }
+    localStorage.removeItem("username", username);
+  }, []);
 
   const loginHandler = (username) => {
     setUsername(username);
+    localStorage.setItem("username", username);
   };
 
   const contextValue = {
