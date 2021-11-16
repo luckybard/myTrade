@@ -61,10 +61,21 @@ public class AdEntity {
     @Transient
     private Boolean isUserFavourite = false;
 
+    @Transient
+    private Boolean isRefreshable;
+
+    @Transient
+    Boolean isHighlightable = false; //TODO: [Q] Name should be change, similar to isHighlighted. Create UserAdDto is good idea? For edit purpose?
+
     @PostLoad
-    public void checkIsAdHighlighted(){
+    public void postLoad(){
         if(expirationHighlightTime.isAfter(LocalDateTime.now())){
             setIsHighlighted(true);
         }else setIsHighlighted(false);
+        if(refreshTime.plusWeeks(1).isAfter(LocalDateTime.now())){
+            setIsRefreshable(true);
+        }else setIsRefreshable(false);
+
+
     }
 }

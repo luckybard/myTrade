@@ -54,7 +54,9 @@ public class UserService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity userEntity = userRepository.findByUsername(username);
         int userHighlightPoints = userEntity.getHighlightPoint();
-        userEntity.setHighlightPoint(--userHighlightPoints);
+        if(userHighlightPoints > 0) {
+            userEntity.setHighlightPoint(--userHighlightPoints);
+        }else throw new RuntimeException(); //TODO:[Q] How to send exception to frontend?
         userRepository.save(userEntity);
     }
 

@@ -27,12 +27,14 @@ public class AdService {
 
     private AdRepository adRepository;
     private UserRepository userRepository;
+    private UserService userService;
     private final AdMapperImpl adMapper = new AdMapperImpl();
 
     @Autowired
-    public AdService(AdRepository adRepository, UserRepository userRepository) {
+    public AdService(AdRepository adRepository, UserRepository userRepository, UserService userService) {
         this.adRepository = adRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public AdDto fetchAdDtoById(Long adId) {
@@ -43,10 +45,18 @@ public class AdService {
     }
 
     public AdDto fetchAdForEdit(Long adId) {
-        AdDto fetchedAdDto = adMapper.adEntityToAdDto(setIsUserFavouriteAd(adRepository.getById(adId)));
-        if (fetchedAdDto.getOwnerUsername().equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
-            return fetchedAdDto;
+        AdEntity adEntity = adRepository.getById(adId);
+        UserEntity userEntity = userRepository.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (adEntity.getOwnerUsername().equals(userEntity.getUsername())) {
+           checkIsHighlightable(adEntity,userEntity);
+            return adMapper.adEntityToAdDto(adEntity);
         } else return null; //TODO: [Q] How about to add exception here about unauthorized user? Or response status 401?
+    }
+
+    private void checkIsHighlightable(AdEntity adEntity, UserEntity userEntity) {
+        if(!adEntity.getIsHighlighted() && userEntity.getHighlightPoint() > 0){
+            adEntity.setIsHighlightable(true);
+        }
     }
 
     public void patchAdDto(AdDto adDto) { //TODO: [Q] How to properly updateEntity
@@ -101,9 +111,9 @@ public class AdService {
 
     public void highlightAd(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
-        adEntity.setExpirationHighlightTime(LocalDateTime.now().plusMinutes(5));
+        adEntity.setExpirationHighlightTime(LocalDateTime.now().plusDays(1));
         adRepository.save(adEntity);
-        //        userService.deductHighlightPoint();    //TODO:Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch? @Transactional
+        userService.deductHighlightPoint();    //TODO:[Q]Is it possible to make transaction like in hibernate, to have confidence that whole code has been completed, try-catch? @Transactional
     }
 
     public void refreshAd(Long adId) {
