@@ -42,9 +42,13 @@ public class AdDto {
 
     private Boolean isHighlighted;
 
-    private LocalDateTime refreshTime; //X pass only boolean information about it?
+//    private LocalDateTime refreshTime; //X pass only boolean information about it?
 
     private Long countView;
 
     private Boolean isUserFavourite;
+
+    private Boolean isRefreshable;
+
+    private Boolean isHighlightable;
 }

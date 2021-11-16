@@ -30,9 +30,11 @@ public class AdMapperImpl implements AdMapper {
         adDto.setIsActive(adEntity.getIsActive());
 //      adDto.setExpirationHighlightTime(adEntity.getExpirationHighlightTime());
         adDto.setIsHighlighted(adEntity.getIsHighlighted());
-        adDto.setRefreshTime(adEntity.getRefreshTime());
+//        adDto.setRefreshTime(adEntity.getRefreshTime());
         adDto.setCountView(adEntity.getCountView());
         adDto.setIsUserFavourite(adEntity.getIsUserFavourite());
+        adDto.setIsRefreshable(adEntity.getIsRefreshable());
+        adDto.setIsHighlightable(adEntity.getIsHighlightable());
 
         return adDto;
     }
@@ -72,9 +74,11 @@ public class AdMapperImpl implements AdMapper {
         adEntity.setIsActive(adDto.getIsActive());
 //      adEntity.setExpirationHighlightTime(adDto.getExpirationHighlightTime());
         adEntity.setIsHighlighted(adDto.getIsHighlighted());
-        adEntity.setRefreshTime(adDto.getRefreshTime());
+//      adEntity.setRefreshTime(adDto.getRefreshTime());
         adEntity.setCountView(adDto.getCountView());
         adEntity.setIsUserFavourite(adDto.getIsUserFavourite());
+        adEntity.setIsRefreshable(adDto.getIsRefreshable());
+        adEntity.setIsHighlightable(adDto.getIsHighlightable());
 
         return adEntity;
     }
