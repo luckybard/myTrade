@@ -69,15 +69,13 @@ public class AdEntity {
 
     @PostLoad
     public void postLoad(){
-        if(expirationHighlightTime.isAfter(LocalDateTime.now())){
+        if(LocalDateTime.now().isBefore(expirationHighlightTime)){
             setIsHighlighted(true);
         }
 //        else setIsHighlighted(false);
-        if(refreshTime.plusWeeks(1).isAfter(LocalDateTime.now())){
+        if(LocalDateTime.now().isAfter(refreshTime.plusDays(7))){ //TODO:[Q]
             setIsRefreshable(true);
         }
 //        else setIsRefreshable(false);
-
-
     }
 }
