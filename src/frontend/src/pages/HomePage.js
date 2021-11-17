@@ -1,4 +1,4 @@
-import HomePageSearch from "../components/search/HomePageSearch";
+import HomePageSearch from "../components/search/MainSearch";
 
 const HomePage = () => {
     return <HomePageSearch/>

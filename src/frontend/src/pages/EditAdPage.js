@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import EditAd from "../components/ad/EditAd";
+import EditAd from "../components/editAd/EditAd";
 
 const EditAdPage = ({match}) => {
     const [ad, setAd] = useState([])

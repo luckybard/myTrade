@@ -1,13 +1,10 @@
-import SearchResults from "../components/search/SearchResults";
+import MainSearchResults from "../components/search/MainSearchResults";
 import Card from '../components/UI/Card';
 
 const SearchPage = ({match}) => {
     return (
-        <Card>
-            <SearchResults match={match}/>
-        </Card>
-      
-    );
+            <MainSearchResults match={match}/>
+    )
 };
 
 export default SearchPage;

@@ -1,9 +1,9 @@
-import AdPagination from "../components/ad/AdPagination";
+import AdPagination from "../backup/AdPagination";
 
 const UserPage = ({match}) => {
     return <div>
         <h1>{match.params.id}</h1>
-        <AdPagination endPoint={`user/${match.params.id}`}/>
+        <UserAds username={match.params.id}/>
     </div>
 };
 
