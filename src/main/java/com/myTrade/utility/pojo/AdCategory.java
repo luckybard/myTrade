@@ -1,4 +1,4 @@
-package com.myTrade.utility;
+package com.myTrade.utility.pojo;
 
 import lombok.Getter;
 import lombok.ToString;

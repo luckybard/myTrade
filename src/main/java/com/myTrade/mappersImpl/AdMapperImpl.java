@@ -1,8 +1,11 @@
 package com.myTrade.mappersImpl;
 
 import com.myTrade.dto.AdDto;
+import com.myTrade.dto.AdEditDto;
+import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.mappers.AdMapper;
+import com.myTrade.utility.pojo.City;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +31,9 @@ public class AdMapperImpl implements AdMapper {
         adDto.setCreatedDateTime(adEntity.getCreatedDateTime());
         adDto.setModifiedDateTime(adEntity.getModifiedDateTime());
         adDto.setIsActive(adEntity.getIsActive());
-//      adDto.setExpirationHighlightTime(adEntity.getExpirationHighlightTime());
         adDto.setIsHighlighted(adEntity.getIsHighlighted());
-//        adDto.setRefreshTime(adEntity.getRefreshTime());
         adDto.setCountView(adEntity.getCountView());
         adDto.setIsUserFavourite(adEntity.getIsUserFavourite());
-        adDto.setIsRefreshable(adEntity.getIsRefreshable());
-        adDto.setIsHighlightable(adEntity.getIsHighlightable());
 
         return adDto;
     }
@@ -72,13 +71,8 @@ public class AdMapperImpl implements AdMapper {
         adEntity.setCreatedDateTime(adDto.getCreatedDateTime());
         adEntity.setModifiedDateTime(adDto.getModifiedDateTime());
         adEntity.setIsActive(adDto.getIsActive());
-//      adEntity.setExpirationHighlightTime(adDto.getExpirationHighlightTime());
         adEntity.setIsHighlighted(adDto.getIsHighlighted());
-//      adEntity.setRefreshTime(adDto.getRefreshTime());
         adEntity.setCountView(adDto.getCountView());
-        adEntity.setIsUserFavourite(adDto.getIsUserFavourite());
-        adEntity.setIsRefreshable(adDto.getIsRefreshable());
-        adEntity.setIsHighlightable(adDto.getIsHighlightable());
 
         return adEntity;
     }
@@ -89,11 +83,73 @@ public class AdMapperImpl implements AdMapper {
             return null;
         }
 
-        List<AdEntity> list = new ArrayList<AdEntity>(adDtoList.size()); //TODO: [Q] Why it's important to pass size value? (it was generate via MapStruct)
+        List<AdEntity> list = new ArrayList();
         for (AdDto adDto : adDtoList) {
             list.add(adDtoAdEntity(adDto));
         }
 
         return list;
+    }
+
+    @Override
+    public AdEditDto adEntityToAdEditDto(AdEntity adEntity) {
+        if (adEntity == null) {
+            return null;
+        }
+
+        AdEditDto adEditDto = new AdEditDto();
+
+        adEditDto.setId(adEntity.getId());
+        adEditDto.setAdCategory(adEntity.getAdCategory());
+        adEditDto.setTitle(adEntity.getTitle());
+        adEditDto.setDescription(adEntity.getDescription());
+        adEditDto.setPrice(adEntity.getPrice());
+        adEditDto.setCity(City.valueOf(adEntity.getCity()));
+
+        return adEditDto;
+    }
+
+    @Override
+    public AdEntity adEditDtoToAdEntity(AdEditDto adEditDto) {
+        if (adEditDto == null) {
+            return null;
+        }
+
+        AdEntity adEntity = new AdEntity();
+
+        adEntity.setId(adEditDto.getId());
+        adEntity.setAdCategory(adEditDto.getAdCategory());
+        adEntity.setTitle(adEditDto.getTitle());
+        adEntity.setDescription(adEditDto.getDescription());
+        adEntity.setPrice(adEditDto.getPrice());
+        adEntity.setCity(adEditDto.getCity().getCityName());
+
+        return adEntity;
+    }
+
+    @Override
+    public AdOwnerDto adEntityToAdOwnerDto(AdEntity adEntity) {
+        if (adEntity == null) {
+            return null;
+        }
+
+        AdOwnerDto adOwnerDto = new AdOwnerDto();
+
+        adOwnerDto.setId(adEntity.getId());
+        adOwnerDto.setAdCategory(adEntity.getAdCategory());
+        adOwnerDto.setTitle(adEntity.getTitle());
+        adOwnerDto.setImagePath(adEntity.getImagePath());
+        adOwnerDto.setDescription(adEntity.getDescription());
+        adOwnerDto.setPrice(adEntity.getPrice());
+        adOwnerDto.setCity(adEntity.getCity());
+        adOwnerDto.setCreatedDateTime(adEntity.getCreatedDateTime());
+        adOwnerDto.setModifiedDateTime(adEntity.getModifiedDateTime());
+        adOwnerDto.setIsActive(adEntity.getIsActive());
+        adOwnerDto.setIsHighlighted(adEntity.getIsHighlighted());
+        adOwnerDto.setCountView(adEntity.getCountView());
+        adOwnerDto.setIsRefreshable(adEntity.getIsRefreshable());
+        adOwnerDto.setIsUserAbleToHighlight(adEntity.getIsUserAbleToHighlight());
+
+        return adOwnerDto;
     }
 }

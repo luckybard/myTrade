@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
-
     private final JwtSecretKey jwtSecretKey;
     private final JwtConfiguration jwtConfiguration;
     private final JwtUtility jwtUtility;
@@ -23,7 +22,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
     public JwtTokenVerifier(JwtConfiguration jwtConfiguration, JwtSecretKey jwtSecretKey) {
         this.jwtSecretKey = jwtSecretKey;
         this.jwtConfiguration = jwtConfiguration;
-        this.jwtUtility = new JwtUtility(this.jwtConfiguration, jwtSecretKey);
+        this.jwtUtility = new JwtUtility(this.jwtConfiguration, this.jwtSecretKey);
     }
 
     @Override
@@ -31,9 +30,6 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        if(httpServletRequest.getServletPath().equals("/login")) {
-            filterChain.doFilter(httpServletRequest, httpServletResponse);
-        } else {
             String authorizationCookie = httpServletRequest.getHeader(jwtConfiguration.getCookieHeader());
             if (Strings.isNullOrEmpty(authorizationCookie) || !authorizationCookie.startsWith(jwtConfiguration.getAuthTokenPrefixCookie())) {
                 filterChain.doFilter(httpServletRequest, httpServletResponse);
@@ -43,6 +39,5 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             Authentication authentication = jwtUtility.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(httpServletRequest, httpServletResponse);
-        }
     }
 }

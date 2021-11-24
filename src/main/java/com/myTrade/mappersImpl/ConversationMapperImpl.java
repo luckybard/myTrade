@@ -5,13 +5,9 @@ import com.myTrade.entities.ConversationEntity;
 import com.myTrade.mappers.ConversationMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Component
+@Component //TODO:[Q] @Component can be autowired?
 public class ConversationMapperImpl implements ConversationMapper {
-
-    private MessageMapperImpl messageMapper;  //initialize by constructor?
+    private final MessageMapperImpl messageMapper;
 
     public ConversationMapperImpl() {
         this.messageMapper = new MessageMapperImpl();
@@ -35,20 +31,6 @@ public class ConversationMapperImpl implements ConversationMapper {
     }
 
     @Override
-    public List<ConversationDto> conversationEntityListToConversationDtoList(List<ConversationEntity> conversationEntityList) {
-        if (conversationEntityList == null) {
-            return null;
-        }
-
-        List<ConversationDto> list = new ArrayList<ConversationDto>(conversationEntityList.size());
-        for (ConversationEntity conversationEntity : conversationEntityList) {
-            list.add(conversationEntityToConversationDto(conversationEntity));
-        }
-
-        return list;
-    }
-
-    @Override
     public ConversationEntity conversationDtoToConversationEntity(ConversationDto conversationDto) {
         if (conversationDto == null) {
             return null;
@@ -63,19 +45,5 @@ public class ConversationMapperImpl implements ConversationMapper {
         conversationEntity.setMessageList(messageMapper.messageDtoListToMessageEntityList(conversationDto.getMessageDtoList()));
 
         return conversationEntity;
-    }
-
-    @Override
-    public List<ConversationEntity> conversationDtoListToConversationEntityList(List<ConversationDto> conversationDtoList) {
-        if (conversationDtoList == null) {
-            return null;
-        }
-
-        List<ConversationEntity> list = new ArrayList<ConversationEntity>(conversationDtoList.size());
-        for (ConversationDto conversationDto : conversationDtoList) {
-            list.add(conversationDtoToConversationEntity(conversationDto));
-        }
-
-        return list;
     }
 }

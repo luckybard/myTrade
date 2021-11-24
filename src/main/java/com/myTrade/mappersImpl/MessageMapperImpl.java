@@ -20,7 +20,6 @@ public class MessageMapperImpl implements MessageMapper {
         messageDto.setId(messageEntity.getId());
         messageDto.setAuthorUsername(messageEntity.getAuthorUsername());
         messageDto.setText(messageEntity.getText());
-        messageDto.setImagePath(messageEntity.getImagePath());
         messageDto.setDateTime(messageEntity.getDateTime());
 
         return messageDto;
@@ -32,7 +31,7 @@ public class MessageMapperImpl implements MessageMapper {
             return null;
         }
 
-        List<MessageDto> list = new ArrayList<MessageDto>(messageEntityList.size());
+        List<MessageDto> list = new ArrayList();
         for (MessageEntity messageEntity : messageEntityList) {
             list.add(messageEntityToMessageDto(messageEntity));
         }
@@ -51,8 +50,6 @@ public class MessageMapperImpl implements MessageMapper {
         messageEntity.setId(messageDto.getId());
         messageEntity.setAuthorUsername(messageDto.getAuthorUsername());
         messageEntity.setText(messageDto.getText());
-        messageEntity.setImagePath(messageDto.getImagePath());
-        messageEntity.setDateTime(messageDto.getDateTime());
 
         return messageEntity;
     }
@@ -63,7 +60,7 @@ public class MessageMapperImpl implements MessageMapper {
             return null;
         }
 
-        List<MessageEntity> list = new ArrayList<MessageEntity>(messageDto.size());
+        List<MessageEntity> list = new ArrayList();
         for (MessageDto messageDto1 : messageDto) {
             list.add(messageDtoToMessageEntity(messageDto1));
         }

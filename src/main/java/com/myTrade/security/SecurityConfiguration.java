@@ -18,19 +18,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
-// TODO:SLF4J
+import static com.myTrade.utility.JwtUtility.AUTH_TOKEN_NAME_VALUE;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
     private final PasswordEncoder passwordEncoder;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final JwtSecretKey jwtSecretKey;
     private final JwtConfiguration jwtConfiguration;
-
 
     @Autowired
     public SecurityConfiguration(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder passwordEncoder, JwtSecretKey jwtSecretKey, JwtConfiguration jwtConfiguration) {
@@ -57,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .clearAuthentication(true)
-                .deleteCookies("authToken");
+                .deleteCookies(AUTH_TOKEN_NAME_VALUE);
     }
 
     @Override

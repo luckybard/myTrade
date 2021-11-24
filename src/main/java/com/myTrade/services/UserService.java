@@ -1,82 +1,66 @@
 package com.myTrade.services;
 
-import com.myTrade.dto.AdDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.entities.UserEntity;
-import com.myTrade.mappersImpl.AdMapperImpl;
+import com.myTrade.mappersImpl.UserMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
+import com.myTrade.utility.pojo.RegistrationRequest;
+import com.myTrade.validators.registrationRequest.RegistrationRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.myTrade.utility.SecurityUtility.encodeUserPassword;
+import static com.myTrade.utility.UserUtility.getUsernameFromContext;
 
 @Service
 public class UserService {
-
-    private UserRepository userRepository;
-    private AdRepository adRepository;
-    private AdMapperImpl adMapper = new AdMapperImpl();
-    private PasswordEncoder passwordEncoder;
-    private AdService adService;
+    private final UserRepository userRepository;
+    private final AdRepository adRepository;
+    private final UserMapperImpl userMapper = new UserMapperImpl();
+    private final RegistrationRequestValidator requestValidator = new RegistrationRequestValidator();
 
     @Autowired
-    public UserService(UserRepository userRepository, AdRepository adRepository, PasswordEncoder passwordEncoder, AdService adService){
+    public UserService(UserRepository userRepository, AdRepository adRepository) {
         this.userRepository = userRepository;
         this.adRepository = adRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.adService = adService;
     }
 
-    public void saveUserEntity(UserEntity userEntity) {
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        userRepository.save(userEntity);
-    }
-
-    public Page<AdDto> findUserAdEntityList(Integer pageNumber, Integer pageSize) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Page<AdEntity> adEntityPage = adRepository.findByOwnerUsername(username,PageRequest.of(pageNumber, pageSize, Sort.by("created_date_time").descending()));
-        return adEntityPage.map(adEntity -> adMapper.adEntityToAdDto(adEntity));
-    }
-
-    public void deleteUser() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        userRepository.delete(userRepository.findByUsername(username));
-    }
-
-
-
-    public void addOrRemoveFromFavouriteList(Long adId) {
-        AdEntity adEntity = adRepository.findById(adId).get(); //TODO:[Q] Better Optional?
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity user = userRepository.findByUsername(username);
-        List<AdEntity> adEntityList = user.getFavouriteAdEntityList().stream().collect(Collectors.toList());
-        if(adEntityList.contains(adEntity)){
-            adEntityList.remove(adEntity);
-        } else {
-            adEntityList.add(adEntity);
-        }
+    public ResponseEntity addAdFromUserFavouriteAdListById(Long adId) {
+        AdEntity adEntity = adRepository.findById(adId).get();
+        UserEntity user = userRepository.findByUsername(getUsernameFromContext());
+        List<AdEntity> adEntityList = new ArrayList<>(user.getFavouriteAdEntityList());
+        adEntityList.remove(adEntity);
+        adEntityList.add(adEntity);
         user.setFavouriteAdEntityList(adEntityList);
         userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
 
-    public Page<AdDto> findUserFavouriteAdEntityList(Integer pageNumber, Integer pageSize) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userRepository.findByUsername(username).getId();
-        Page<AdEntity> adEntityPage =  adRepository.findUserFavouriteAdsByUserId(userId, PageRequest.of(pageNumber, pageSize)); //TODO:[Q] How to sort by the order of adding
-        return adService.setIsUserFavouriteAds(adEntityPage).map(adEntity -> adMapper.adEntityToAdDto(adEntity));
+    public ResponseEntity removeAdFromUserFavouriteAdListById(Long adId) {
+        AdEntity adEntity = adRepository.findById(adId).get();
+        UserEntity user = userRepository.findByUsername(getUsernameFromContext());
+        List<AdEntity> adEntityList = new ArrayList<>(user.getFavouriteAdEntityList());
+        adEntityList.remove(adEntity);
+        user.setFavouriteAdEntityList(adEntityList);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
 
 
-    public Page<AdDto> findUserAdEntityList(String username, Integer pageNumber, Integer pageSize) {
-        Page<AdEntity> adEntityPage = adRepository.findByOwnerUsername(username,PageRequest.of(pageNumber, pageSize, Sort.by("created_date_time").descending()));
-        return adService.setIsUserFavouriteAds(adEntityPage).map(adEntity -> adMapper.adEntityToAdDto(adEntity));
+    public ResponseEntity saveUserEntityByRegistrationRequest(RegistrationRequest registrationRequest) {
+        if (requestValidator.test(registrationRequest)) {
+            UserEntity userEntity = userMapper.registrationRequestToUserEntity(registrationRequest);
+            encodeUserPassword(userEntity);
+            userRepository.save(userEntity);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }
 

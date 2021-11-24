@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.LinkedList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -33,8 +32,8 @@ public class ConversationEntity {
     @Column(nullable = false)
     private String title;
 
-    @OneToMany(cascade = {CascadeType.ALL}) //TODO: [Q] Should i use cascade for saving messageEntity?
-    private List<MessageEntity> messageList  = new LinkedList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<MessageEntity> messageList;
 }
 
 

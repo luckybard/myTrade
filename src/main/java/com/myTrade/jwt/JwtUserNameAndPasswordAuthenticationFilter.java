@@ -17,8 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 
-public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+import static com.myTrade.utility.JwtUtility.*;
 
+public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtConfiguration jwtConfiguration;
     private final JwtSecretKey jwtSecretKey;
@@ -40,7 +41,6 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginCredentials.getUsername(), loginCredentials.getPassword());
         return authenticationManager.authenticate(authentication);
 
-        //TODO: [Q] Is it better to check whole code in try-catch clause?
     }
 
     @Override
@@ -49,19 +49,18 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
 
         String authToken = Jwts.builder()
                 .setSubject(authResult.getName())
-                .claim("authorities", authResult.getAuthorities())
-//                .setIssuedAt(new Date())   //TODO:[Q] Unnecessary param?
+                .claim(AUTHORITIES_NAME_VALUE, authResult.getAuthorities())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfiguration.getTokenExpirationAfterDays())))
                 .signWith(jwtSecretKey.secretKey())
                 .compact();
 
-        Cookie authCookie = new Cookie("authToken", authToken);
-        authCookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
+        Cookie authCookie = new Cookie(AUTH_TOKEN_NAME_VALUE, authToken);
+        authCookie.setMaxAge(COOKIE_LIFETIME_IN_SECONDS);
         authCookie.setSecure(true);
         authCookie.setHttpOnly(true);
 
         response.addCookie(authCookie);
-        response.addHeader(HttpHeaders.AUTHORIZATION, authResult.getName()); //TODO:[Q] How to send username to webpage? (for context purpose)
+        response.addHeader(HttpHeaders.AUTHORIZATION, authResult.getName());
     }
 
     

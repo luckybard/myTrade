@@ -1,90 +1,91 @@
 package com.myTrade.controllers;
 
 import com.myTrade.dto.AdDto;
-import com.myTrade.entities.AdEntity;
+import com.myTrade.dto.AdEditDto;
+import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.services.AdService;
-import com.myTrade.utility.AdCategory;
-import com.myTrade.utility.City;
-import com.myTrade.utility.PriceRange;
+import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
+import com.myTrade.utility.pojo.PriceRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+import static com.myTrade.utility.pojo.City.EVERYWHERE;
 @RestController
 @RequestMapping(path = "/ad")
 public class AdController {
-
     private final AdService adService;
-
 
     @Autowired
     public AdController(AdService adService) {
         this.adService = adService;
     }
 
-    @GetMapping("/search")
-    public Page<AdDto> search(@RequestParam String searchText, @RequestParam Optional<Boolean> searchInDescription, @RequestParam Optional<City> city,
-                                 @RequestParam Optional<AdCategory> category, @RequestParam Optional<PriceRange> priceRange,
-                                 @RequestParam Optional<Integer> pageNumber,@RequestParam Optional<Integer> pageSize ) {
-        return adService.findAllActiveByAdSearchRequest(searchText,searchInDescription.orElse(false), city.orElse(City.EVERYWHERE), category.orElse(AdCategory.ALL),
+    @PostMapping("/save")
+    public ResponseEntity saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(@RequestBody AdEditDto adEditDto) {
+        return adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
+    }
+
+    @GetMapping("/fetch")
+    public ResponseEntity<Page<AdDto>> fetchActiveAdDtoPageBySearchRequest(@RequestParam String searchText, @RequestParam Optional<Boolean> searchInDescription, @RequestParam Optional<City> city,
+                                                                           @RequestParam Optional<AdCategory> category, @RequestParam Optional<PriceRange> priceRange,
+                                                                           @RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
+        return adService.fetchActiveAdDtoPageBySearchRequest(searchText, searchInDescription.orElse(false), city.orElse(EVERYWHERE), category.orElse(AdCategory.ALL),
                 priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageNumber.orElse(0), pageSize.orElse(10));
     }
 
-//    @GetMapping("/searchUpgraded")
-//    public Page<AdDto> searchUpgraded(@RequestParam String searchText, @RequestParam Optional<City> city,
-//                                         @RequestParam Optional<AdCategory> category, @RequestParam Optional<PriceRange> priceRange,
-//                                         @RequestParam Optional<PageRequest> pageRequest) {
-//        return adService.findAllActiveByAdSearchRequestUpgraded(searchText, city.orElse(City.EVERYWHERE), category.orElse(AdCategory.ALL),
-//                priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageRequest.orElse(PageRequest.of(0, 25, Sort.by("refresh_time").descending())));
-//    }
-
-    @PostMapping("/create")
-    @PreAuthorize("hasAnyAuthority('ad:write')")
-    public void create(@RequestBody AdDto adDto) {
-        adService.saveAdDtoAndAddAdToUserAdList(adDto);
-    }
-
-    @GetMapping("/fetch-random")
-    public Page<AdEntity> fetchRandom(@RequestParam Optional<Integer> pageSize ){ //TODO:[Q] Is it good practise to useOptional?
-        return adService.fetchRandom(pageSize.orElse(10));
+    @GetMapping("/fetch/random")
+    public ResponseEntity<Page<AdDto>> fetchRandomAdDtoPage(@RequestParam Optional<Integer> pageSize) {
+        return adService.fetchRandomAdDtoPage(pageSize.orElse(10));
     }
 
     @GetMapping("/fetch/{id}")
-    public AdDto fetchAd(@PathVariable(value = "id") Long adId) {
-        return adService.fetchAdDtoById(adId);
+    public ResponseEntity<AdDto> fetchAdDtoByIdAndSetIsUserFavourite(@PathVariable(value = "id") Long adId) {
+        return adService.fetchAdDtoByIdAndSetIsUserFavourite(adId);
     }
 
-    @GetMapping("/edit/{id}")
-    @PreAuthorize("hasAnyAuthority('ad:write')")
-    public AdDto fetchAdForEdit(@PathVariable(value = "id") Long adId) {
-        return adService.fetchAdForEdit(adId);
+    @GetMapping("/fetch/edit/{id}")
+    public ResponseEntity<AdEditDto> fetchAdEditDto(@PathVariable(value = "id") Long adId) {
+        return adService.fetchAdEditDto(adId);
+    }
+
+    @GetMapping("/fetch/adList")
+    public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(@RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
+        return adService.fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(pageNumber.orElse(0), pageSize.orElse(10));
+    }
+
+    @GetMapping("/fetch/adList/{username}")
+    public ResponseEntity<Page<AdDto>> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(@PathVariable(value = "username") String username,
+                                                                                            @RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
+        return adService.fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(username, pageNumber.orElse(0), pageSize.orElse(10));
+    }
+
+    @GetMapping("/fetch/favourite/adList")
+    public ResponseEntity<Page<AdDto>> fetchUserFavouriteAdDtoPage(@RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
+        return adService.fetchUserFavouriteAdDtoPage(pageNumber.orElse(0), pageSize.orElse(10));
     }
 
     @PatchMapping("/patch")
-    @PreAuthorize("hasAnyAuthority('ad:write')")
-    public void patch(@RequestBody AdDto adDto) {
-        adService.patchAdDto(adDto);
+    public ResponseEntity patchAdEntityByAdEditDto(@RequestBody AdEditDto adEditDto) {
+        return adService.patchAdEntityByAdEditDto(adEditDto);
     }
 
-    @PatchMapping("/refresh/{id}")
-    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
-    public void refreshAd(@PathVariable(value = "id") Long adId) {
-        adService.refreshAd(adId);
+    @PatchMapping("/patch/refresh/{id}")
+    public ResponseEntity refreshAdById(@PathVariable(value = "id") Long adId) {
+        return adService.refreshAdById(adId);
     }
 
-    @PatchMapping("/highlight/{id}")
-    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
-    public void highlightAd(@PathVariable(value = "id") Long adId) {
-        adService.highlightAd(adId);
+    @PatchMapping("/patch/highlight/{id}")
+    public ResponseEntity highlightAdByIdAndDeductHighlightPointFromUser(@PathVariable(value = "id") Long adId) {
+        return adService.highlightAdByIdAndDeductHighlightPointFromUser(adId);
     }
 
-    @PatchMapping("/active/{id}")
-    @PreAuthorize("hasAnyAuthority('ad:read','ad:write')")
-    public void changeActiveStatus(@PathVariable(value = "id") Long adId){
-        adService.changeActiveStatus(adId);
+    @PatchMapping("/patch/active/{id}")
+    public ResponseEntity changeAdStatusById(@PathVariable(value = "id") Long adId) {
+        return adService.changeAdStatusById(adId);
     }
-
 }

@@ -5,16 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class AdDto {
+public class AdOwnerDto {
     private Long id;
-    private String ownerUsername;
     private AdCategory adCategory;
     private String title;
     private String imagePath;
@@ -26,5 +24,6 @@ public class AdDto {
     private Boolean isActive;
     private Boolean isHighlighted;
     private Long countView;
-    private Boolean isUserFavourite;
+    private Boolean isRefreshable;
+    private Boolean isUserAbleToHighlight;
 }

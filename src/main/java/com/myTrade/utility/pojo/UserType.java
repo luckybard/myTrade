@@ -1,4 +1,4 @@
-package com.myTrade.utility;
+package com.myTrade.utility.pojo;
 
 public enum UserType {
     USER,

@@ -11,20 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Builder
-
-
 public class MessageDto {
-
     private Long id;
-
     private String authorUsername;
-
     private String text;
-
     private String imagePath;
-
     private LocalDateTime dateTime;
-
-
-
 }

@@ -8,7 +8,4 @@ import lombok.Setter;
 public class LoginCredentials {
     private String username;
     private String password;
-
-    public LoginCredentials() {
-    }
 }

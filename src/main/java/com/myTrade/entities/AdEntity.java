@@ -1,11 +1,11 @@
 package com.myTrade.entities;
 
-
-import com.myTrade.utility.AdCategory;
+import com.myTrade.utility.pojo.AdCategory;
 import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static com.myTrade.utility.AdUtility.INITIAL_AD_VIEW_COUNT;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "ad")
-
 public class AdEntity {
 
     @Id
@@ -35,6 +34,7 @@ public class AdEntity {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private Double price;
 
     @Column(nullable = false)
@@ -49,33 +49,31 @@ public class AdEntity {
     @Column(nullable = false)
     private Boolean isActive;
 
+    @Column(nullable = false)
     private LocalDateTime expirationHighlightTime;
 
+    @Column(nullable = false)
     private LocalDateTime refreshTime;
 
-    private Long countView;
+    @Column(nullable = false)
+    private Long countView = INITIAL_AD_VIEW_COUNT;
 
     @Transient
-    private Boolean isHighlighted = false;;
+    private Boolean isHighlighted = false;
 
     @Transient
     private Boolean isUserFavourite = false;
 
     @Transient
-    private Boolean isRefreshable = false;;
+    private Boolean isRefreshable = false;
 
     @Transient
-    private Boolean isHighlightable = false; //TODO: [Q] Name should be change, similar to isHighlighted. Create UserAdDto is good idea? For edit purpose?
+    private Boolean isUserAbleToHighlight = false;
 
     @PostLoad
     public void postLoad(){
         if(LocalDateTime.now().isBefore(expirationHighlightTime)){
             setIsHighlighted(true);
         }
-//        else setIsHighlighted(false);
-        if(LocalDateTime.now().isAfter(refreshTime.plusDays(7))){ //TODO:[Q]
-            setIsRefreshable(true);
-        }
-//        else setIsRefreshable(false);
     }
 }

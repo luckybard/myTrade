@@ -3,13 +3,14 @@ package com.myTrade.controllers;
 import com.myTrade.dto.MessageDto;
 import com.myTrade.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path ="/message")
 public class MessageController {
-
     private final MessageService messageService;
 
     @Autowired
@@ -17,9 +18,13 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/save/{id}")
-    public void saveMessage(@RequestBody MessageDto messageDto, @PathVariable(value = "id") Long conversationId){
-        messageService.saveMessage(messageDto,conversationId);
+    public ResponseEntity saveMessage(@RequestBody MessageDto messageDto, @PathVariable(value = "id") Long conversationId){
+        return messageService.saveMessageDtoAndAssignToConversationById(messageDto,conversationId);
+    }
+
+    @GetMapping("/fetch/list/{id}")
+    public ResponseEntity<List<MessageDto>> fetchMessageDtoListByConversationId(@PathVariable(value = "id") Long conversationId) {
+        return messageService.fetchMessageDtoListByConversationId(conversationId);
     }
 }

@@ -28,11 +28,6 @@ public class MessageEntity {
     @Column(nullable = false)
     private String text;
 
-    private String imagePath; //TODO: [Q] AWS for saving images? For now, just placeholder images based on adCategory
-
     @Column(nullable = false)
-    private LocalDateTime dateTime;
-
-
-
+    private LocalDateTime dateTime = LocalDateTime.now(); //TODO:[Q] initialize localDateTime here? is it proper?
 }

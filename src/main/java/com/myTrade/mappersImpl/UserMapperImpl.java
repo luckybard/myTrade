@@ -3,18 +3,13 @@ package com.myTrade.mappersImpl;
 import com.myTrade.dto.UserDto;
 import com.myTrade.entities.UserEntity;
 import com.myTrade.mappers.UserMapper;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.myTrade.utility.pojo.RegistrationRequest;
 
 public class UserMapperImpl implements UserMapper {
-
-    private AdMapperImpl adMapper;
-    private ConversationMapperImpl conversationMapper;
+    private final AdMapperImpl adMapper;
 
     public UserMapperImpl() {
         this.adMapper = new AdMapperImpl();
-        this.conversationMapper = new ConversationMapperImpl();
     }
 
     @Override
@@ -30,26 +25,9 @@ public class UserMapperImpl implements UserMapper {
         userDto.setPassword(userEntity.getPassword());
         userDto.setEmail(userEntity.getEmail());
         userDto.setRole(userEntity.getRole());
-        userDto.setAvatarPath(userEntity.getAvatarPath());
-        userDto.setBirthDate(userEntity.getBirthDate());
         userDto.setAdList(adMapper.adEntityListToAdDtoList(userEntity.getAdEntityList()));
-        userDto.setConversationDtoList(conversationMapper.conversationEntityListToConversationDtoList((userEntity.getConversationEntityList())));
-        userDto.setLastViewedAdDtoQueueList(adMapper.adEntityListToAdDtoList(userEntity.getLastViewedAdEntityQueueList()));
+
         return userDto;
-    }
-
-    @Override
-    public List<UserDto> userEntityListToUserDtoList(List<UserEntity> userEntityList) {
-        if (userEntityList == null) {
-            return null;
-        }
-
-        List<UserDto> list = new ArrayList<UserDto>(userEntityList.size());
-        for (UserEntity userEntity : userEntityList) {
-            list.add(userEntityToUserDto(userEntity));
-        }
-
-        return list;
     }
 
     @Override
@@ -65,26 +43,24 @@ public class UserMapperImpl implements UserMapper {
         userEntity.setPassword(userDto.getPassword());
         userEntity.setEmail(userDto.getEmail());
         userEntity.setRole(userDto.getRole());
-        userEntity.setAvatarPath(userDto.getAvatarPath());
-        userEntity.setBirthDate(userDto.getBirthDate());
         userEntity.setAdEntityList(adMapper.adDtoListToAdEntityList(userDto.getAdList()));
-        userEntity.setConversationEntityList(conversationMapper.conversationDtoListToConversationEntityList(userDto.getConversationDtoList()));
-        userEntity.setLastViewedAdEntityQueueList(adMapper.adDtoListToAdEntityList(userDto.getLastViewedAdDtoQueueList()));
+
 
         return userEntity;
     }
 
     @Override
-    public List<UserEntity> userDtoListToUserEntityList(List<UserDto> userDtoList) {
-        if (userDtoList == null) {
+    public UserEntity registrationRequestToUserEntity(RegistrationRequest registrationRequest) {
+        if (registrationRequest == null) {
             return null;
         }
 
-        List<UserEntity> list = new ArrayList<UserEntity>(userDtoList.size());
-        for (UserDto userDto : userDtoList) {
-            list.add(userDtoToUserEntity(userDto));
-        }
+        UserEntity userEntity = new UserEntity();
 
-        return list;
+        userEntity.setUsername(registrationRequest.getUsername());
+        userEntity.setPassword(registrationRequest.getPassword());
+        userEntity.setEmail(registrationRequest.getEmail());
+
+        return userEntity;
     }
 }

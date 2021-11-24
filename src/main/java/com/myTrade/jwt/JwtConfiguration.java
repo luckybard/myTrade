@@ -10,19 +10,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @NoArgsConstructor
 @Data
 public class JwtConfiguration {
-
     private String secretKey;
     private String tokenPrefix;
     private String authTokenPrefixCookie;
     private Integer tokenExpirationAfterDays;
-
-    public String getAuthorizationHeader(){
-        return HttpHeaders.AUTHORIZATION;
-    }
-
-    public String getRefreshHeader(){
-        return HttpHeaders.REFRESH;
-    }
 
     public String getCookieHeader(){
         return HttpHeaders.COOKIE;

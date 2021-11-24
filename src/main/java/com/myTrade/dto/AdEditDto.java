@@ -1,21 +1,21 @@
 package com.myTrade.dto;
 
+import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class ConversationDto {
+public class AdEditDto {
     private Long id;
-    private String senderUsername;
-    private String recipientUsername;
+    private AdCategory adCategory;
     private String title;
-    private List<MessageDto> messageDtoList = new LinkedList<>();
+    private String description;
+    private Double price;
+    private City city;
 }
