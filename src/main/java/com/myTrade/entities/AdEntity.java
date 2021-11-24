@@ -31,7 +31,7 @@ public class AdEntity {
 
     private String imagePath;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
