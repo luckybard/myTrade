@@ -20,7 +20,6 @@ public class UserMapperImpl implements UserMapper {
 
         UserDto userDto = new UserDto();
 
-        userDto.setId(userEntity.getId());
         userDto.setUsername(userEntity.getUsername());
         userDto.setPassword(userEntity.getPassword());
         userDto.setEmail(userEntity.getEmail());
@@ -38,7 +37,6 @@ public class UserMapperImpl implements UserMapper {
 
         UserEntity userEntity = new UserEntity();
 
-        userEntity.setId(userDto.getId());
         userEntity.setUsername(userDto.getUsername());
         userEntity.setPassword(userDto.getPassword());
         userEntity.setEmail(userDto.getEmail());
