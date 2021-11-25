@@ -5,6 +5,8 @@ import com.myTrade.dto.AdEditDto;
 import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.entities.UserEntity;
+import com.myTrade.exceptions.AdValidationException;
+import com.myTrade.exceptions.UserAuthorizationException;
 import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
@@ -113,7 +115,7 @@ public class AdService {
             AdEditDto adEditDto = adMapper.adEntityToAdEditDto(adEntity);
             return ResponseEntity.ok(adEditDto);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UserAuthorizationException();
         }
     }
 
@@ -124,9 +126,8 @@ public class AdService {
             setInitialValuesForAd(adEntity, adOwner.getUsername());
             saveAdAndAssignToUserAdList(adOwner, adEntity);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        throw new AdValidationException();
     }
 
     private void saveAdAndAssignToUserAdList(UserEntity adOwner, AdEntity adEntity) {
@@ -143,7 +144,7 @@ public class AdService {
             adRepository.save(adEntity);
             return ResponseEntity.status(HttpStatus.OK).build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new AdValidationException();
         }
     }
 

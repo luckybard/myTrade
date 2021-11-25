@@ -2,6 +2,7 @@ package com.myTrade.services;
 
 import com.myTrade.entities.AdEntity;
 import com.myTrade.entities.UserEntity;
+import com.myTrade.exceptions.UserValidationException;
 import com.myTrade.mappersImpl.UserMapperImpl;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
@@ -60,7 +61,7 @@ public class UserService {
             userRepository.save(userEntity);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
-        return ResponseEntity.badRequest().build();
+        throw new UserValidationException();
     }
 }
 
