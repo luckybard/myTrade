@@ -28,8 +28,8 @@ public class AdMapperImpl implements AdMapper {
         adDto.setDescription(adEntity.getDescription());
         adDto.setPrice(adEntity.getPrice());
         adDto.setCity(adEntity.getCity());
-        adDto.setCreatedDateTime(adEntity.getCreatedDateTime());
-        adDto.setModifiedDateTime(adEntity.getModifiedDateTime());
+        adDto.setCreatedDate(adEntity.getCreatedDate());
+        adDto.setModifiedDate(adEntity.getModifiedDate());
         adDto.setIsActive(adEntity.getIsActive());
         adDto.setIsHighlighted(adEntity.getIsHighlighted());
         adDto.setCountView(adEntity.getCountView());
@@ -68,8 +68,8 @@ public class AdMapperImpl implements AdMapper {
         adEntity.setDescription(adDto.getDescription());
         adEntity.setPrice(adDto.getPrice());
         adEntity.setCity(adDto.getCity());
-        adEntity.setCreatedDateTime(adDto.getCreatedDateTime());
-        adEntity.setModifiedDateTime(adDto.getModifiedDateTime());
+        adEntity.setCreatedDate(adDto.getCreatedDate());
+        adEntity.setModifiedDate(adDto.getModifiedDate());
         adEntity.setIsActive(adDto.getIsActive());
         adEntity.setIsHighlighted(adDto.getIsHighlighted());
         adEntity.setCountView(adDto.getCountView());
@@ -142,8 +142,8 @@ public class AdMapperImpl implements AdMapper {
         adOwnerDto.setDescription(adEntity.getDescription());
         adOwnerDto.setPrice(adEntity.getPrice());
         adOwnerDto.setCity(adEntity.getCity());
-        adOwnerDto.setCreatedDateTime(adEntity.getCreatedDateTime());
-        adOwnerDto.setModifiedDateTime(adEntity.getModifiedDateTime());
+        adOwnerDto.setCreatedDate(adEntity.getCreatedDate());
+        adOwnerDto.setModifiedDate(adEntity.getModifiedDate());
         adOwnerDto.setIsActive(adEntity.getIsActive());
         adOwnerDto.setIsHighlighted(adEntity.getIsHighlighted());
         adOwnerDto.setCountView(adEntity.getCountView());

@@ -6,7 +6,7 @@ import com.myTrade.entities.UserEntity;
 import com.myTrade.utility.pojo.AdCategory;
 import com.myTrade.utility.pojo.City;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.myTrade.utility.pojo.AdCategory.*;
@@ -28,10 +28,10 @@ public class AdUtility {
 
     public static void setInitialValuesForAd(AdEntity adEntity, String ownerUsername) {
         Integer ONE_YEAR = 1;
-        adEntity.setCreatedDateTime(LocalDateTime.now());
-        adEntity.setModifiedDateTime(LocalDateTime.now());
-        adEntity.setRefreshTime(LocalDateTime.now());
-        adEntity.setExpirationHighlightTime(LocalDateTime.now().minusYears(ONE_YEAR));
+        adEntity.setCreatedDate(LocalDate.now());
+        adEntity.setModifiedDate(LocalDate.now());
+        adEntity.setLastRefreshDate(LocalDate.now());
+        adEntity.setExpirationHighlightDate(LocalDate.now().minusYears(ONE_YEAR));
         adEntity.setIsActive(true);
         adEntity.setOwnerUsername(ownerUsername);
     }
@@ -41,7 +41,7 @@ public class AdUtility {
         adEntity.setDescription(adEditDto.getDescription());
         adEntity.setPrice(adEditDto.getPrice());
         adEntity.setAdCategory(adEditDto.getAdCategory());
-        adEntity.setModifiedDateTime(LocalDateTime.now());
+        adEntity.setModifiedDate(LocalDate.now());
     }
 
     public static boolean isUserAdOwner(AdEntity adEntity, UserEntity userEntity) {
@@ -49,7 +49,7 @@ public class AdUtility {
     }
 
     public static void checkIsAdRefreshable(AdEntity adEntity) {
-        if(LocalDateTime.now().isAfter(adEntity.getRefreshTime().plusDays(REFRESH_DELAY_IN_DAYS))){
+        if(LocalDate.now().isAfter(adEntity.getLastRefreshDate().plusDays(REFRESH_DELAY_IN_DAYS))){
             adEntity.setIsRefreshable(true);
         }
     }

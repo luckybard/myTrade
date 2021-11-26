@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,8 +21,8 @@ public class AdDto {
     private String description;
     private Double price;
     private String city;
-    private LocalDateTime createdDateTime;
-    private LocalDateTime modifiedDateTime;
+    private LocalDate createdDate;
+    private LocalDate modifiedDate;
     private Boolean isActive;
     private Boolean isHighlighted;
     private Long countView;

@@ -1,9 +1,13 @@
 package com.myTrade.entities;
 
 import com.myTrade.utility.pojo.AdCategory;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static com.myTrade.utility.AdUtility.INITIAL_AD_VIEW_COUNT;
 
@@ -41,19 +45,19 @@ public class AdEntity {
     private String city;
 
     @Column(nullable = false)
-    private LocalDateTime createdDateTime;
+    private LocalDate createdDate;
 
     @Column(nullable = false)
-    private LocalDateTime modifiedDateTime;
+    private LocalDate modifiedDate;
 
     @Column(nullable = false)
     private Boolean isActive;
 
     @Column(nullable = false)
-    private LocalDateTime expirationHighlightTime;
+    private LocalDate expirationHighlightDate;
 
     @Column(nullable = false)
-    private LocalDateTime refreshTime;
+    private LocalDate lastRefreshDate;
 
     @Column(nullable = false)
     private Long countView = INITIAL_AD_VIEW_COUNT;
@@ -72,7 +76,7 @@ public class AdEntity {
 
     @PostLoad
     public void postLoad(){
-        if(LocalDateTime.now().isBefore(expirationHighlightTime)){
+        if(LocalDate.now().isBefore(expirationHighlightDate)){
             setIsHighlighted(true);
         }
     }

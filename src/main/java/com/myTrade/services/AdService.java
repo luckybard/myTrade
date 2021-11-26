@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -182,7 +182,7 @@ public class AdService {
 
     public ResponseEntity highlightAdByIdAndDeductHighlightPointFromUser(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
-        adEntity.setExpirationHighlightTime(LocalDateTime.now().plusDays(ONE_DAY));
+        adEntity.setExpirationHighlightDate(LocalDate.now().plusDays(ONE_DAY));
         adRepository.save(adEntity);
         deductHighlightPointFromUser();
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -204,7 +204,7 @@ public class AdService {
 
     public ResponseEntity refreshAdById(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
-        adEntity.setRefreshTime(LocalDateTime.now());
+        adEntity.setLastRefreshDate(LocalDate.now());
         adRepository.save(adEntity);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
