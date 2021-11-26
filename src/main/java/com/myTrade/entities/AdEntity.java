@@ -57,7 +57,7 @@ public class AdEntity {
     private LocalDate expirationHighlightDate;
 
     @Column(nullable = false)
-    private LocalDate lastRefreshDate;
+    private LocalDate refreshDate;
 
     @Column(nullable = false)
     private Long countView = INITIAL_AD_VIEW_COUNT;

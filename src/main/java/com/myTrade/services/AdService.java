@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 
 import static com.myTrade.utility.AdUtility.*;
 import static com.myTrade.utility.UserUtility.*;
-import static com.myTrade.utility.pojo.SortType.CREATED_DATE_TIME;
-import static com.myTrade.utility.pojo.SortType.REFRESH_TIME;
+import static com.myTrade.utility.pojo.SortType.CREATED_DATE;
+import static com.myTrade.utility.pojo.SortType.REFRESH;
 
 @Service
 public class AdService {
@@ -64,13 +64,13 @@ public class AdService {
     private Page<AdEntity> findActiveAdDtoPageBySearchRequest(String searchText, City city, AdCategory category, PriceRange priceRange, Integer pageNumber, Integer pageSize) {
         return adRepository.findActiveAdEntityPageBySearchRequest(category.getCategory(),
                 city.getCityName(), priceRange.getFrom(), priceRange.getTo(), searchText.toLowerCase(),
-                PageRequest.of(pageNumber, pageSize, Sort.by(REFRESH_TIME.getValue()).descending()));
+                PageRequest.of(pageNumber, pageSize, Sort.by(REFRESH.getValue()).descending()));
     }
 
     private Page<AdEntity> findActiveAdDtoPageBySearchRequestWithoutDescription(String searchText, City city, AdCategory category, PriceRange priceRange, Integer pageNumber, Integer pageSize) {
         return adRepository.findActiveAdEntityPageBySearchRequestWithoutDescription(category.getCategory(),
                 city.getCityName(), priceRange.getFrom(), priceRange.getTo(), searchText.toLowerCase(),
-                PageRequest.of(pageNumber, pageSize, Sort.by(REFRESH_TIME.getValue()).descending()));
+                PageRequest.of(pageNumber, pageSize, Sort.by(REFRESH.getValue()).descending()));
     }
 
     public ResponseEntity<AdDto> fetchAdDtoByIdAndSetIsUserFavourite(Long adId) {
@@ -150,8 +150,8 @@ public class AdService {
 
     public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(Integer pageNumber, Integer pageSize) {
         UserEntity user = userRepository.findByUsername(getUsernameFromContext());
-        Page<AdEntity> adEntityPage = adRepository.findActiveAdEntityPageByOwnerUsername(user.getUsername(),
-                PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE_TIME.getValue()).descending()));
+        Page<AdEntity> adEntityPage = adRepository.findAdEntityPageByOwnerUsername(user.getUsername(),
+                PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE.getValue()).descending()));
         for (AdEntity adEntity : adEntityPage) {
             checkIsUserAbleToHighlight(adEntity, user);
             checkIsAdRefreshable(adEntity);
@@ -169,7 +169,7 @@ public class AdService {
     }
 
     public ResponseEntity<Page<AdDto>> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(String username, Integer pageNumber, Integer pageSize) {
-        Page<AdEntity> adEntityPage = adRepository.findActiveAdEntityPageByOwnerUsername(username, PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE_TIME.getValue()).descending()));
+        Page<AdEntity> adEntityPage = adRepository.findAdEntityPageByOwnerUsername(username, PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE.getValue()).descending()));
         setIsAdUserFavourite(adEntityPage);
         Page<AdDto> adDtoPage = adEntityPage.map(adMapper::adEntityToAdDto);
         return ResponseEntity.ok(adDtoPage);
@@ -204,7 +204,7 @@ public class AdService {
 
     public ResponseEntity refreshAdById(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
-        adEntity.setLastRefreshDate(LocalDate.now());
+        adEntity.setRefreshDate(LocalDate.now());
         adRepository.save(adEntity);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

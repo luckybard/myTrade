@@ -1,8 +1,8 @@
 package com.myTrade.utility.pojo;
 
 public enum SortType {
-    REFRESH_TIME("refresh_time"),
-    CREATED_DATE_TIME("created_date_time");
+    REFRESH("refresh_date"),
+    CREATED_DATE("created_date");
 
     private final String value;
 

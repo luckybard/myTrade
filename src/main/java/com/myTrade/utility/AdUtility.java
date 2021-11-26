@@ -30,7 +30,7 @@ public class AdUtility {
         Integer ONE_YEAR = 1;
         adEntity.setCreatedDate(LocalDate.now());
         adEntity.setModifiedDate(LocalDate.now());
-        adEntity.setLastRefreshDate(LocalDate.now());
+        adEntity.setRefreshDate(LocalDate.now());
         adEntity.setExpirationHighlightDate(LocalDate.now().minusYears(ONE_YEAR));
         adEntity.setIsActive(true);
         adEntity.setOwnerUsername(ownerUsername);
@@ -49,7 +49,7 @@ public class AdUtility {
     }
 
     public static void checkIsAdRefreshable(AdEntity adEntity) {
-        if(LocalDate.now().isAfter(adEntity.getLastRefreshDate().plusDays(REFRESH_DELAY_IN_DAYS))){
+        if(LocalDate.now().isAfter(adEntity.getRefreshDate().plusDays(REFRESH_DELAY_IN_DAYS))){
             adEntity.setIsRefreshable(true);
         }
     }
