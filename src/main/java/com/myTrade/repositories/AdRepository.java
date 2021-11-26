@@ -23,6 +23,9 @@ public interface AdRepository extends JpaRepository<AdEntity, Long> {
                                                                            @Param("price_from") int priceFrom, @Param("price_to") int priceTo,
                                                                            @Param("title") String title, Pageable pageable);
 
+    @Query(value = "SELECT * FROM ad WHERE owner_username = :ownerUsername", nativeQuery = true)
+    Page<AdEntity> findAdEntityPageByOwnerUsername(@Param("ownerUsername") String ownerUsername, Pageable pageable);
+
     @Query(value = "SELECT * FROM ad WHERE is_active = TRUE AND owner_username = :ownerUsername", nativeQuery = true)
     Page<AdEntity> findActiveAdEntityPageByOwnerUsername(@Param("ownerUsername") String ownerUsername, Pageable pageable);
 

@@ -169,7 +169,7 @@ public class AdService {
     }
 
     public ResponseEntity<Page<AdDto>> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(String username, Integer pageNumber, Integer pageSize) {
-        Page<AdEntity> adEntityPage = adRepository.findAdEntityPageByOwnerUsername(username, PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE.getValue()).descending()));
+        Page<AdEntity> adEntityPage = adRepository.findActiveAdEntityPageByOwnerUsername(username, PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE.getValue()).descending()));
         setIsAdUserFavourite(adEntityPage);
         Page<AdDto> adDtoPage = adEntityPage.map(adMapper::adEntityToAdDto);
         return ResponseEntity.ok(adDtoPage);
