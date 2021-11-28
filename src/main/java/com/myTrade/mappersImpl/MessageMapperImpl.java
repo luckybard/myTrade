@@ -4,6 +4,9 @@ import com.myTrade.dto.MessageDto;
 import com.myTrade.entities.MessageEntity;
 import com.myTrade.mappers.MessageMapper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MessageMapperImpl implements MessageMapper {
 
     @Override
@@ -23,6 +26,20 @@ public class MessageMapperImpl implements MessageMapper {
     }
 
     @Override
+    public List<MessageDto> messageEntityListToMessageDtoList(List<MessageEntity> messageEntityList) {
+        if (messageEntityList == null) {
+            return null;
+        }
+
+        List<MessageDto> list = new ArrayList();
+        for (MessageEntity messageEntity : messageEntityList) {
+            list.add(messageEntityToMessageDto(messageEntity));
+        }
+
+        return list;
+    }
+
+    @Override
     public MessageEntity messageDtoToMessageEntity(MessageDto messageDto) {
         if (messageDto == null) {
             return null;
@@ -35,5 +52,19 @@ public class MessageMapperImpl implements MessageMapper {
         messageEntity.setText(messageDto.getText());
 
         return messageEntity;
+    }
+
+    @Override
+    public List<MessageEntity> messageDtoListToMessageEntityList(List<MessageDto> messageDto) {
+        if (messageDto == null) {
+            return null;
+        }
+
+        List<MessageEntity> list = new ArrayList();
+        for (MessageDto messageDto1 : messageDto) {
+            list.add(messageDtoToMessageEntity(messageDto1));
+        }
+
+        return list;
     }
 }
