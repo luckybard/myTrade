@@ -92,7 +92,7 @@ public class AdService {
         List<Long> userFavouriteAdsIdList = getUserFavouriteAdsId();
         if (object instanceof AdEntity && userFavouriteAdsIdList.contains(((AdEntity) object).getId())) {
             ((AdEntity) object).setIsUserFavourite(true);
-        } else {
+        } else if(object instanceof Page) {
             ((Page<AdEntity>) object).stream()
                     .filter(adEntity -> userFavouriteAdsIdList.contains(adEntity.getId()))
                     .forEach(adEntity -> adEntity.setIsUserFavourite(true));
