@@ -54,8 +54,7 @@ public class UserService {
             UserEntity userEntity = userMapper.registrationRequestToUserEntity(registrationRequest);
             encodeUserPassword(userEntity);
             userRepository.save(userEntity);
-        }
-        throw new UserValidationException();
+        } else throw new UserValidationException();
     }
 }
 

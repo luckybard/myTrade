@@ -123,8 +123,7 @@ public class AdService {
             AdEntity adEntity = adMapper.adEditDtoToAdEntity(adEditDto);
             setInitialValuesForAd(adEntity, adOwner.getUsername());
             saveAdAndAssignToUserAdList(adOwner, adEntity);
-        }
-        throw new AdValidationException();
+        }else throw new AdValidationException();
     }
 
     private void saveAdAndAssignToUserAdList(UserEntity adOwner, AdEntity adEntity) {
