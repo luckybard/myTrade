@@ -32,4 +32,7 @@ public interface AdRepository extends JpaRepository<AdEntity, Long> {
     @Query(value = "SELECT ad.* FROM user_favourite_ad_entity_list, ad WHERE ad.id = user_favourite_ad_entity_list.favourite_ad_entity_list_id " +
             "AND user_entity_id = :userId ", nativeQuery = true)
     Page<AdEntity> findUserFavouriteAdEntityPageByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query(value = "SELECT * FROM ad WHERE is_active = TRUE",nativeQuery = true)
+    Page<AdEntity> findActiveRandomAdEntityPage(Pageable pageable);
 }

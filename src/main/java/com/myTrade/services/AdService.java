@@ -100,7 +100,7 @@ public class AdService {
         return object;
     }
 
-    private List<Long> getUserFavouriteAdsId() {
+    public List<Long> getUserFavouriteAdsId() {
         return userRepository.findByUsername(getUsernameFromContext())
                 .getFavouriteAdEntityList()
                 .stream()
@@ -176,7 +176,7 @@ public class AdService {
     }
 
     public ResponseEntity<Page<AdDto>> fetchRandomAdDtoPage(Integer pageSize) {
-        Page<AdDto> pageAdDto = adRepository.findAll(PageRequest.of(0, pageSize)).map(adMapper::adEntityToAdDto);
+        Page<AdDto> pageAdDto = adRepository.findActiveRandomAdEntityPage(PageRequest.of(0, pageSize)).map(adMapper::adEntityToAdDto);
         return ResponseEntity.ok(pageAdDto);
     }
 

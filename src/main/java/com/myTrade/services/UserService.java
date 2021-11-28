@@ -36,7 +36,6 @@ public class UserService {
         AdEntity adEntity = adRepository.findById(adId).get();
         UserEntity user = userRepository.findByUsername(getUsernameFromContext());
         List<AdEntity> adEntityList = new ArrayList<>(user.getFavouriteAdEntityList());
-        adEntityList.remove(adEntity);
         adEntityList.add(adEntity);
         user.setFavouriteAdEntityList(adEntityList);
         userRepository.save(user);
