@@ -6,6 +6,7 @@ import com.myTrade.entities.MessageEntity;
 import com.myTrade.mappersImpl.MessageMapperImpl;
 import com.myTrade.repositories.ConversationRepository;
 import com.myTrade.repositories.MessageRepository;
+import com.myTrade.utility.UserUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class MessageService {
         MessageEntity messageEntity = messageMapper.messageDtoToMessageEntity(messageDto);
         ConversationEntity conversationEntity = conversationRepository.findById(conversationId).get();
         List<MessageEntity> messageEntityList = new ArrayList<>(conversationEntity.getMessageList());
+        messageEntity.setAuthorUsername(UserUtility.getUsernameFromContext());
         messageEntityList.add(messageEntity);
         conversationEntity.setMessageList(messageEntityList);
         conversationRepository.save(conversationEntity);
