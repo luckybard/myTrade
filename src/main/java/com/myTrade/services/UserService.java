@@ -9,8 +9,6 @@ import com.myTrade.repositories.UserRepository;
 import com.myTrade.utility.pojo.RegistrationRequest;
 import com.myTrade.validators.registrationRequest.RegistrationRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,33 +30,30 @@ public class UserService {
         this.adRepository = adRepository;
     }
 
-    public ResponseEntity addAdFromUserFavouriteAdListById(Long adId) {
+    public void addAdFromUserFavouriteAdListById(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         UserEntity user = userRepository.findByUsername(getUsernameFromContext());
         List<AdEntity> adEntityList = new ArrayList<>(user.getFavouriteAdEntityList());
         adEntityList.add(adEntity);
         user.setFavouriteAdEntityList(adEntityList);
         userRepository.save(user);
-        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity removeAdFromUserFavouriteAdListById(Long adId) {
+    public void removeAdFromUserFavouriteAdListById(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         UserEntity user = userRepository.findByUsername(getUsernameFromContext());
         List<AdEntity> adEntityList = new ArrayList<>(user.getFavouriteAdEntityList());
         adEntityList.remove(adEntity);
         user.setFavouriteAdEntityList(adEntityList);
         userRepository.save(user);
-        return ResponseEntity.ok().build();
     }
 
 
-    public ResponseEntity saveUserEntityByRegistrationRequest(RegistrationRequest registrationRequest) {
+    public void saveUserEntityByRegistrationRequest(RegistrationRequest registrationRequest) {
         if (requestValidator.test(registrationRequest)) {
             UserEntity userEntity = userMapper.registrationRequestToUserEntity(registrationRequest);
             encodeUserPassword(userEntity);
             userRepository.save(userEntity);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
         throw new UserValidationException();
     }

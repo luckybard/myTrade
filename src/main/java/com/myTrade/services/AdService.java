@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -45,9 +43,9 @@ public class AdService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<Page<AdDto>> fetchActiveAdDtoPageBySearchRequest(String searchText, Boolean searchInDescription,
-                                                                           City city, AdCategory category, PriceRange priceRange,
-                                                                           Integer pageNumber, Integer pageSize) {
+    public Page<AdDto> fetchActiveAdDtoPageBySearchRequest(String searchText, Boolean searchInDescription,
+                                                           City city, AdCategory category, PriceRange priceRange,
+                                                           Integer pageNumber, Integer pageSize) {
         Page<AdEntity> adEntityPage;
         if (searchInDescription) {
             adEntityPage = findActiveAdDtoPageBySearchRequest(searchText, city, category, priceRange, pageNumber, pageSize);
@@ -58,7 +56,7 @@ public class AdService {
             setIsAdUserFavourite(adEntityPage);
         }
         Page<AdDto> adDtoPage = adEntityPage.map(adMapper::adEntityToAdDto);
-        return ResponseEntity.ok(adDtoPage);
+        return adDtoPage;
     }
 
     private Page<AdEntity> findActiveAdDtoPageBySearchRequest(String searchText, City city, AdCategory category, PriceRange priceRange, Integer pageNumber, Integer pageSize) {
@@ -73,14 +71,14 @@ public class AdService {
                 PageRequest.of(pageNumber, pageSize, Sort.by(REFRESH.getValue()).descending()));
     }
 
-    public ResponseEntity<AdDto> fetchAdDtoByIdAndSetIsUserFavourite(Long adId) {
+    public AdDto fetchAdDtoByIdAndSetIsUserFavourite(Long adId) {
         AdEntity adEntity = adRepository.getById(adId);
         addAdViewCounter(adEntity);
         if (!isUserAnonymous()) {
             setIsAdUserFavourite(adEntity);
         }
         AdDto adDto = adMapper.adEntityToAdDto(adEntity);
-        return ResponseEntity.ok(adDto);
+        return adDto;
     }
 
     public void addAdViewCounter(AdEntity adEntity) {
@@ -92,7 +90,7 @@ public class AdService {
         List<Long> userFavouriteAdsIdList = getUserFavouriteAdsId();
         if (object instanceof AdEntity && userFavouriteAdsIdList.contains(((AdEntity) object).getId())) {
             ((AdEntity) object).setIsUserFavourite(true);
-        } else if(object instanceof Page) {
+        } else if (object instanceof Page) {
             ((Page<AdEntity>) object).stream()
                     .filter(adEntity -> userFavouriteAdsIdList.contains(adEntity.getId()))
                     .forEach(adEntity -> adEntity.setIsUserFavourite(true));
@@ -108,24 +106,23 @@ public class AdService {
                 .collect(Collectors.toList());
     }
 
-    public ResponseEntity<AdEditDto> fetchAdEditDto(Long adId) {
+    public AdEditDto fetchAdEditDto(Long adId) {
         AdEntity adEntity = adRepository.getById(adId);
         UserEntity userEntity = userRepository.findByUsername(getUsernameFromContext());
         if (isUserAdOwner(adEntity, userEntity)) {
             AdEditDto adEditDto = adMapper.adEntityToAdEditDto(adEntity);
-            return ResponseEntity.ok(adEditDto);
+            return adEditDto;
         } else {
             throw new UserAuthorizationException();
         }
     }
 
-    public ResponseEntity saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(AdEditDto adEditDto) {
+    public void saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(AdEditDto adEditDto) {
         if (adFormValidator.test(adEditDto)) {
             UserEntity adOwner = userRepository.findByUsername(getUsernameFromContext());
             AdEntity adEntity = adMapper.adEditDtoToAdEntity(adEditDto);
             setInitialValuesForAd(adEntity, adOwner.getUsername());
             saveAdAndAssignToUserAdList(adOwner, adEntity);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
         throw new AdValidationException();
     }
@@ -137,18 +134,17 @@ public class AdService {
         userRepository.save(adOwner);
     }
 
-    public ResponseEntity patchAdEntityByAdEditDto(AdEditDto adEditDto) {
+    public void patchAdEntityByAdEditDto(AdEditDto adEditDto) {
         if (adFormValidator.test(adEditDto)) {
             AdEntity adEntity = adRepository.findById(adEditDto.getId()).get();
             setValuesFromAdFormDto(adEntity, adEditDto);
             adRepository.save(adEntity);
-            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             throw new AdValidationException();
         }
     }
 
-    public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(Integer pageNumber, Integer pageSize) {
+    public Page<AdOwnerDto> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(Integer pageNumber, Integer pageSize) {
         UserEntity user = userRepository.findByUsername(getUsernameFromContext());
         Page<AdEntity> adEntityPage = adRepository.findAdEntityPageByOwnerUsername(user.getUsername(),
                 PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE.getValue()).descending()));
@@ -157,35 +153,34 @@ public class AdService {
             checkIsAdRefreshable(adEntity);
         }
         Page<AdOwnerDto> adUserDtoPage = adEntityPage.map(adMapper::adEntityToAdOwnerDto);
-        return ResponseEntity.ok(adUserDtoPage);
+        return adUserDtoPage;
     }
 
-    public ResponseEntity<Page<AdDto>> fetchUserFavouriteAdDtoPage(Integer pageNumber, Integer pageSize) {
+    public Page<AdDto> fetchUserFavouriteAdDtoPage(Integer pageNumber, Integer pageSize) {
         UserEntity userEntity = userRepository.findByUsername(getUsernameFromContext());
         Page<AdEntity> adEntityPage = adRepository.findUserFavouriteAdEntityPageByUserId(userEntity.getId(), PageRequest.of(pageNumber, pageSize));
         setIsAdUserFavourite(adEntityPage);
         Page<AdDto> adDtoPage = adEntityPage.map(adMapper::adEntityToAdDto);
-        return ResponseEntity.ok(adDtoPage);
+        return adDtoPage;
     }
 
-    public ResponseEntity<Page<AdDto>> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(String username, Integer pageNumber, Integer pageSize) {
+    public Page<AdDto> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(String username, Integer pageNumber, Integer pageSize) {
         Page<AdEntity> adEntityPage = adRepository.findActiveAdEntityPageByOwnerUsername(username, PageRequest.of(pageNumber, pageSize, Sort.by(CREATED_DATE.getValue()).descending()));
         setIsAdUserFavourite(adEntityPage);
         Page<AdDto> adDtoPage = adEntityPage.map(adMapper::adEntityToAdDto);
-        return ResponseEntity.ok(adDtoPage);
+        return adDtoPage;
     }
 
-    public ResponseEntity<Page<AdDto>> fetchRandomAdDtoPage(Integer pageSize) {
+    public Page<AdDto> fetchRandomAdDtoPage(Integer pageSize) {
         Page<AdDto> pageAdDto = adRepository.findActiveRandomAdEntityPage(PageRequest.of(0, pageSize)).map(adMapper::adEntityToAdDto);
-        return ResponseEntity.ok(pageAdDto);
+        return pageAdDto;
     }
 
-    public ResponseEntity highlightAdByIdAndDeductHighlightPointFromUser(Long adId) {
+    public void highlightAdByIdAndDeductHighlightPointFromUser(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setExpirationHighlightDate(LocalDate.now().plusDays(ONE_DAY));
         adRepository.save(adEntity);
         deductHighlightPointFromUser();
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     public void deductHighlightPointFromUser() {
@@ -195,18 +190,16 @@ public class AdService {
         }
     }
 
-    public ResponseEntity changeAdStatusById(Long adId) {
+    public void changeAdStatusById(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setIsActive(!adEntity.getIsActive());
         adRepository.save(adEntity);
-        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity refreshAdById(Long adId) {
+    public void refreshAdById(Long adId) {
         AdEntity adEntity = adRepository.findById(adId).get();
         adEntity.setRefreshDate(LocalDate.now());
         adRepository.save(adEntity);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
 

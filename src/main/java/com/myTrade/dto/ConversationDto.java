@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,5 +16,5 @@ public class ConversationDto {
     private String senderUsername;
     private String recipientUsername;
     private String title;
-    private List<MessageDto> messageDtoList = new LinkedList<>();
+    private List<MessageDto> messageDtoList;
 }

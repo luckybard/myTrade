@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 import static com.myTrade.utility.pojo.City.EVERYWHERE;
+
 @RestController
 @RequestMapping(path = "/ad")
 public class AdController {
@@ -27,65 +28,77 @@ public class AdController {
 
     @PostMapping("/save")
     public ResponseEntity saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(@RequestBody AdEditDto adEditDto) {
-        return adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
+        adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/fetch")
     public ResponseEntity<Page<AdDto>> fetchActiveAdDtoPageBySearchRequest(@RequestParam String searchText, @RequestParam Optional<Boolean> searchInDescription, @RequestParam Optional<City> city,
                                                                            @RequestParam Optional<AdCategory> category, @RequestParam Optional<PriceRange> priceRange,
                                                                            @RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        return adService.fetchActiveAdDtoPageBySearchRequest(searchText, searchInDescription.orElse(false), city.orElse(EVERYWHERE), category.orElse(AdCategory.ALL),
+        Page<AdDto> adDtoPage = adService.fetchActiveAdDtoPageBySearchRequest(searchText, searchInDescription.orElse(false), city.orElse(EVERYWHERE), category.orElse(AdCategory.ALL),
                 priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageNumber.orElse(0), pageSize.orElse(10));
+        return ResponseEntity.ok(adDtoPage);
     }
 
     @GetMapping("/fetch/random")
     public ResponseEntity<Page<AdDto>> fetchRandomAdDtoPage(@RequestParam Optional<Integer> pageSize) {
-        return adService.fetchRandomAdDtoPage(pageSize.orElse(10));
+        Page<AdDto> adDtoPage = adService.fetchRandomAdDtoPage(pageSize.orElse(10));
+        return ResponseEntity.ok(adDtoPage);
     }
 
     @GetMapping("/fetch/{id}")
     public ResponseEntity<AdDto> fetchAdDtoByIdAndSetIsUserFavourite(@PathVariable(value = "id") Long adId) {
-        return adService.fetchAdDtoByIdAndSetIsUserFavourite(adId);
+        AdDto adDto = adService.fetchAdDtoByIdAndSetIsUserFavourite(adId);
+        return ResponseEntity.ok(adDto);
     }
 
     @GetMapping("/fetch/edit/{id}")
     public ResponseEntity<AdEditDto> fetchAdEditDto(@PathVariable(value = "id") Long adId) {
-        return adService.fetchAdEditDto(adId);
+        adService.fetchAdEditDto(adId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/fetch/adList")
     public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(@RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        return adService.fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(pageNumber.orElse(0), pageSize.orElse(10));
+        Page<AdOwnerDto> adOwnerDtoPage = adService.fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(pageNumber.orElse(0), pageSize.orElse(10));
+        return ResponseEntity.ok(adOwnerDtoPage);
     }
 
     @GetMapping("/fetch/adList/{username}")
     public ResponseEntity<Page<AdDto>> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(@PathVariable(value = "username") String username,
                                                                                             @RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        return adService.fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(username, pageNumber.orElse(0), pageSize.orElse(10));
+        Page<AdDto> adDtoPage = adService.fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(username, pageNumber.orElse(0), pageSize.orElse(10));
+        return ResponseEntity.ok(adDtoPage);
     }
 
     @GetMapping("/fetch/favourite/adList")
     public ResponseEntity<Page<AdDto>> fetchUserFavouriteAdDtoPage(@RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        return adService.fetchUserFavouriteAdDtoPage(pageNumber.orElse(0), pageSize.orElse(10));
+        Page<AdDto> adDtoPage = adService.fetchUserFavouriteAdDtoPage(pageNumber.orElse(0), pageSize.orElse(10));
+        return ResponseEntity.ok(adDtoPage);
     }
 
     @PatchMapping("/patch")
     public ResponseEntity patchAdEntityByAdEditDto(@RequestBody AdEditDto adEditDto) {
-        return adService.patchAdEntityByAdEditDto(adEditDto);
+        adService.patchAdEntityByAdEditDto(adEditDto);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/patch/refresh/{id}")
     public ResponseEntity refreshAdById(@PathVariable(value = "id") Long adId) {
-        return adService.refreshAdById(adId);
+        adService.refreshAdById(adId);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/patch/highlight/{id}")
     public ResponseEntity highlightAdByIdAndDeductHighlightPointFromUser(@PathVariable(value = "id") Long adId) {
-        return adService.highlightAdByIdAndDeductHighlightPointFromUser(adId);
+        adService.highlightAdByIdAndDeductHighlightPointFromUser(adId);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/patch/active/{id}")
     public ResponseEntity changeAdStatusById(@PathVariable(value = "id") Long adId) {
-        return adService.changeAdStatusById(adId);
+        adService.changeAdStatusById(adId);
+        return ResponseEntity.ok().build();
     }
 }

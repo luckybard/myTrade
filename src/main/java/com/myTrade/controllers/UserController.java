@@ -18,18 +18,20 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity saveUserEntityByRegistrationRequest(@RequestBody RegistrationRequest registrationRequest) {
-       return userService.saveUserEntityByRegistrationRequest(registrationRequest);
+        userService.saveUserEntityByRegistrationRequest(registrationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/patch/favourite/add/{id}")
     public ResponseEntity addAdFromUserFavouriteAdListById(@PathVariable(value = "id") Long adId) {
-        return userService.addAdFromUserFavouriteAdListById(adId);
+        userService.addAdFromUserFavouriteAdListById(adId);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/patch/favourite/remove/{id}")
     public ResponseEntity removeAdFromUserFavouriteAdListById(@PathVariable(value = "id") Long adId) {
-        return userService.removeAdFromUserFavouriteAdListById(adId);
+        userService.removeAdFromUserFavouriteAdListById(adId);
+        return ResponseEntity.ok().build();
     }
 }

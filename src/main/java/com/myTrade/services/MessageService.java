@@ -8,8 +8,6 @@ import com.myTrade.repositories.ConversationRepository;
 import com.myTrade.repositories.MessageRepository;
 import com.myTrade.utility.UserUtility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public ResponseEntity saveMessageDtoAndAssignToConversationById(MessageDto messageDto, Long conversationId) {
+    public void saveMessageDtoAndAssignToConversationById(MessageDto messageDto, Long conversationId) {
         MessageEntity messageEntity = messageMapper.messageDtoToMessageEntity(messageDto);
         ConversationEntity conversationEntity = conversationRepository.findById(conversationId).get();
         List<MessageEntity> messageEntityList = new ArrayList<>(conversationEntity.getMessageList());
@@ -35,12 +33,11 @@ public class MessageService {
         messageEntityList.add(messageEntity);
         conversationEntity.setMessageList(messageEntityList);
         conversationRepository.save(conversationEntity);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    public ResponseEntity<List<MessageDto>> fetchMessageDtoListByConversationId(Long conversationId) {
+    public List<MessageDto> fetchMessageDtoListByConversationId(Long conversationId) {
         List<MessageEntity> messageEntityList = messageRepository.findMessageEntityListByConversationId(conversationId);
         List<MessageDto> messageDtoList = messageMapper.messageEntityListToMessageDtoList(messageEntityList);
-        return ResponseEntity.ok(messageDtoList);
+        return messageDtoList;
     }
 }
