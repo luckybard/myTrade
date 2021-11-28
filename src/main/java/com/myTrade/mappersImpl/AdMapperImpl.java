@@ -5,10 +5,6 @@ import com.myTrade.dto.AdEditDto;
 import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.mappers.AdMapper;
-import com.myTrade.utility.pojo.City;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AdMapperImpl implements AdMapper {
 
@@ -39,59 +35,6 @@ public class AdMapperImpl implements AdMapper {
     }
 
     @Override
-    public List<AdDto> adEntityListToAdDtoList(List<AdEntity> adEntityList) {
-        if (adEntityList == null) {
-            return null;
-        }
-
-        List<AdDto> list = new ArrayList<AdDto>(adEntityList.size());
-        for (AdEntity adEntity : adEntityList) {
-            list.add(adEntityToAdDto(adEntity));
-        }
-
-        return list;
-    }
-
-    @Override
-    public AdEntity adDtoAdEntity(AdDto adDto) {
-        if (adDto == null) {
-            return null;
-        }
-
-        AdEntity adEntity = new AdEntity();
-
-        adEntity.setId(adDto.getId());
-        adEntity.setOwnerUsername(adDto.getOwnerUsername());
-        adEntity.setAdCategory(adDto.getAdCategory());
-        adEntity.setTitle(adDto.getTitle());
-        adEntity.setImagePath(adDto.getImagePath());
-        adEntity.setDescription(adDto.getDescription());
-        adEntity.setPrice(adDto.getPrice());
-        adEntity.setCity(adDto.getCity());
-        adEntity.setCreatedDate(adDto.getCreatedDate());
-        adEntity.setModifiedDate(adDto.getModifiedDate());
-        adEntity.setIsActive(adDto.getIsActive());
-        adEntity.setIsHighlighted(adDto.getIsHighlighted());
-        adEntity.setCountView(adDto.getCountView());
-
-        return adEntity;
-    }
-
-    @Override
-    public List<AdEntity> adDtoListToAdEntityList(List<AdDto> adDtoList) {
-        if (adDtoList == null) {
-            return null;
-        }
-
-        List<AdEntity> list = new ArrayList();
-        for (AdDto adDto : adDtoList) {
-            list.add(adDtoAdEntity(adDto));
-        }
-
-        return list;
-    }
-
-    @Override
     public AdEditDto adEntityToAdEditDto(AdEntity adEntity) {
         if (adEntity == null) {
             return null;
@@ -104,7 +47,7 @@ public class AdMapperImpl implements AdMapper {
         adEditDto.setTitle(adEntity.getTitle());
         adEditDto.setDescription(adEntity.getDescription());
         adEditDto.setPrice(adEntity.getPrice());
-        adEditDto.setCity(City.valueOf(adEntity.getCity()));
+        adEditDto.setCity(adEntity.getCity());
 
         return adEditDto;
     }
@@ -122,7 +65,7 @@ public class AdMapperImpl implements AdMapper {
         adEntity.setTitle(adEditDto.getTitle());
         adEntity.setDescription(adEditDto.getDescription());
         adEntity.setPrice(adEditDto.getPrice());
-        adEntity.setCity(adEditDto.getCity().getCityName());
+        adEntity.setCity(adEditDto.getCity());
 
         return adEntity;
     }

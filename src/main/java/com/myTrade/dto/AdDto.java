@@ -1,6 +1,7 @@
 package com.myTrade.dto;
 
 import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class AdDto {
     private String imagePath;
     private String description;
     private Double price;
-    private String city;
+    private City city;
     private LocalDate createdDate;
     private LocalDate modifiedDate;
     private Boolean isActive;

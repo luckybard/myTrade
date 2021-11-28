@@ -1,6 +1,7 @@
 package com.myTrade.entities;
 
 import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,7 +43,8 @@ public class AdEntity {
     private Double price;
 
     @Column(nullable = false)
-    private String city;
+    @Enumerated(EnumType.STRING)
+    private City city;
 
     @Column(nullable = false)
     private LocalDate createdDate;
