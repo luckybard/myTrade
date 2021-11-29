@@ -10,6 +10,7 @@ import com.myTrade.utility.UserUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class MessageService {
         MessageEntity messageEntity = messageMapper.messageDtoToMessageEntity(messageDto);
         ConversationEntity conversationEntity = conversationRepository.findById(conversationId).get();
         List<MessageEntity> messageEntityList = new ArrayList<>(conversationEntity.getMessageList());
+        messageEntity.setDateTime(LocalDateTime.now());
         messageEntity.setAuthorUsername(UserUtility.getUsernameFromContext());
         messageEntityList.add(messageEntity);
         conversationEntity.setMessageList(messageEntityList);

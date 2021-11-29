@@ -29,5 +29,5 @@ public class MessageEntity {
     private String text;
 
     @Column(nullable = false)
-    private LocalDateTime dateTime = LocalDateTime.now(); //TODO:[Q] initialize localDateTime here? is it proper?
+    private LocalDateTime dateTime;
 }

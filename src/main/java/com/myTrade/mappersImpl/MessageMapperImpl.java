@@ -50,6 +50,7 @@ public class MessageMapperImpl implements MessageMapper {
         messageEntity.setId(messageDto.getId());
         messageEntity.setAuthorUsername(messageDto.getAuthorUsername());
         messageEntity.setText(messageDto.getText());
+        messageEntity.setDateTime(messageDto.getDateTime());
 
         return messageEntity;
     }

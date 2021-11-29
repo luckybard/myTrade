@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ConversationService {
     private final ConversationRepository conversationRepository;
@@ -21,6 +23,8 @@ public class ConversationService {
 
     public void saveInitialConversationWithMessageByConversationDto(ConversationDto conversationDto) {
         ConversationEntity conversationEntity = conversationMapper.conversationDtoToConversationEntity(conversationDto);
+        final int FIRST_MESSAGE = 0;
+        conversationEntity.getMessageList().get(FIRST_MESSAGE).setDateTime(LocalDateTime.now());
         conversationRepository.save(conversationEntity);
     }
 
