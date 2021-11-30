@@ -28,10 +28,11 @@ public class AdUtility {
 
     public static void setInitialValuesForAd(AdEntity adEntity, String ownerUsername) {
         Integer ONE_YEAR = 1;
-        adEntity.setCreatedDate(LocalDate.now());
-        adEntity.setModifiedDate(LocalDate.now());
-        adEntity.setRefreshDate(LocalDate.now());
-        adEntity.setExpirationHighlightDate(LocalDate.now().minusYears(ONE_YEAR));
+        LocalDate LOCAL_DATE = LocalDate.now();
+        adEntity.setCreatedDate(LOCAL_DATE);
+        adEntity.setModifiedDate(LOCAL_DATE);
+        adEntity.setRefreshDate(LOCAL_DATE);
+        adEntity.setExpirationHighlightDate(LOCAL_DATE.minusYears(ONE_YEAR));
         adEntity.setIsActive(true);
         adEntity.setOwnerUsername(ownerUsername);
     }

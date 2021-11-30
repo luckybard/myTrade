@@ -20,7 +20,6 @@ public class AdMapperImpl implements AdMapper {
         adDto.setOwnerUsername(adEntity.getOwnerUsername());
         adDto.setAdCategory(adEntity.getAdCategory());
         adDto.setTitle(adEntity.getTitle());
-        adDto.setImagePath(adEntity.getImagePath());
         adDto.setDescription(adEntity.getDescription());
         adDto.setPrice(adEntity.getPrice());
         adDto.setCity(adEntity.getCity());
@@ -81,7 +80,6 @@ public class AdMapperImpl implements AdMapper {
         adOwnerDto.setId(adEntity.getId());
         adOwnerDto.setAdCategory(adEntity.getAdCategory());
         adOwnerDto.setTitle(adEntity.getTitle());
-        adOwnerDto.setImagePath(adEntity.getImagePath());
         adOwnerDto.setDescription(adEntity.getDescription());
         adOwnerDto.setPrice(adEntity.getPrice());
         adOwnerDto.setCity(adEntity.getCity());

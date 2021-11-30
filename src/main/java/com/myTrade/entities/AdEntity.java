@@ -34,8 +34,6 @@ public class AdEntity {
     @Column(nullable = false)
     private String title;
 
-    private String imagePath;
-
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
@@ -65,21 +63,22 @@ public class AdEntity {
     private Long countView = INITIAL_AD_VIEW_COUNT;
 
     @Transient
-    private Boolean isHighlighted = false;
+    private Boolean isHighlighted;
 
     @Transient
-    private Boolean isUserFavourite = false;
+    private Boolean isUserFavourite;
 
     @Transient
-    private Boolean isRefreshable = false;
+    private Boolean isRefreshable;
 
     @Transient
-    private Boolean isUserAbleToHighlight = false;
+    private Boolean isUserAbleToHighlight;
 
     @PostLoad
     public void postLoad(){
-        if(LocalDate.now().isBefore(expirationHighlightDate)){
-            setIsHighlighted(true);
-        }
+        setIsRefreshable(false);
+        setIsUserFavourite(false);
+        setIsUserAbleToHighlight(false);
+        setIsHighlighted(LocalDate.now().isBefore(expirationHighlightDate));
     }
 }
