@@ -1,106 +1,97 @@
 package com.myTrade.integrationTests.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.myTrade.entities.ConversationEntity;
-import com.myTrade.entities.MessageEntity;
-import com.myTrade.mappersImpl.MessageMapperImpl;
+import com.myTrade.dto.ConversationDto;
+import com.myTrade.dto.MessageDto;
 import com.myTrade.repositories.ConversationRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.myTrade.repositories.UserRepository;
+import com.myTrade.utility.UserUtility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
-import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
+@WithMockUser(username = "brad@brad.brad")
+@Transactional
 public class ConversationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private ConversationRepository conversationRepository;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private MessageMapperImpl messageMapper = new MessageMapperImpl();
+    @Autowired
+    private UserRepository userRepository;
 
-    private ConversationEntity conversationEntity = new ConversationEntity();
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    private void setUpConversationEntity(){
-        conversationEntity.setId(1L);
-        conversationEntity.setTitle("I'd like to buy your book");
-        conversationEntity.setMessageList(generateMessageEntity());
-    }
-
-    private List<MessageEntity> generateMessageEntity(){
-        MessageEntity messageEntity1 = new MessageEntity(1L,2L,"desc","path", LocalDateTime.now());
-        MessageEntity messageEntity2 = new MessageEntity(2L,4L,"desc","path", LocalDateTime.now());
-
-        return List.of(messageEntity1,messageEntity2);
-    }
 
     @Test
-    @WithMockUser("user:read")
-    public void whenProperConversationIdIsProvided_thenShouldReturn200(){
+    public void whenUsernameIsProvided_thenShouldFetchUserConversationsAndRetrieved200() {
         //given
-        Long conversationId = 1L;
-        given(conversationRepository.getById(conversationEntity.getId())).willReturn(conversationEntity);
-        //when & then
+        String username = UserUtility.getUsernameFromContext();
+        //when && then
         try {
-            mockMvc.perform(get("/conversation/search/{id}",String.valueOf(conversationId)))
-                    .andExpect(status().is(200)).andExpect(content().json(objectMapper.writeValueAsString(conversationEntity)));
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void whenProperConversationIdIsProvided_thenShouldReturnMessageEntityListWithStatus200() {
-        //given
-        Long conversationId = 1L;
-        given(conversationRepository.getById(conversationEntity.getId())).willReturn(conversationEntity);
-        //when & then
-        try {
-            mockMvc.perform(get("/conversation/fetch-all/{id}", String.valueOf(conversationId)))
-                    .andExpect(status().is(200));
+            mockMvc.perform(get("/conversation/fetch/{username}", username))
+                    .andDo(print())
+                    .andExpect(status().is(200))
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$.content").isArray())
+                    .andExpect(jsonPath("$.content").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].title").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].senderUsername").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].recipientUsername").isNotEmpty());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void whenProperConversationEntityIsProvided_thenShouldReturnStatus200() {
+    public void whenConversationDtoIsProvided_thenShouldSaveConversationWithInitialMessageAndRetrieved201() {
         //given
-        ConversationEntity conversation = new ConversationEntity();
-        conversation.setSenderId(1L);
-        conversation.setRecipientId(2L);
-        conversation.setTitle("Hi");
-        conversation.setMessageList(new LinkedList<>());
-        //when
-        //then
+        String senderUsername = UserUtility.getUsernameFromContext();
+        String recipientUsername = "john@john.john";
+        String title = "Wardrobe";
+        ConversationDto conversationDto = ConversationDto.builder()
+                .senderUsername(senderUsername)
+                .recipientUsername(recipientUsername)
+                .title(title)
+                .messageDtoList(List.of(MessageDto.builder()
+                        .text("Hi!")
+                        .authorUsername(senderUsername)
+                        .build()))
+                .build();
+        Long ONE_ADDITIONAL_CONVERSATION = 1L;
+        Long expectedConversationListSize = conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(senderUsername, Pageable.unpaged()).getTotalElements() + ONE_ADDITIONAL_CONVERSATION;
+        //when & then
         try {
-            mockMvc.perform(post("/conversation/save").contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(conversation))).andExpect(status().is(201));
+            mockMvc.perform(post("/conversation/save").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(conversationDto)))
+                    .andDo(print())
+                    .andExpect(status().is(201));
         } catch (Exception e) {
             e.printStackTrace();
         }
+        conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(senderUsername, Pageable.unpaged());
+        Long actualConversationListSize = conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(senderUsername, Pageable.unpaged()).getTotalElements();
+        assertThat(actualConversationListSize).isEqualTo(expectedConversationListSize);
     }
-
 }
 
 

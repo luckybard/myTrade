@@ -1,228 +1,297 @@
 package com.myTrade.integrationTests.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.myTrade.dto.AdDto;
+import com.myTrade.dto.AdEditDto;
 import com.myTrade.entities.AdEntity;
-import com.myTrade.mappersImpl.AdMapperImpl;
 import com.myTrade.repositories.AdRepository;
-import com.myTrade.utility.AdCategory;
-import org.junit.jupiter.api.BeforeEach;
+import com.myTrade.repositories.UserRepository;
+import com.myTrade.utility.AdUtility;
+import com.myTrade.utility.UserUtility;
+import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.BDDMockito.given;
+import java.time.LocalDate;
+
+import static com.myTrade.utility.TestUtility.ONE_ADDITIONAL_AD;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
+@Transactional
+@WithMockUser(username = "brad@brad.brad")
 public class AdControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private AdRepository adRepository;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private AdMapperImpl adMapper = new AdMapperImpl();
-    private AdEntity ad = new AdEntity();
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @BeforeEach
-    public void setUpAd() {
-        ad.setId(1L);
-        ad.setOwnerUsername("bart");
-        ad.setAdCategory(AdCategory.BOOKS);
-        ad.setTitle("The Lord of the rings");
-        ad.setImagePath("myTrade.com/image");
-        ad.setDescription("The best book ever!");
-        ad.setPrice(100.00);
-        ad.setCity("Warsaw");
-        ad.setIsActive(Boolean.FALSE);
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adEditDtoWithoutId.csv", numLinesToSkip = 1)
+    public void whenAdEditDtoIsProvided_thenAdShouldBeSavedAndRetrieved201(AdCategory adCategory,
+                                                                           String title,
+                                                                           String description,
+                                                                           City city,
+                                                                           Double price){
+        //given
+        AdEditDto adEditDto = AdEditDto.builder()
+                .adCategory(adCategory)
+                .city(city)
+                .description(description)
+                .title(title)
+                .price(price)
+                .build();
+        int expectedUserAdListSize = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().size() + ONE_ADDITIONAL_AD;
+        //when & then
+        try {
+            mockMvc.perform(post("/ad/save")
+                            .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(adEditDto)))
+                    .andDo(print())
+                    .andExpect(status().is(201));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int actualUserAdListSize = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().size();
+        assertThat(actualUserAdListSize).isEqualTo(expectedUserAdListSize);
     }
 
     @Test
-    @WithMockUser(authorities = "ad:read")
-    public void whenProperAdIdIsProvided_thenRetrieved200() {
+    public void whenPageSizeIsProvided_thenShouldFetchRandomAdDtoPageAndRetrieved200() {
         //given
-        given(adRepository.getById(1L)).willReturn(ad);
-        Long adId = 1L;
-        //when & then
+        //when && then
         try {
-            mockMvc.perform(get("/ad/search/{id}", String.valueOf(adId))).andExpect(status().is(200))
-                    .andExpect(content().json(objectMapper.writeValueAsString(ad)));
+            mockMvc.perform(get("/ad/fetch/random"))
+                    .andDo(print())
+                    .andExpect(status().is(200))
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$.content").isArray())
+                    .andExpect(jsonPath("$.content").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].title").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].description").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].price").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].adCategory").isNotEmpty());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperAdDtoIsProvided_thenRetrieved201() {
+    public void whenProperAdIdIsProvided_thenAdEditDtoShouldBeFetchByIdAndRetrieved200() {
         //given
-        AdDto adDto = adMapper.adEntityToAdDto(ad);
+        AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream().findFirst().get();
         //when & then
         try {
-            mockMvc.perform(post("/ad/create").contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(adDto))).andExpect(status().is(201));
-//            verify(adRepository).save(adMapper.adDtoAdEntity(adDto)); TODO: [Q]Is it possible to verify this object? (2 fields are modified before being saved (LocalDateTime.now())
+            mockMvc.perform(get("/ad/fetch/edit/{id}", String.valueOf(userAdEntity.getId())))
+                    .andDo(print())
+                    .andExpect(status().is(200))
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$.adCategory").value(userAdEntity.getAdCategory().name()))
+                    .andExpect(jsonPath("$.city").value(userAdEntity.getCity().name()))
+                    .andExpect(jsonPath("$.title").value(userAdEntity.getTitle()))
+                    .andExpect(jsonPath("$.price").value(userAdEntity.getPrice()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
+    public void whenProperAdIdIsProvided_thenAdDtoShouldBeFetchByIdAndRetrieved200(Long adId) {
+        //given
+        //when & then
+        try {
+            mockMvc.perform(get("/ad/fetch/{id}", String.valueOf(adId)))
+                    .andDo(print())
+                    .andExpect(status().is(200))
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$.adCategory").isNotEmpty())
+                    .andExpect(jsonPath("$.city").isNotEmpty())
+                    .andExpect(jsonPath("$.title").isNotEmpty())
+                    .andExpect(jsonPath("$.price").isNotEmpty());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperAdDtoForEditIsProvided_thenRetrieved200() {
+    public void whenPageNumberAndPageSizeIsProvided_thenShouldFetchAdOwnerDtoPageAndRetrieved200() {
         //given
-        Long adId = 1L;
-        AdDto editedAdDto = adMapper.adEntityToAdDto(ad);
-        editedAdDto.setTitle("New");
-        editedAdDto.setCity("New");
-        editedAdDto.setDescription("New");
-        editedAdDto.setAdCategory(AdCategory.OTHER);
         //when & then
         try {
-            mockMvc.perform(patch("/ad/edit/{id}", String.valueOf(adId)).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(editedAdDto))).andExpect(status().is(200));
-            //TODO: [Q] Look up, same question.
+            mockMvc.perform(get("/ad/fetch/adList"))
+                    .andDo(print())
+                    .andExpect(status().is(200))
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$.content").isArray())
+                    .andExpect(jsonPath("$.content").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].title").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].description").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].price").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].adCategory").isNotEmpty());
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void whenUsernamePageNumberAndPageSizeIsProvided_thenShouldFetchOwnerAdDtoPageByUsernameAndRetrieved200() {
+        //given
+        String username = "john@john.john";
+        //when && then
+        try {
+            mockMvc.perform(get("/ad/fetch/adList/{username}", username))
+                    .andDo(print())
+                    .andExpect(status().is(200))
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$.content").isArray())
+                    .andExpect(jsonPath("$.content").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].title").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].description").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].price").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].adCategory").isNotEmpty());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+
+    public void whenPageNumberAndPageSizeIsProvided_thenShouldFetchUserFavouriteAdDtoPageAndRetrieved200() {
+        //given
+        //when && then
+        try {
+            mockMvc.perform(get("/ad/fetch/favourite/adList"))
+                    .andDo(print())
+                    .andExpect(status().is(200))
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$.content").isArray())
+                    .andExpect(jsonPath("$.content").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].title").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].description").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].city").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].price").isNotEmpty())
+                    .andExpect(jsonPath("$.content[*].adCategory").isNotEmpty());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void whenValidAdEditDtoIsProvided_thenNewValuesShouldBeSetForAdEntityAndRetrieved200() {
+        //given
+        Long userAdEntityId = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
+                .findFirst()
+                .get().getId();
+        String expectedTitle = "title,title";
+        AdCategory expectedAdCategory = AdCategory.OTHER;
+        City expectedCity = City.EVERYWHERE;
+        String expectedDescription = "description,description,description,description,description,description";
+        Double expectedPrice = 1D;
+        AdEditDto adEditDto = AdEditDto.builder().id(userAdEntityId)
+                .adCategory(expectedAdCategory)
+                .city(expectedCity)
+                .description(expectedDescription)
+                .title(expectedTitle)
+                .price(expectedPrice)
+                .build();
+        //when && then
+        try {
+            mockMvc.perform(patch("/ad/patch").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(adEditDto)))
+                    .andDo(print())
+                    .andExpect(status().is(200));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        AdEntity actualAdEntity = adRepository.getById(userAdEntityId);
+        assertThat(actualAdEntity.getTitle()).isEqualTo(expectedTitle);
+        assertThat(actualAdEntity.getDescription()).isEqualTo(expectedDescription);
+        assertThat(actualAdEntity.getAdCategory()).isEqualTo(expectedAdCategory);
+        assertThat(actualAdEntity.getCity()).isEqualTo(expectedCity);
+        assertThat(actualAdEntity.getPrice()).isEqualTo(expectedPrice);
+    }
+
+    @Test
+    public void whenProperAdIdIsProvided_thenNewRefreshDateShouldBeSetAndRetrieved200() {
+        //given
+        LocalDate expectedDate = LocalDate.now();
+        AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
+                .findFirst()
+                .get();
+        //when & then
+        try {
+            mockMvc.perform(patch("/ad/patch/refresh/{id}", String.valueOf(userAdEntity.getId())))
+                    .andDo(print())
+                    .andExpect(status().is(200));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LocalDate actualDate = adRepository.getById(userAdEntity.getId()).getRefreshDate();
+        assertThat(actualDate).isEqualTo(expectedDate);
+    }
+
+    @Test
+    public void whenProperAdIdIsProvided_thenNewHighlightDateShouldBeSetAndRetrieved200(){
+        //given
+        LocalDate expectedDate = LocalDate.now().plusDays(AdUtility.AD_HIGHLIGHTING_DURATION_IN_DAYS);
+        AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
+                .findFirst()
+                .get();
+        //when & then
+        try {
+            mockMvc.perform(patch("/ad/patch/highlight/{id}", String.valueOf(userAdEntity.getId())))
+                    .andDo(print())
+                    .andExpect(status().is(200));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LocalDate actualDate = adRepository.getById(userAdEntity.getId()).getExpirationHighlightDate();
+        assertThat(actualDate).isEqualTo(expectedDate);
+    }
+
+    @Test
+    public void whenProperAdIdIsProvided_thenAdStatusShouldBeChangeAndRetrieved200(){
+        //given
+        AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
+                .findFirst()
+                .get();
+        Boolean expectedStatus = !userAdEntity.getIsActive();
+        //when & then
+        try {
+            mockMvc.perform(patch("/ad/patch/active/{id}", String.valueOf(userAdEntity.getId())))
+                    .andDo(print())
+                    .andExpect(status().is(200));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Boolean actualStatus = adRepository.getById(userAdEntity.getId()).getIsActive();
+        assertThat(expectedStatus).isEqualTo(expectedStatus);
     }
 }
-
-//                                              !- For learning purpose -!
- /*   @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperPathVariableAndNewTitleIsProvided_thenRetrieved200AndTitleShouldBeChanged() {
-        //given
-        String newTitle = "newTitle";
-        //when
-        //then
-        try {
-            mockMvc.perform(patch("/ad/{id}/edit").contentType(MediaType.APPLICATION_JSON)
-                    .param("id", "1").content(objectMapper.writeValueAsString(newTitle))).andExpect(status().is(200));
-            assertThat(adRepository.findById(1L).get().getTitle()).isEqualTo("something");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperPathVariableAndNewCategoryIsProvided_thenRetrieved200AndCategoryShouldBeChanged() {
-        AdCategory newAdCategory = AdCategory.OTHER;
-        try {
-            mockMvc.perform(patch("/ad/{id}/editCategory").contentType(MediaType.APPLICATION_JSON)
-                    .param("id", "1").content(objectMapper.writeValueAsString(newAdCategory))).andExpect(status().is(200));
-//            AdCategory actual = adRepository.findById(1L).get().getAdCategory();
-//            assertThat(actual).isEqualTo(newAdCategory);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperPathVariableAndNewImagePathIsProvided_thenRetrieved200AndImagePathShouldBeChanged() {
-        //given
-        String newImagePath = "newImagePath";
-//        String fake = "fake";
-        long adId = 1;
-//        String actual;
-        //when
-        //then
-        try {
-            mockMvc.perform(patch("/ad/{id}/editImagePath").contentType(MediaType.APPLICATION_JSON)
-                    .param("id", String.valueOf(adId)).content(objectMapper.writeValueAsString(newImagePath))).andExpect(status().is(200));
-//            actual = adRepository.findById(1L).get().getImagePath();
-//            assertThat(fake).isEqualTo(newImagePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperPathVariableAndNewDescriptionIsProvided_thenRetrieved200AndDescriptionShouldBeChanged() {
-        //given
-        String newDescription = "newDescription";
-        long adId = 1;
-//        String actual;
-        //when
-        //then
-        try {
-            mockMvc.perform(patch("/ad/{id}/editDescription").contentType(MediaType.APPLICATION_JSON)
-                    .param("id", String.valueOf(adId)).content(objectMapper.writeValueAsString(newDescription))).andExpect(status().is(200));
-//            actual = adRepository.findById(1L).get().getDescription();
-//            assertThat(actual).isEqualTo(newDescription);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperPathVariableAndNewPriceIsProvided_thenRetrieved200AndPriceShouldBeChanged() {
-        //given
-        Double newPrice = 100000000.2;
-        long adId = 1;
-//        Double actual;
-        //when
-        //then
-        try {
-            mockMvc.perform(patch("/ad/{id}/editPrice").contentType(MediaType.APPLICATION_JSON)
-                    .param("id", String.valueOf(adId)).content(objectMapper.writeValueAsString(newPrice))).andExpect(status().is(200));
-//            actual = adRepository.findById(1L).get().getPrice();
-//            assertThat(actual).isEqualTo(newPrice);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperPathVariableAndNewCityIsProvided_thenRetrieved200AndCityShouldBeChanged() {
-        //given
-        String newCity = "newCity";
-        long adId = 1;
-//        String actual;
-        //when
-        //then
-        try {
-            mockMvc.perform(patch("/ad/{id}/editCity").contentType(MediaType.APPLICATION_JSON)
-                    .param("id", String.valueOf(adId)).content(objectMapper.writeValueAsString(newCity))).andExpect(status().is(200));
-//            actual = adRepository.findById(1L).get().getCity();
-//            assertThat(actual).isEqualTo(newCity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    @WithMockUser(authorities = "ad:write")
-    public void whenProperPathVariableAndNewStatusIsProvided_thenRetrieved200AndStatusShouldBeChanged() {
-        //given
-        Boolean newStatus = true;
-        long adId = 1;
-
-        try {
-            mockMvc.perform(patch("/ad/{id}/editStatus").contentType(MediaType.APPLICATION_JSON)
-                    .param("id", String.valueOf(adId)).content(objectMapper.writeValueAsString(newStatus))).andExpect(status().is(200));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-}*/
 
