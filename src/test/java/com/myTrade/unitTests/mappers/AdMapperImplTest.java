@@ -1,15 +1,16 @@
 package com.myTrade.unitTests.mappers;
 
 import com.myTrade.dto.AdDto;
+import com.myTrade.dto.AdEditDto;
+import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.mappersImpl.AdMapperImpl;
-import com.myTrade.utility.AdCategory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,25 +18,38 @@ public class AdMapperImplTest {
 
     AdMapperImpl adMapper = new AdMapperImpl();
 
-    AdEntity adEntity = new AdEntity();
-
-    @BeforeEach
-    public void setUpAdEntity(){
-        adEntity.setId(1L);
-        adEntity.setOwnerUsername("john");
-        adEntity.setAdCategory(AdCategory.BOOKS);
-        adEntity.setTitle("The Lord of the rings");
-        adEntity.setImagePath("image/path");
-        adEntity.setDescription("The best book");
-        adEntity.setPrice(40.00);
-        adEntity.setCity("Warsaw");
-        adEntity.setCreatedDateTime(LocalDateTime.of(LocalDate.of(2020, 8, 21), LocalTime.of(20, 18)));
-        adEntity.setModifiedDateTime(LocalDateTime.now());
-    }
-
-    @Test
-    public void shouldMapToDtoWithNestedObjects(){
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adEntity.csv",numLinesToSkip = 1)
+    public void shouldMapAdEntityToAdDto(Long id,
+                                         AdCategory adCategory,
+                                         String title,
+                                         String description,
+                                         City city,
+                                         Double price,
+                                         String ownerUsername,
+                                         Long countView,
+                                         Boolean isActive,
+                                         LocalDate createdDate,
+                                         LocalDate modifiedDate,
+                                         LocalDate refreshDate,
+                                         LocalDate expirationHighlightDate
+    ) {
         //given
+        AdEntity adEntity = AdEntity.builder().id(id)
+                .adCategory(adCategory)
+                .city(city)
+                .countView(countView)
+                .createdDate(createdDate)
+                .description(description)
+                .expirationHighlightDate(expirationHighlightDate)
+                .isActive(isActive)
+                .modifiedDate(modifiedDate)
+                .ownerUsername(ownerUsername)
+                .price(price)
+                .refreshDate(refreshDate)
+                .title(title)
+                .build();
+        adEntity.postLoad();
         //when
         AdDto adDto = adMapper.adEntityToAdDto(adEntity);
         //then
@@ -45,35 +59,138 @@ public class AdMapperImplTest {
         assertThat(adDto.getOwnerUsername().equals(adEntity.getOwnerUsername()));
         assertThat(adDto.getTitle()).isEqualTo(adEntity.getTitle());
         assertThat(adDto.getDescription()).isEqualTo(adEntity.getDescription());
-        assertThat(adDto.getImagePath()).isEqualTo(adEntity.getImagePath());
         assertThat(adDto.getCity()).isEqualTo(adEntity.getCity());
-        assertThat(adDto.getModifiedDateTime()).isEqualTo(adEntity.getModifiedDateTime());
-        assertThat(adDto.getCreatedDateTime()).isEqualTo(adEntity.getCreatedDateTime());
+        assertThat(adDto.getModifiedDate()).isEqualTo(adEntity.getModifiedDate());
+        assertThat(adDto.getCreatedDate()).isEqualTo(adEntity.getCreatedDate());
         assertThat(adDto.getAdCategory()).isEqualTo(adEntity.getAdCategory());
         assertThat(adDto.getIsActive()).isEqualTo(adEntity.getIsActive());
         assertThat(adDto.getPrice()).isEqualTo(adEntity.getPrice());
+        assertThat(adDto.getIsHighlighted()).isEqualTo(adEntity.getIsHighlighted());
     }
 
-    @Test
-    public void shouldMapToEntityWithNestedObjects(){
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adEntity.csv",numLinesToSkip = 1)
+    public void shouldMapAdEntityToAdEditDto(Long id,
+                                             AdCategory adCategory,
+                                             String title,
+                                             String description,
+                                             City city,
+                                             Double price,
+                                             String ownerUsername,
+                                             Long countView,
+                                             Boolean isActive,
+                                             LocalDate createdDate,
+                                             LocalDate modifiedDate,
+                                             LocalDate refreshDate,
+                                             LocalDate expirationHighlightDate
+    ){
         //given
-        AdDto adDto = adMapper.adEntityToAdDto(adEntity);
+        AdEntity adEntity = AdEntity.builder().id(id)
+                .adCategory(adCategory)
+                .city(city)
+                .countView(countView)
+                .createdDate(createdDate)
+                .description(description)
+                .expirationHighlightDate(expirationHighlightDate)
+                .isActive(isActive)
+                .modifiedDate(modifiedDate)
+                .ownerUsername(ownerUsername)
+                .price(price)
+                .refreshDate(refreshDate)
+                .title(title)
+                .build();
+        adEntity.postLoad();
         //when
-        AdEntity adEntity = adMapper.adDtoAdEntity(adDto);
+        AdEditDto adEditDto = adMapper.adEntityToAdEditDto(adEntity);
+        //then
+        assertThat(adEditDto).isNotNull();
+        assertThat(adEditDto).isInstanceOf(AdEditDto.class);
+        assertThat(adEditDto.getId()).isEqualTo(adEntity.getId());
+        assertThat(adEditDto.getTitle()).isEqualTo(adEntity.getTitle());
+        assertThat(adEditDto.getDescription()).isEqualTo(adEntity.getDescription());
+        assertThat(adEditDto.getCity()).isEqualTo(adEntity.getCity());
+        assertThat(adEditDto.getAdCategory()).isEqualTo(adEntity.getAdCategory());
+        assertThat(adEditDto.getPrice()).isEqualTo(adEntity.getPrice());
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adEntity.csv",numLinesToSkip = 1)
+    public void shouldMapAdEntityToAdOwnerDto(Long id,
+                                              AdCategory adCategory,
+                                              String title,
+                                              String description,
+                                              City city,
+                                              Double price,
+                                              String ownerUsername,
+                                              Long countView,
+                                              Boolean isActive,
+                                              LocalDate createdDate,
+                                              LocalDate modifiedDate,
+                                              LocalDate refreshDate,
+                                              LocalDate expirationHighlightDate
+    ) {
+        //given
+        AdEntity adEntity = AdEntity.builder().id(id)
+                .adCategory(adCategory)
+                .city(city)
+                .countView(countView)
+                .createdDate(createdDate)
+                .description(description)
+                .expirationHighlightDate(expirationHighlightDate)
+                .isActive(isActive)
+                .modifiedDate(modifiedDate)
+                .ownerUsername(ownerUsername)
+                .price(price)
+                .refreshDate(refreshDate)
+                .title(title)
+                .build();
+        adEntity.postLoad();
+        //when
+        AdOwnerDto adOwnerDto = adMapper.adEntityToAdOwnerDto(adEntity);
+        //then
+        assertThat(adOwnerDto).isNotNull();
+        assertThat(adOwnerDto).isInstanceOf(AdOwnerDto.class);
+        assertThat(adOwnerDto.getId()).isEqualTo(adEntity.getId());
+        assertThat(adOwnerDto.getTitle()).isEqualTo(adEntity.getTitle());
+        assertThat(adOwnerDto.getDescription()).isEqualTo(adEntity.getDescription());
+        assertThat(adOwnerDto.getCity()).isEqualTo(adEntity.getCity());
+        assertThat(adOwnerDto.getModifiedDate()).isEqualTo(adEntity.getModifiedDate());
+        assertThat(adOwnerDto.getCreatedDate()).isEqualTo(adEntity.getCreatedDate());
+        assertThat(adOwnerDto.getAdCategory()).isEqualTo(adEntity.getAdCategory());
+        assertThat(adOwnerDto.getIsActive()).isEqualTo(adEntity.getIsActive());
+        assertThat(adOwnerDto.getPrice()).isEqualTo(adEntity.getPrice());
+        assertThat(adOwnerDto.getIsHighlighted()).isEqualTo(adEntity.getIsHighlighted());
+        assertThat(adOwnerDto.getIsRefreshable()).isEqualTo(adEntity.getIsRefreshable());
+        assertThat(adOwnerDto.getIsUserAbleToHighlight()).isEqualTo(adEntity.getIsUserAbleToHighlight());
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adEditDto.csv",numLinesToSkip = 1)
+    public void shouldMapAdEditDtoToAdEntity(Long id,
+                                         AdCategory adCategory,
+                                         String title,
+                                         String description,
+                                         City city,
+                                         Double price
+    ) {
+        //given
+        AdEditDto adEditDto = AdEditDto.builder().id(id)
+                .adCategory(adCategory)
+                .city(city)
+                .description(description)
+                .title(title)
+                .price(price)
+                .build();
+        //when
+        AdEntity adEntity = adMapper.adEditDtoToAdEntity(adEditDto);
         //then
         assertThat(adEntity).isNotNull();
         assertThat(adEntity).isInstanceOf(AdEntity.class);
-        assertThat(adEntity.getId()).isEqualTo(adEntity.getId());
-        assertThat(adEntity.getOwnerUsername()).isEqualTo(adEntity.getOwnerUsername());
-        assertThat(adEntity.getTitle()).isEqualTo(adDto.getTitle());
-        assertThat(adEntity.getDescription()).isEqualTo(adDto.getDescription());
-        assertThat(adEntity.getImagePath()).isEqualTo(adDto.getImagePath());
-        assertThat(adEntity.getCity()).isEqualTo(adDto.getCity());
-        assertThat(adEntity.getModifiedDateTime()).isEqualTo(adDto.getModifiedDateTime());
-        assertThat(adEntity.getCreatedDateTime()).isEqualTo(adDto.getCreatedDateTime());
-        assertThat(adEntity.getAdCategory()).isEqualTo(adDto.getAdCategory());
-        assertThat(adEntity.getIsActive()).isEqualTo(adDto.getIsActive());
-        assertThat(adEntity.getPrice()).isEqualTo(adDto.getPrice());
+        assertThat(adEntity.getId()).isEqualTo(adEditDto.getId());
+        assertThat(adEntity.getTitle()).isEqualTo(adEditDto.getTitle());
+        assertThat(adEntity.getDescription()).isEqualTo(adEditDto.getDescription());
+        assertThat(adEntity.getCity()).isEqualTo(adEditDto.getCity());
+        assertThat(adEntity.getAdCategory()).isEqualTo(adEditDto.getAdCategory());
+        assertThat(adEntity.getPrice()).isEqualTo(adEditDto.getPrice());
     }
-
 }
