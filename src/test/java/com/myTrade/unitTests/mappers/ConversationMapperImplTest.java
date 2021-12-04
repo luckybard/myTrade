@@ -5,8 +5,8 @@ import com.myTrade.dto.MessageDto;
 import com.myTrade.entities.ConversationEntity;
 import com.myTrade.entities.MessageEntity;
 import com.myTrade.mappersImpl.ConversationMapperImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,36 +20,13 @@ public class ConversationMapperImplTest {
 
     ConversationMapperImpl conversationMapper = new ConversationMapperImpl();
 
-    ConversationEntity conversationEntity = new ConversationEntity();
 
-    @BeforeEach
-    public void setUpConversationEntity() {
-        conversationEntity.setId(1L);
-        conversationEntity.setTitle("The LOTR book");
-        conversationEntity.setRecipientId(1L);
-        conversationEntity.setSenderId(2L);
-        conversationEntity.setMessageList(setUpMessageEntityList());
-    }
-
-    private List<MessageEntity> setUpMessageEntityList() {
-        MessageEntity messageEntity1 = new MessageEntity();
-        messageEntity1.setId(1L);
-        messageEntity1.setAuthorId(2L);
-        messageEntity1.setText("Hi, I'd like to buy your book");
-        messageEntity1.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 20)));
-
-        MessageEntity messageEntity2 = new MessageEntity();
-        messageEntity2.setId(2L);
-        messageEntity2.setAuthorId(1L);
-        messageEntity2.setText("Ok, nice");
-        messageEntity2.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 30)));
-
-        return List.of(messageEntity1, messageEntity2);
-    }
-
-    @Test
-    public void shouldMapToDtoWithNestedObjects(){
+    @ParameterizedTest
+    @CsvFileSource(resources = "/conversation.csv", numLinesToSkip = 1)
+    public void shouldMapToDtoWithNestedObjects(Long id, String recipientUsername, String senderUsername, String title) {
         //given
+        ConversationEntity conversationEntity = new ConversationEntity(id,senderUsername,recipientUsername,title,
+                        setUpMessageEntityList(recipientUsername, senderUsername));
         //when
         ConversationDto conversationDto = conversationMapper.conversationEntityToConversationDto(conversationEntity);
         //then
@@ -57,15 +34,34 @@ public class ConversationMapperImplTest {
         assertThat(conversationDto).isInstanceOf(ConversationDto.class);
         assertThat(conversationDto.getId()).isEqualTo(conversationEntity.getId());
         assertThat(conversationDto.getTitle()).isEqualTo(conversationEntity.getTitle());
-        assertThat(conversationDto.getSenderId()).isEqualTo(conversationEntity.getSenderId());
-        assertThat(conversationDto.getRecipientId()).isEqualTo(conversationEntity.getRecipientId());
-        assertThat(conversationDto.getMessageDtoList().get(0).getClass()).isNotInstanceOf(MessageEntity.class);
+        assertThat(conversationDto.getSenderUsername()).isEqualTo(conversationEntity.getSenderUsername());
+        assertThat(conversationDto.getRecipientUsername()).isEqualTo(conversationEntity.getRecipientUsername());
+        int FIRST_MESSAGE = 0;
+        assertThat(conversationDto.getMessageDtoList().get(FIRST_MESSAGE).getClass()).isNotInstanceOf(MessageEntity.class);
     }
 
-    @Test
-    public void shouldMapToEntityWithNestedObjects(){
+    private List<MessageEntity> setUpMessageEntityList(String recipientUsername, String senderUsername) {
+        MessageEntity messageEntity0 = new MessageEntity();
+        messageEntity0.setId(1L);
+        messageEntity0.setAuthorUsername(recipientUsername);
+        messageEntity0.setText("Hi, I'd like to buy your book");
+        messageEntity0.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 20)));
+
+        MessageEntity messageEntity1 = new MessageEntity();
+        messageEntity1.setId(2L);
+        messageEntity1.setAuthorUsername(senderUsername);
+        messageEntity1.setText("Ok, nice");
+        messageEntity1.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 30)));
+
+        return List.of(messageEntity0, messageEntity1);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/conversation.csv", numLinesToSkip = 1)
+    public void shouldMapToEntityWithNestedObjects(Long id, String recipientUsername, String senderUsername, String title) {
         //given
-        ConversationDto conversationDto = conversationMapper.conversationEntityToConversationDto(conversationEntity);
+        ConversationDto conversationDto = new ConversationDto(id,senderUsername,recipientUsername,title,
+                setUpMessageDtoList(recipientUsername, senderUsername));
         //when
         ConversationEntity conversationEntity = conversationMapper.conversationDtoToConversationEntity(conversationDto);
         //then
@@ -73,8 +69,24 @@ public class ConversationMapperImplTest {
         assertThat(conversationEntity).isInstanceOf(ConversationEntity.class);
         assertThat(conversationEntity.getId()).isEqualTo(conversationDto.getId());
         assertThat(conversationEntity.getTitle()).isEqualTo(conversationDto.getTitle());
-        assertThat(conversationEntity.getSenderId()).isEqualTo(conversationDto.getSenderId());
-        assertThat(conversationEntity.getRecipientId()).isEqualTo(conversationDto.getRecipientId());
+        assertThat(conversationEntity.getSenderUsername()).isEqualTo(conversationDto.getSenderUsername());
+        assertThat(conversationEntity.getRecipientUsername()).isEqualTo(conversationDto.getRecipientUsername());
         assertThat(conversationEntity.getMessageList().get(0).getClass()).isNotInstanceOf(MessageDto.class);
+    }
+
+    private List<MessageDto> setUpMessageDtoList(String recipientUsername, String senderUsername) {
+        MessageDto messageDto0 = new MessageDto();
+        messageDto0.setId(1L);
+        messageDto0.setAuthorUsername(recipientUsername);
+        messageDto0.setText("Hi, I'd like to buy your book");
+        messageDto0.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 20)));
+
+        MessageDto messageDto1 = new MessageDto();
+        messageDto1.setId(2L);
+        messageDto1.setAuthorUsername(senderUsername);
+        messageDto1.setText("Ok, nice");
+        messageDto1.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 30)));
+
+        return List.of(messageDto0, messageDto1);
     }
 }
