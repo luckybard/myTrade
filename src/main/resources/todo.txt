@@ -1,7 +1,0 @@
-TODO: Nice tutorial for saving images https://medium.com/oril/uploading-files-to-aws-s3-bucket-using-spring-boot-483fcb6f8646
-
-TODO: https://dzone.com/articles/how-to-use-cookies-in-spring-boot
-
-https://stackoverflow.com/questions/63340254/why-is-a-cross-domain-httponly-cookie-received-by-the-browser-but-not-saved?rq=1
-
-https://stackoverflow.com/questions/59808537/cookies-headers-are-present-but-cookies-are-not-stored-in-browser
