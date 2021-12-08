@@ -6,7 +6,7 @@ import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.entities.AdEntity;
 import com.myTrade.mappers.AdMapper;
 
-public class AdMapperImpl implements AdMapper {
+public final class AdMapperImpl implements AdMapper {
 
     @Override
     public AdDto adEntityToAdDto(AdEntity adEntity) {

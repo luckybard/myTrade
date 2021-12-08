@@ -6,8 +6,8 @@ import java.util.function.Predicate;
 
 import static com.myTrade.utility.AdUtility.CITIES_LIST;
 
+public final class CityValidator implements Predicate<City> {
 
-public class CityValidator implements Predicate<City> {
     @Override
     public boolean test(City city) {
         return CITIES_LIST.contains(city);

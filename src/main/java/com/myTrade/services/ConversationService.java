@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class ConversationService {
+public final class ConversationService {
     private final ConversationRepository conversationRepository;
     private final ConversationMapperImpl conversationMapper = new ConversationMapperImpl();
 
@@ -29,8 +29,7 @@ public class ConversationService {
     }
 
     public Page<ConversationDto> fetchAllConversationByUsername(String username, Integer pageNumber, Integer pageSize) {
-        Page<ConversationEntity> conversationEntityPage = conversationRepository.findConversationEntityPageByRecipientUsernameOrSenderUsername(username, PageRequest.of(pageNumber, pageSize));
-        Page<ConversationDto> conversationDtoPage = conversationEntityPage.map(conversationMapper::conversationEntityToConversationDto);
-        return conversationDtoPage;
+        Page<ConversationEntity> conversationEntityPage = conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(username, PageRequest.of(pageNumber, pageSize));
+        return conversationEntityPage.map(conversationMapper::conversationEntityToConversationDto);
     }
 }

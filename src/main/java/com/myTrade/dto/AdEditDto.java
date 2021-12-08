@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class AdEditDto {
+public final class AdEditDto {
     private Long id;
     private AdCategory adCategory;
     private String title;

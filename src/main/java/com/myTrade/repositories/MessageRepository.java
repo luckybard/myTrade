@@ -10,9 +10,9 @@ import java.util.List;
 
 
 @Repository
-public interface MessageRepository extends JpaRepository<MessageEntity,Long> {
+public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
 
-    @Query(value = "SELECT message.* FROM message RIGHT JOIN conversation_message_list cml on message.id = cml.message_list_id " +
+    @Query(value = "SELECT message.* FROM message INNER JOIN conversation_message_list cml on message.id = cml.message_list_id " +
             "AND conversation_entity_id = :conversationId", nativeQuery = true)
-    List<MessageEntity> findMessageEntityListByConversationId(@Param("conversationId")Long conversationId);
+    List<MessageEntity> findMessageEntityListByConversationId(@Param("conversationId") Long conversationId);
 }

@@ -1,27 +1,34 @@
 package com.myTrade.unitTests.services;
 
 import com.myTrade.entities.AdEntity;
-import com.myTrade.entities.ConversationEntity;
-import com.myTrade.entities.MessageEntity;
 import com.myTrade.entities.UserEntity;
+import com.myTrade.exceptions.UserValidationException;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
 import com.myTrade.services.UserService;
-import com.myTrade.utility.AdCategory;
+import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
+import com.myTrade.utility.pojo.RegistrationRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.stream.Stream;
 
+import static com.myTrade.utility.TestUtility.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -37,150 +44,113 @@ public class UserServiceUnitTest {
     @InjectMocks
     private UserService userService;
 
-    public UserEntity user = new UserEntity();
+    @Captor
+    private ArgumentCaptor<UserEntity> userEntityArgumentCaptor;
+
+    private UserEntity user = new UserEntity();
 
     @BeforeEach
-    public void setUpUserEntity() {
-        user.setUsername("bart");
-        user.setPassword("uniquePassword");
-        user.setEmail("bart@bart.com");
-        user.setBirthDate(LocalDate.of(1990,8,10));
-        user.setAdEntityList(setUpAdEntityList());
-        user.setConversationEntityList(setUpConversationEntityList());
+    public void beforeEach() {
+        setUpDefaultUserEntity(user);
+        setUpSecurityContext(user);
     }
 
-    public List<AdEntity> setUpAdEntityList() {
-        AdEntity adEntity1 = new AdEntity();
-        adEntity1.setId(1L);
-        adEntity1.setOwnerUsername("bart");
-        adEntity1.setAdCategory(AdCategory.BOOKS);
-        adEntity1.setTitle("The Lord of the rings");
-        adEntity1.setImagePath("image/path");
-        adEntity1.setDescription("The best book");
-        adEntity1.setPrice(40.00);
-        adEntity1.setCity("Warsaw");
-        adEntity1.setIsActive(Boolean.TRUE);
-
-        AdEntity adEntity2 = new AdEntity();
-        adEntity2.setId(2L);
-        adEntity2.setOwnerUsername("jacob");
-        adEntity2.setAdCategory(AdCategory.FURNITURE);
-        adEntity2.setTitle("Antique chair");
-        adEntity2.setImagePath("image/path");
-        adEntity2.setDescription("Comfortable chair");
-        adEntity2.setPrice(60.00);
-        adEntity2.setCity("Warsaw");
-        adEntity2.setIsActive(Boolean.TRUE);
-
-        AdEntity adEntity3 = new AdEntity();
-        adEntity3.setId(3L);
-        adEntity3.setOwnerUsername("mike");
-        adEntity3.setAdCategory(AdCategory.CLOTHES);
-        adEntity3.setTitle("AC/DC T-shirt");
-        adEntity3.setImagePath("image/path");
-        adEntity3.setDescription("XL Size");
-        adEntity3.setPrice(80.25);
-        adEntity3.setCity("Warsaw");
-        adEntity3.setIsActive(Boolean.FALSE);
-
-        return List.of(adEntity1,adEntity2,adEntity3);
-    }
-
-    public List<ConversationEntity> setUpConversationEntityList() {
-        ConversationEntity conversationEntity1 = new ConversationEntity();
-        conversationEntity1.setId(1L);
-        conversationEntity1.setTitle("The LOTR book");
-        conversationEntity1.setRecipientId(1L);
-        conversationEntity1.setSenderId(2L);
-        conversationEntity1.setMessageList(setUpMessageEntityList());
-
-        return List.of(conversationEntity1);
-    }
-
-    public List<MessageEntity> setUpMessageEntityList() {
-        MessageEntity messageEntity1 = new MessageEntity();
-        messageEntity1.setId(1L);
-        messageEntity1.setAuthorId(2L);
-        messageEntity1.setText("Hi, I'd like to buy your book");
-        messageEntity1.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 20)));
-
-        MessageEntity messageEntity2 = new MessageEntity();
-        messageEntity2.setId(2L);
-        messageEntity2.setAuthorId(1L);
-        messageEntity2.setText("Ok, nice");
-        messageEntity2.setDateTime(LocalDateTime.of(LocalDate.of(2021, 8, 15), LocalTime.of(20, 30)));
-
-        return List.of(messageEntity1,messageEntity2);
-    }
-
-
-//    @Test
-//    //TODO:[P] Problem, how to verify.
-//    public void whenUserEntityIsProvided_thenRetrievedEntityShouldBeSavedIntoDatabase() {
-//        //given
-//        //when
-//        userService.saveUserEntity(user);
-//        //then
-//        verify(userRepository).save(user);
-//    }
-
-    @Test
-    public void whenUserNameIsProvided_thenRetrievedEmailIsCorrect() {
+    @Disabled
+    @ParameterizedTest
+    @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
+    public void whenValidRegistrationRequestIsProvided_thenUserEntityShouldBeSaved(String username, String email, String password) {
         //given
-        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
-        String expected = "bart@bart.com";
+        RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         //when
-        String resultEmail = userRepository.findByUsername(user.getUsername()).getEmail();
-
+        userService.saveUserEntityByRegistrationRequest(registrationRequest);
         //then
-        assertThat(resultEmail).isEqualTo(expected);
+        verify(userRepository).save(userEntityArgumentCaptor.capture());
+        assertThat(userEntityArgumentCaptor.getValue().getId()).isNotNull();
     }
 
-    @Test
-    public void whenUserNameIsProvided_thenRetrievedNumberOfAdsIsCorrect() {
+    @ParameterizedTest
+    @MethodSource("invalidUserRegistrationRequests")
+    public void whenInvalidRegistrationRequestIsProvided_thenShouldReturnStatus406(RegistrationRequest registrationRequest) {
         //given
-        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
-        int expected = 3;
-        //when
-        int result = userService.findUserAdEntityList(user.getUsername()).stream().collect(Collectors.toList()).size();
-        //then
-        assertThat(result).isEqualTo(expected);
+        //when & then
+        assertThrows(UserValidationException.class, () -> {
+            userService.saveUserEntityByRegistrationRequest(registrationRequest);
+        });
     }
 
-    @Test
-    public void whenUserNameIsProvided_thenRetrievedNumberOfConversationsIsCorrect() {
+    private static Stream<Arguments> invalidUserRegistrationRequests() {
+        return Stream.of(
+                Arguments.of(new RegistrationRequest("brad@brad", "brad@brad", "brad@brad")),
+                Arguments.of(new RegistrationRequest("            ", "brad@brad", "brad@brad")),
+                Arguments.of(new RegistrationRequest("brad@brad", "12345", "brad@brad")),
+                Arguments.of(new RegistrationRequest("br", "brad@brad.com", "brad@brad")),
+                Arguments.of(new RegistrationRequest("br", "            ", "brad@brad")),
+                Arguments.of(new RegistrationRequest("        ", "      ", "        ")),
+                Arguments.of(new RegistrationRequest("", "", ""))
+        );
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
+    public void whenProperAdIdIsProvided_thenShouldAddAdToUserFavouriteAdListAndReturnStatus200(Long id,
+                                                                                                AdCategory adCategory,
+                                                                                                String title,
+                                                                                                String description,
+                                                                                                City city,
+                                                                                                Double price,
+                                                                                                String ownerUsername,
+                                                                                                Long countView,
+                                                                                                Boolean isActive,
+                                                                                                LocalDate createdDate,
+                                                                                                LocalDate modifiedDate,
+                                                                                                LocalDate refreshDate,
+                                                                                                LocalDate expirationHighlightDate) {
         //given
-        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
-        int expected = 1;
+        AdEntity adEntity = AdEntity.builder().id(id)
+                .adCategory(adCategory)
+                .city(city)
+                .countView(countView)
+                .createdDate(createdDate)
+                .description(description)
+                .expirationHighlightDate(expirationHighlightDate)
+                .isActive(isActive)
+                .modifiedDate(modifiedDate)
+                .ownerUsername(ownerUsername)
+                .price(price)
+                .refreshDate(refreshDate)
+                .title(title)
+                .build();
+        UserEntity userEntity = UserEntity.builder()
+                .favouriteAdEntityList(new ArrayList<>())
+                .username(user.getUsername())
+                .build();
+        given(userRepository.getByUsername(user.getUsername())).willReturn(userEntity);
+        given(adRepository.getById(id)).willReturn(adEntity);
         //when
-        int result = userService.findUserConversationEntityList(user.getUsername()).size();
+        userService.addAdFromUserFavouriteAdListById(id);
         //then
-        assertThat(result).isEqualTo(expected);
+        verify(adRepository).getById(id);
+        verify(userRepository).getByUsername(user.getUsername());
+        verify(userRepository).save(userEntityArgumentCaptor.capture());
+        assertThat(userEntityArgumentCaptor.getValue().getFavouriteAdEntityList()).contains(adEntity);
+
     }
 
-    @Test
-    public void whenUserNameIsProvided_thenUserShouldBeRemovedFromDataBase() {
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
+    public void whenProperAdIdIsProvided_thenShouldRemoveAdFromUserFavouriteAdListAndReturnStatus200(Long adId) {
         //given
-        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
+        AdEntity adEntity = getAdEntity();
+        UserEntity userEntity = UserEntity.builder()
+                .favouriteAdEntityList(getAdEntityList())
+                .username(user.getUsername())
+                .build();
+        given(userRepository.getByUsername(user.getUsername())).willReturn(userEntity);
+        given(adRepository.getById(adId)).willReturn(adEntity);
         //when
-        userService.deleteUser(user.getUsername());
+        userService.removeAdFromUserFavouriteAdListById(adId);
         //then
-        verify(userRepository).delete(user);
-
+        verify(userRepository).save(userEntityArgumentCaptor.capture());
+        assertThat(userEntityArgumentCaptor.getValue().getFavouriteAdEntityList()).doesNotContain(adEntity);
     }
-
-//    @Test
-//    public void whenUserNameAndAdIdIsProvided_shouldDeleteAdFromAdList() {
-//        //given
-//        given(userRepository.findByUsername(user.getUsername())).willReturn(user);
-//        int expectedListSize = 2;
-//        //when
-//        userService.deleteAdFromAdList(user.getUsername(), 1L);
-//        int result = userRepository.findByUsername(user.getUsername()).getAdEntityList().size();
-//        //then
-//        assertThat(result).isEqualTo(expectedListSize);
-//        verify(adRepository).deleteById(1L);
-//    }
-
-
 }

@@ -13,11 +13,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Builder
-public class AdOwnerDto {
+public final class AdOwnerDto {
     private Long id;
     private AdCategory adCategory;
     private String title;
-    private String imagePath;
     private String description;
     private Double price;
     private City city;

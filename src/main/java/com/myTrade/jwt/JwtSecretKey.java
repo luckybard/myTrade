@@ -3,12 +3,12 @@ package com.myTrade.jwt;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 
-@Configuration
-public class JwtSecretKey {
+@Component
+public final class JwtSecretKey {
     private final JwtConfiguration jwtConfiguration;
 
     @Autowired
@@ -17,7 +17,7 @@ public class JwtSecretKey {
     }
 
     @Bean
-    public SecretKey secretKey(){
+    public SecretKey secretKey() {
         return Keys.hmacShaKeyFor(jwtConfiguration.getSecretKey().getBytes());
     }
 }

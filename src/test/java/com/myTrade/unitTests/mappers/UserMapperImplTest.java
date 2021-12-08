@@ -10,14 +10,13 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserMapperImplTest {
-
-    UserMapperImpl userMapper = new UserMapperImpl();
+    private final UserMapperImpl userMapper = new UserMapperImpl();
 
     @ParameterizedTest
     @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
-    public void shouldMapRegistrationRequestToUserEntity(String username, String email, String password){
+    public void shouldMapRegistrationRequestToUserEntity(String username, String email, String password) {
         //given
-        RegistrationRequest registrationRequest = new RegistrationRequest(username,email,password);
+        RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         //when
         UserEntity userEntity = userMapper.registrationRequestToUserEntity(registrationRequest);
         //then

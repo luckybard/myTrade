@@ -1,22 +1,29 @@
 package com.myTrade.integrationTests.service;
 
-import com.myTrade.entities.ConversationEntity;
-import com.myTrade.entities.MessageEntity;
+import com.myTrade.dto.ConversationDto;
+import com.myTrade.dto.MessageDto;
 import com.myTrade.repositories.ConversationRepository;
 import com.myTrade.services.ConversationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
 import java.util.List;
 
+import static com.myTrade.utility.TestUtility.*;
+import static com.myTrade.utility.UserUtility.getUsernameFromContext;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Transactional
+@WithMockUser(username = "brad@brad.brad")
 public class ConversationServiceTest {
-
     private ConversationService conversationService;
     private ConversationRepository conversationRepository;
 
@@ -27,30 +34,38 @@ public class ConversationServiceTest {
     }
 
     @Test
-    void whenConversationEntityIsProvided_thenShouldBeSaved() {
+    public void whenUsernameIsProvided_thenShouldFetchUserConversations() {
         //given
-        Long expectedConversationListSize = conversationRepository.count() + 1;
-        ConversationEntity conversationEntity = new ConversationEntity();
-        conversationEntity.setSenderId(1L);
-        conversationEntity.setRecipientId(2L);
-        conversationEntity.setTitle("Hi");
-        conversationEntity.setMessageList(new LinkedList<>());
         //when
-        conversationService.saveConversationEntity(conversationEntity);
-        Long actualConversationListSize = conversationRepository.count();
+        Page<ConversationDto> conversationDtoPage = conversationService
+                .fetchAllConversationByUsername(getUsernameFromContext(), DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
         //then
-        assertThat(expectedConversationListSize).isEqualTo(actualConversationListSize);
+        assertThat(conversationDtoPage.getTotalElements()).isGreaterThan(0);
+        assertThat(conversationDtoPage.getContent().stream().findFirst().get().getTitle()).isNotNull();
+        assertThat(conversationDtoPage.getContent().stream().findFirst().get().getSenderUsername()).isNotNull();
+        assertThat(conversationDtoPage.getContent().stream().findFirst().get().getRecipientUsername()).isNotNull();
+        assertThat(conversationDtoPage.getContent().stream().findFirst().get().getMessageDtoList()).isNotEmpty();
     }
 
     @Test
-    @Transactional
-    void findConversationMessageEntityListByConversationId() {
+    public void whenConversationDtoIsProvided_thenShouldBeSavedWithInitialValues() {
         //given
-        long conversationId = 1L;
+        ConversationDto conversationDto = ConversationDto.builder()
+                .senderUsername(getUsernameFromContext())
+                .recipientUsername("john@john.john")
+                .title("Wardrobe")
+                .messageDtoList(List.of(MessageDto.builder()
+                        .text("Hi!")
+                        .authorUsername(getUsernameFromContext())
+                        .build()))
+                .build();
+        Long expectedUserConversationListSize = conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(
+                getUsernameFromContext(), Pageable.unpaged()).getTotalElements() + ONE_ADDITIONAL_CONVERSATION;
         //when
-        List<MessageEntity> conversationEntityList = conversationService.findConversationMessageEntityListByConversationId(conversationId);
+        conversationService.saveInitialConversationWithMessageByConversationDto(conversationDto);
         //then
-        assertThat(conversationEntityList).isNotEmpty();
-
+        Long actualUserConversationListSize = conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(
+                getUsernameFromContext(), Pageable.unpaged()).getTotalElements();
+        assertThat(actualUserConversationListSize).isEqualTo(expectedUserConversationListSize);
     }
 }

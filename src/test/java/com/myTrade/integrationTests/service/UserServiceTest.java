@@ -1,25 +1,37 @@
 package com.myTrade.integrationTests.service;
 
+import com.myTrade.entities.AdEntity;
 import com.myTrade.entities.UserEntity;
+import com.myTrade.exceptions.UserValidationException;
 import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
 import com.myTrade.services.UserService;
-import com.myTrade.utility.UserRole;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import com.myTrade.utility.UserUtility;
+import com.myTrade.utility.pojo.RegistrationRequest;
+import com.myTrade.utility.pojo.UserRole;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@Transactional
+@WithMockUser(username = "brad@brad.brad")
 public class UserServiceTest {
-
     private UserRepository userRepository;
     private UserService userService;
     private AdRepository adRepository;
@@ -31,102 +43,66 @@ public class UserServiceTest {
         this.adRepository = adRepository;
     }
 
-    @Test
-    @Transactional
-    public void whenUserEntityIsProvided_thenEntityShouldBeSaved() {
+    @ParameterizedTest
+    @WithAnonymousUser
+    @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
+    public void whenValidUserRegistrationRequestIsProvided_thenUserEntityShouldBeSaved(String username, String email, String password) {
         //given
-        UserEntity user = new UserEntity();
-        user.setUsername("xxx");
-        user.setPassword("uniquePassword");
-        user.setEmail("axxc");
-        user.setAvatarPath(" sd");
-        user.setBirthDate(LocalDate.of(1990, 8, 10));
-        user.setRole(UserRole.USER);
-        user.setHighlightPoint(5);
+        RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         ///when
-        userService.saveUserEntity(user);
-        UserEntity expectedEntity = userRepository.findByUsername("xxx");
+        userService.saveUserEntityByRegistrationRequest(registrationRequest);
+        UserEntity savedEntity = userRepository.getByUsername(username);
         //then
-        assertThat(expectedEntity).isNotNull();
+        assertThat(savedEntity).isNotNull();
+        assertThat(savedEntity.getId()).isNotNull();
+        assertThat(savedEntity.getUsername()).isEqualTo(username);
+        assertThat(savedEntity.getRole()).isEqualTo(UserRole.USER);
     }
 
-//    @Test
-//    @Transactional
-//    public void whenUserNameAndAdEntityIsProvided_thenAdShouldBeSavedIntoUserAdList() {
-//        //given
-//        String userName = "bart";
-//        Long expectedRepositorySize = adRepository.count() + 1;
-//        AdEntity ad = new AdEntity();
-//        ad.setId(100L);
-//        ad.setOwnerUsername("bart");
-//        ad.setAdCategory(AdCategory.BOOKS);
-//        ad.setTitle("The Lord of the rings");
-//        ad.setImagePath("image/path");
-//        ad.setDescription("The best book");
-//        ad.setPrice(40.00);
-//        ad.setCity("Warsaw");
-//        ad.setCreatedDateTime(LocalDateTime.of(LocalDate.of(2020, 8, 21), LocalTime.of(20, 18)));
-//        ad.setModifiedDateTime(LocalDateTime.now());
-//        ad.setExpirationHighlightTime(LocalDateTime.now());
-//        ad.setRefreshTime(LocalDateTime.now());
-//        ad.setIsActive(Boolean.TRUE);
-//        //when
-//        userService.addAdToFavourite(userName,100L );
-//        int actualUserAdListSize = userRepository.findByUsername(userName).getAdEntityList().size();
-//        int expectedUserAdListSize = 4;
-//        Long actualRepositorySize = adRepository.count();
-//        //then
-//        assertThat(actualUserAdListSize).isEqualTo(expectedUserAdListSize);
-//        assertThat(actualRepositorySize).isEqualTo(expectedRepositorySize);
-//    }
-
-//    @Test
-//    @Transactional
-//    public void whenUserNameAndAdIdIsProvided_thenAdShouldBeRemovedFromUserAdList() {
-//        //given
-//        String userName = "bart";
-//        int expectedUserAdListSize = userService.findUserAdEntityList(userName).size() - 1;
-//        Long adId = 1L;
-//        //when
-//        userService.deleteAdFromAdList(userName, adId);
-//        int actualUserAdListSize = userService.findUserAdEntityList(userName).size();
-//        //then
-//        assertThat(actualUserAdListSize).isEqualTo(expectedUserAdListSize);
-//    }
-
-    @Test
-    @Transactional
-    public void whenUserNameIsProvided_thenShouldRetrievedCorrectAdListSize() {
+    @ParameterizedTest
+    @WithAnonymousUser
+    @MethodSource("invalidUserRegistrationRequests")
+    public void whenInvalidUserRegistrationRequestIsProvided_thenShouldThrowUserValidationException(RegistrationRequest registrationRequest) {
         //given
-        String userName = "bart";
-        int expectedAdListSize = 3;
-        //when
-        int actualAdListSize = userService.findUserAdEntityList(userName).size();
-        //then
-        assertThat(actualAdListSize).isEqualTo(expectedAdListSize);
+        //when & then
+        assertThrows(UserValidationException.class, () -> {
+            userService.saveUserEntityByRegistrationRequest(registrationRequest);
+        });
     }
 
-    @Test
-    @Transactional
-    public void whenUserNameIsProvided_thenShouldRetrievedCorrectConversationListSize() {
-        //given
-        String userName = "bart";
-        int expectedUserConversationListSize = 3;
-        //when
-        int actualUserConversationListSize = userService.findUserConversationEntityList(userName).size();
-        //then
-        assertThat(actualUserConversationListSize).isEqualTo(expectedUserConversationListSize);
+    private static Stream<Arguments> invalidUserRegistrationRequests() {
+        return Stream.of(
+                Arguments.of(new RegistrationRequest("brad@brad", "brad@brad", "brad@brad")),
+                Arguments.of(new RegistrationRequest("            ", "brad@brad", "brad@brad")),
+                Arguments.of(new RegistrationRequest("brad@brad", "12345", "brad@brad")),
+                Arguments.of(new RegistrationRequest("br", "brad@brad.com", "brad@brad")),
+                Arguments.of(new RegistrationRequest("br", "            ", "brad@brad")),
+                Arguments.of(new RegistrationRequest("        ", "      ", "        ")),
+                Arguments.of(new RegistrationRequest("", "", ""))
+        );
     }
 
-    @Test
-    @Transactional
-    public void whenUserNameIsProvided_thenUserShouldBeDeleted() {
+    @ParameterizedTest
+    @ValueSource(longs = {4, 5, 6, 7, 8})
+    public void whenValidAdIdIsProvided_thenAdShouldBeAddedToUserFavouriteAdEntityList(Long adId) {
         //given
-        String userName = "kate";
-        Long expectedUserRepositorySize = userRepository.count() - 1;
+        AdEntity expectedAdEntity = adRepository.getById(adId);
         //when
-        userService.deleteUser(userName);
+        userService.addAdFromUserFavouriteAdListById(adId);
+        List<AdEntity> actualUserFavouriteAddEntityList = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getFavouriteAdEntityList();
         //then
-        assertThat(userRepository.count()).isEqualTo(expectedUserRepositorySize);
+        assertThat(actualUserFavouriteAddEntityList).contains(expectedAdEntity);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {4, 5, 6, 7, 8})
+    public void whenValidAdIdIsProvided_thenAdShouldBeRemovedFromUserFavouriteAdEntityList(Long adId) {
+        //given
+        AdEntity notExpectedAdEntity = adRepository.getById(adId);
+        //when
+        userService.removeAdFromUserFavouriteAdListById(adId);
+        List<AdEntity> actualUserFavouriteAddEntityList = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getFavouriteAdEntityList();
+        //then
+        assertThat(actualUserFavouriteAddEntityList).doesNotContain(notExpectedAdEntity);
     }
 }

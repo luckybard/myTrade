@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JwtUtility {
+public final class JwtUtility {
     public static final int COOKIE_LIFETIME_IN_SECONDS = 604800;
     public static final String AUTH_TOKEN_NAME_VALUE = "authToken";
     public static final String AUTHORITIES_NAME_VALUE = "authorities";

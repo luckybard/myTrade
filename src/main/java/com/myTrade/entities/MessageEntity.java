@@ -14,15 +14,14 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "message")
-
-public class MessageEntity {
+public final class MessageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     private Long id;
 
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     private String authorUsername;
 
     @Column(nullable = false)

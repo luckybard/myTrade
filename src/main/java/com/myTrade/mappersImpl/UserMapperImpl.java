@@ -4,7 +4,7 @@ import com.myTrade.entities.UserEntity;
 import com.myTrade.mappers.UserMapper;
 import com.myTrade.utility.pojo.RegistrationRequest;
 
-public class UserMapperImpl implements UserMapper {
+public final class UserMapperImpl implements UserMapper {
 
     @Override
     public UserEntity registrationRequestToUserEntity(RegistrationRequest registrationRequest) {

@@ -18,7 +18,7 @@ import static com.myTrade.utility.SecurityUtility.encodeUserPassword;
 import static com.myTrade.utility.UserUtility.getUsernameFromContext;
 
 @Service
-public class UserService {
+public final class UserService {
     private final UserRepository userRepository;
     private final AdRepository adRepository;
     private final UserMapperImpl userMapper = new UserMapperImpl();
@@ -31,8 +31,8 @@ public class UserService {
     }
 
     public void addAdFromUserFavouriteAdListById(Long adId) {
-        AdEntity adEntity = adRepository.findById(adId).get();
-        UserEntity user = userRepository.findByUsername(getUsernameFromContext());
+        AdEntity adEntity = adRepository.getById(adId);
+        UserEntity user = userRepository.getByUsername(getUsernameFromContext());
         List<AdEntity> adEntityList = new ArrayList<>(user.getFavouriteAdEntityList());
         adEntityList.add(adEntity);
         user.setFavouriteAdEntityList(adEntityList);
@@ -40,14 +40,13 @@ public class UserService {
     }
 
     public void removeAdFromUserFavouriteAdListById(Long adId) {
-        AdEntity adEntity = adRepository.findById(adId).get();
-        UserEntity user = userRepository.findByUsername(getUsernameFromContext());
+        AdEntity adEntity = adRepository.getById(adId);
+        UserEntity user = userRepository.getByUsername(getUsernameFromContext());
         List<AdEntity> adEntityList = new ArrayList<>(user.getFavouriteAdEntityList());
         adEntityList.remove(adEntity);
         user.setFavouriteAdEntityList(adEntityList);
         userRepository.save(user);
     }
-
 
     public void saveUserEntityByRegistrationRequest(RegistrationRequest registrationRequest) {
         if (requestValidator.test(registrationRequest)) {

@@ -3,10 +3,8 @@ package com.myTrade.mappersImpl;
 import com.myTrade.dto.ConversationDto;
 import com.myTrade.entities.ConversationEntity;
 import com.myTrade.mappers.ConversationMapper;
-import org.springframework.stereotype.Component;
 
-@Component //TODO:[Q] @Component can be autowired?
-public class ConversationMapperImpl implements ConversationMapper {
+public final class ConversationMapperImpl implements ConversationMapper {
     private final MessageMapperImpl messageMapper;
 
     public ConversationMapperImpl() {

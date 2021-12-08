@@ -7,7 +7,7 @@ import com.myTrade.mappers.MessageMapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageMapperImpl implements MessageMapper {
+public final class MessageMapperImpl implements MessageMapper {
 
     @Override
     public MessageDto messageEntityToMessageDto(MessageEntity messageEntity) {

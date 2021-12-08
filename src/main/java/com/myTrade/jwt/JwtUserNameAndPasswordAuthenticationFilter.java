@@ -19,7 +19,7 @@ import java.time.LocalDate;
 
 import static com.myTrade.utility.JwtUtility.*;
 
-public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public final class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtConfiguration jwtConfiguration;
     private final JwtSecretKey jwtSecretKey;
@@ -40,7 +40,6 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
         }
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginCredentials.getUsername(), loginCredentials.getPassword());
         return authenticationManager.authenticate(authentication);
-
     }
 
     @Override
@@ -63,5 +62,5 @@ public class JwtUserNameAndPasswordAuthenticationFilter extends UsernamePassword
         response.addHeader(HttpHeaders.AUTHORIZATION, authResult.getName());
     }
 
-    
+
 }

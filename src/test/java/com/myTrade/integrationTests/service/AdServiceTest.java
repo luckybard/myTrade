@@ -1,137 +1,294 @@
 package com.myTrade.integrationTests.service;
 
 import com.myTrade.dto.AdDto;
+import com.myTrade.dto.AdEditDto;
+import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.entities.AdEntity;
+import com.myTrade.exceptions.AdValidationException;
 import com.myTrade.repositories.AdRepository;
+import com.myTrade.repositories.UserRepository;
 import com.myTrade.services.AdService;
-import com.myTrade.utility.AdCategory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.myTrade.utility.AdUtility;
+import com.myTrade.utility.pojo.AdCategory;
+import com.myTrade.utility.pojo.City;
+import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Stream;
 
+import static com.myTrade.utility.TestUtility.*;
+import static com.myTrade.utility.UserUtility.POINTS_COST_OF_HIGHLIGHTING_AD;
+import static com.myTrade.utility.UserUtility.getUsernameFromContext;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@Transactional
+@WithMockUser(username = "brad@brad.brad")
 class AdServiceTest {
-
     private AdService adService;
     private AdRepository adRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public AdServiceTest(AdService adService, AdRepository adRepository) {
+    public AdServiceTest(AdService adService, AdRepository adRepository, UserRepository userRepository) {
         this.adService = adService;
         this.adRepository = adRepository;
+        this.userRepository = userRepository;
     }
 
-    private AdEntity adEntity;
+    @ParameterizedTest
+    @ValueSource(longs = {1, 2, 3})
+    public void whenValidAdIdIsProvided_thenNewRefreshTimeShouldBeSet(Long adId) {
+        //given
+        LocalDate expectedRefreshTime = LocalDate.now();
+        //when
+        adService.refreshAdById(adId);
+        LocalDate actualRefreshTime = adRepository.getById(adId).getRefreshDate();
+        //then
+        assertThat(actualRefreshTime).isEqualTo(expectedRefreshTime);
+    }
 
-    @BeforeEach
-    public void setUpAdEntity() {
-        adEntity = adRepository.getById(1L);
+    @ParameterizedTest
+    @ValueSource(longs = {1, 2, 3})
+    public void whenValidAdIdIsProvided_thenAdStatusShouldBeChanged(Long adId) {
+        //given
+        Boolean expectedStatus = !adRepository.getById(adId).getIsActive();
+        //when
+        adService.changeAdStatusById(adId);
+        Boolean actualStatus = adRepository.getById(adId).getIsActive();
+        //then
+        assertThat(actualStatus).isEqualTo(expectedStatus);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1, 2, 3})
+    public void whenValidAdIdAndUserCredentialsIsProvided_thenAdShouldBeHighlighted(Long adId) {
+        //given
+        //when
+        adService.highlightAdByIdAndDeductHighlightPointFromUser(adId);
+        //then
+        AdEntity actualAdEntity = adRepository.getById(adId);
+        actualAdEntity.postLoad();
+        assertThat(actualAdEntity.getIsHighlighted()).isTrue();
     }
 
     @Test
-    void saveAdDtoWithCreatedAndModifiedDateTime() {
+    public void whenUserHasEnoughHighlightPoints_thenProperAmountOfPointsShouldBeDeductFromUser() {
         //given
-        String titleAsAKeyToFindAd = "The Lord of the 123";
-        AdDto ad = new AdDto();
-        ad.setOwnerUsername("john");
-        ad.setAdCategory(AdCategory.BOOKS);
-        ad.setTitle(titleAsAKeyToFindAd);
-        ad.setImagePath("myTrade.com/image");
-        ad.setDescription("The best book ever!");
-        ad.setPrice(100.00);
-        ad.setCity("Warsaw");
-        ad.setIsActive(Boolean.FALSE);
+        Integer userHighlightPoints = userRepository.getByUsername(getUsernameFromContext()).getHighlightPoints();
+        Integer expectedHighlightPoints = userHighlightPoints - POINTS_COST_OF_HIGHLIGHTING_AD;
         //when
-        adService.saveAdDtoWithProperValuesOfCreatedModifiedRefreshHighlightDateTime(ad);
+        adService.deductHighlightPointFromUser();
+        Integer actualUserHighlightPoints = userRepository.getByUsername(getUsernameFromContext()).getHighlightPoints();
         //then
-        AdEntity actual = adRepository.findAll().stream().filter(adEntity -> adEntity.getTitle().equalsIgnoreCase(titleAsAKeyToFindAd)).collect(Collectors.toList()).get(0);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getCreatedDateTime()).isNotNull();
-        assertThat(actual.getModifiedDateTime()).isNotNull();
-        assertThat(actual.getId()).isNotNull();
+        assertThat(actualUserHighlightPoints).isEqualTo(expectedHighlightPoints);
     }
 
-    /*@Test
-    @Transactional
-    void changeTitle() {
+    @ParameterizedTest
+    @ValueSource(ints = {1, 3, 5, 8})
+    public void whenPageSizeIsProvided_thenShouldRetrievedRandomAdsDtoPage(int pageSize) {
         //given
-        String newTitle = "NewTitle";
         //when
-        adService.changeTitle(newTitle,adEntity.getId() );
-        assertThat(adRepository.getById(1L).getTitle()).isEqualTo(newTitle);
+        Page<AdDto> adDtoPage = adService.fetchRandomAdDtoPage(pageSize);
+        //then
+        assertThat(adDtoPage.getContent()).isNotNull();
+    }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"brad@brad.brad", "john@john.john"})
+    public void whenOwnerUsernameAndPageRequestIsProvided_thenShouldRetrievedOwnerAdsDtoPage(String username) {
+        //given
+        //when
+        Page<AdDto> adDtoPage = adService.fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(username, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
+        //then
+        assertThat(adDtoPage.getContent()).isNotNull();
+        assertThat(adDtoPage.get().findFirst().get().getOwnerUsername()).isEqualTo(username);
+
+    }
+
+
+    @Test
+    public void whenValidPageRequestIsProvided_thenShouldRetrievedUserFavouriteAdDtoPage() {
+        //given
+        Long expectedAmountOfUserFavouriteAds = Long.valueOf(userRepository.getByUsername(getUsernameFromContext()).getFavouriteAdEntityList().size());
+        //when
+        Page<AdDto> adDtoPage = adService.fetchUserFavouriteAdDtoPage(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
+        //then
+        assertThat(adDtoPage.getContent()).isNotNull();
+        assertThat(adDtoPage.getTotalElements()).isEqualTo(expectedAmountOfUserFavouriteAds);
     }
 
     @Test
-    @Transactional
-    void changeAdCategory() {
+    public void whenValidPageRequestIsProvided_thenShouldRetrievedAdOwnerDtoPage() {
         //given
-        AdCategory newAdCategory = AdCategory.FURNITURE;
+        Long expectedAmountOfUserAds = Long.valueOf(userRepository.getByUsername(getUsernameFromContext()).getAdEntityList().size());
         //when
-        adService.changeAdCategory(newAdCategory, adEntity.getId());
+        Page<AdOwnerDto> adOwnerDtoPage = adService.fetchAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
         //then
-        assertThat(adRepository.getById(1L).getAdCategory()).isEqualTo(newAdCategory);
-    }
-
-    @Test
-    @Transactional
-    void changeImagePath() {
-        //given
-        String newImagePath = "NewPath";
-        //when
-        adService.changeImagePath(newImagePath, adEntity.getId());
-        //then
-        assertThat(adRepository.getById(1L).getImagePath()).isEqualTo(newImagePath);
-    }
-
-    @Test
-    @Transactional
-    void changeDescription() {
-        //given
-        String newDescription = "NewDescription";
-        //when
-        adService.changeDescription(newDescription, adEntity.getId());
-        //then
-        assertThat(adRepository.getById(1L).getDescription()).isEqualTo(newDescription);
-    }
-
-    @Test
-    @Transactional
-    void changePrice() {
-        //given
-        Double newPrice = 100.0;
-        //when
-        adService.changePrice(newPrice, adEntity.getId());
-        //then
-        assertThat(adRepository.getById(1L).getPrice()).isEqualTo(newPrice);
-    }
-
-    @Test
-    @Transactional
-    void changeCity() {
-        //given
-        String newCity = "CityName";
-        //when
-        adService.changeCity(newCity, adEntity.getId());
-        //then
-        assertThat(adRepository.getById(1L).getCity()).isEqualTo(newCity);
+        assertThat(adOwnerDtoPage.getContent()).isNotNull();
+        assertThat(adOwnerDtoPage.getTotalElements()).isEqualTo(expectedAmountOfUserAds);
 
     }
 
-    @Test
-    @Transactional
-    void changeActiveStatus() {
-        //given
-        Boolean newStatus = Boolean.TRUE;
+    @ParameterizedTest
+    @ValueSource(longs = {1, 2, 3})
+    public void whenValidAdEditDtoIsProvided_thenAdEntityShouldBePatched(Long adId) {
+        AdEditDto adEditDto = AdEditDto.builder().id(adId)
+                .adCategory(AdCategory.OTHER)
+                .city(City.EVERYWHERE)
+                .description("description,description,description,description,description,description")
+                .title("title,title")
+                .price(1D)
+                .build();
         //when
-        adService.changeActiveStatus(newStatus, adEntity.getId());
+        adService.patchAdEntityByAdEditDto(adEditDto);
+        AdEntity actualAdEntity = adRepository.getById(adId);
         //then
-        assertThat(adRepository.getById(1L).getIsActive()).isEqualTo(newStatus);
+        assertThat(actualAdEntity).isNotNull();
+        assertThat(actualAdEntity.getTitle()).isEqualTo(adEditDto.getTitle());
+        assertThat(actualAdEntity.getDescription()).isEqualTo(adEditDto.getDescription());
+        assertThat(actualAdEntity.getAdCategory()).isEqualTo(adEditDto.getAdCategory());
+        assertThat(actualAdEntity.getCity()).isEqualTo(adEditDto.getCity());
+        assertThat(actualAdEntity.getPrice()).isEqualTo(adEditDto.getPrice());
 
-    }*/
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adEditDtoWithoutId.csv", numLinesToSkip = 1)
+    public void whenValidAdEditDtoIsProvided_thenAdShouldBeSavedAndAssignToUserAdList(AdCategory adCategory,
+                                                                                      String title,
+                                                                                      String description,
+                                                                                      City city,
+                                                                                      Double price) {
+        //given
+        AdEditDto adEditDto = AdEditDto.builder()
+                .adCategory(adCategory)
+                .city(city)
+                .description(description)
+                .title(title)
+                .price(price)
+                .build();
+        int expectedUserAdListSize = userRepository.getByUsername(getUsernameFromContext()).getAdEntityList().size() + ONE_ADDITIONAL_AD;
+        //when
+        adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
+        //then
+        int actualUserAdListSize = userRepository.getByUsername(getUsernameFromContext()).getAdEntityList().size();
+        assertThat(actualUserAdListSize).isEqualTo(expectedUserAdListSize);
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidAdEditDto")
+    public void whenInvalidAdEditDtoIsProvided_thenShouldThrowAdValidationException(AdEditDto adEditDto) {
+        //given
+        //when & then
+        assertThrows(AdValidationException.class, () -> {
+            adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
+        });
+    }
+
+    private static Stream<Arguments> invalidAdEditDto() {
+        return Stream.of(
+                Arguments.of(AdEditDto.builder()
+                        .adCategory(AdCategory.OTHER)
+                        .title("  ")
+                        .description("      ")
+                        .city(City.PARIS)
+                        .price(0D)
+                        .build()),
+                Arguments.of(AdEditDto.builder()
+                        .adCategory(AdCategory.OTHER)
+                        .title("Junior Java Developer")
+                        .description("")
+                        .city(City.PARIS)
+                        .price(2000D)
+                        .build())
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1, 2, 3})
+    public void whenValidAdIdIsProvided_thenAdEditDtoShouldBeFetched(Long adId) {
+        //given
+        //when
+        AdEditDto adEditDto = adService.fetchAdEditDto(adId);
+        //then
+        assertThat(adEditDto).isNotNull();
+        assertThat(adEditDto.getTitle()).isNotEmpty();
+        assertThat(adEditDto.getDescription()).isNotEmpty();
+    }
+
+    @Test
+    public void shouldRetrievedUserFavouriteAdsIdList() {
+        //given
+        //when
+        List<Long> userFavouriteAdsIdList = adService.getUserFavouriteAdsId();
+        //then
+        assertThat(userFavouriteAdsIdList.size()).isGreaterThan(0);
+    }
+
+    @Test
+    public void whenAdEntityIsProvided_thenShouldSetIsAdUserFavourite() {
+        //given
+        Long userFavouriteAdId = userRepository.getByUsername(getUsernameFromContext()).getFavouriteAdEntityList().stream()
+                .findFirst()
+                .get()
+                .getId();
+        AdEntity userFavouriteAdEntity = adRepository.getById(userFavouriteAdId);
+        //when
+        adService.setIsAdUserFavourite(userFavouriteAdEntity);
+        //then
+        assertThat(userFavouriteAdEntity.getIsUserFavourite()).isTrue();
+    }
+
+    @Test
+    public void whenAdEntityPageIsProvided_thenShouldSetIsAdUserFavourite() {
+        //given
+        Page<AdEntity> userFavouriteAdEntityPage = adRepository.findUserFavouriteAdEntityPageByUserId(
+                userRepository.getByUsername(getUsernameFromContext()).getId(), PageRequest.of(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE));
+        //when
+        adService.setIsAdUserFavourite(userFavouriteAdEntityPage);
+        //then
+        assertThat(userFavouriteAdEntityPage.get().findFirst().get().getIsUserFavourite()).isTrue();
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
+    public void whenAdEntityIsProvided_thenShouldAddAdViewCountAndBeSaved(Long adId) {
+        //given
+        AdEntity adEntity = adRepository.getById(adId);
+        Long expectedAdViewsAmount = adEntity.getCountView() + AdUtility.AD_VIEW_COUNT;
+        //when
+        adService.addAdViewCounter(adEntity);
+        //then
+        Long actualAdViewsAmount = adRepository.getById(adId).getCountView();
+        assertThat(actualAdViewsAmount).isEqualTo(expectedAdViewsAmount);
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
+    public void whenAdEntityIsProvided_thenShouldRetriedAdDto(Long adId) {
+        //given
+        //when
+        AdDto adDto = adService.fetchAdDtoByIdAndSetIsUserFavourite(adId);
+        //then
+        assertThat(adDto).isNotNull();
+        assertThat(adDto.getTitle()).isNotNull();
+        assertThat(adDto.getDescription()).isNotNull();
+    }
 }
+

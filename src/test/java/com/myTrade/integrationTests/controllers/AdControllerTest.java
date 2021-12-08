@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,23 +29,25 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 @Transactional
+@AutoConfigureMockMvc(addFilters = false)
 @WithMockUser(username = "brad@brad.brad")
 public class AdControllerTest {
+    private final MockMvc mockMvc;
+    private final UserRepository userRepository;
+    private final AdRepository adRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private AdRepository adRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    public AdControllerTest(MockMvc mockMvc, UserRepository userRepository, AdRepository adRepository, ObjectMapper objectMapper) {
+        this.mockMvc = mockMvc;
+        this.userRepository = userRepository;
+        this.adRepository = adRepository;
+        this.objectMapper = objectMapper;
+    }
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEditDtoWithoutId.csv", numLinesToSkip = 1)
@@ -52,7 +55,7 @@ public class AdControllerTest {
                                                                            String title,
                                                                            String description,
                                                                            City city,
-                                                                           Double price){
+                                                                           Double price) {
         //given
         AdEditDto adEditDto = AdEditDto.builder()
                 .adCategory(adCategory)
@@ -257,7 +260,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenProperAdIdIsProvided_thenNewHighlightDateShouldBeSetAndRetrieved200(){
+    public void whenProperAdIdIsProvided_thenNewHighlightDateShouldBeSetAndRetrieved200() {
         //given
         LocalDate expectedDate = LocalDate.now().plusDays(AdUtility.AD_HIGHLIGHTING_DURATION_IN_DAYS);
         AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
@@ -276,7 +279,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenProperAdIdIsProvided_thenAdStatusShouldBeChangeAndRetrieved200(){
+    public void whenProperAdIdIsProvided_thenAdStatusShouldBeChangeAndRetrieved200() {
         //given
         AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
                 .findFirst()

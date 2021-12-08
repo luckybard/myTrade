@@ -17,16 +17,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ConversationMapperImplTest {
-
-    ConversationMapperImpl conversationMapper = new ConversationMapperImpl();
-
+    private final ConversationMapperImpl conversationMapper = new ConversationMapperImpl();
 
     @ParameterizedTest
     @CsvFileSource(resources = "/conversation.csv", numLinesToSkip = 1)
     public void shouldMapToDtoWithNestedObjects(Long id, String recipientUsername, String senderUsername, String title) {
         //given
-        ConversationEntity conversationEntity = new ConversationEntity(id,senderUsername,recipientUsername,title,
-                        setUpMessageEntityList(recipientUsername, senderUsername));
+        ConversationEntity conversationEntity = new ConversationEntity(id, senderUsername, recipientUsername, title,
+                setUpMessageEntityList(recipientUsername, senderUsername));
         //when
         ConversationDto conversationDto = conversationMapper.conversationEntityToConversationDto(conversationEntity);
         //then
@@ -60,7 +58,7 @@ public class ConversationMapperImplTest {
     @CsvFileSource(resources = "/conversation.csv", numLinesToSkip = 1)
     public void shouldMapToEntityWithNestedObjects(Long id, String recipientUsername, String senderUsername, String title) {
         //given
-        ConversationDto conversationDto = new ConversationDto(id,senderUsername,recipientUsername,title,
+        ConversationDto conversationDto = new ConversationDto(id, senderUsername, recipientUsername, title,
                 setUpMessageDtoList(recipientUsername, senderUsername));
         //when
         ConversationEntity conversationEntity = conversationMapper.conversationDtoToConversationEntity(conversationDto);
