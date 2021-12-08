@@ -8,11 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping(path = "/conversation")
-public class ConversationController {
+public final class ConversationController {
     private final ConversationService conversationService;
 
     @Autowired
@@ -22,8 +20,8 @@ public class ConversationController {
 
     @GetMapping(path = "/fetch/{username}")
     public ResponseEntity<Page<ConversationDto>> fetchAllConversationByUsername(@PathVariable(value = "username") String username,
-                                                                                @RequestParam Optional<Integer> pageNumber, @PathVariable Optional<Integer> pageSize) {
-        Page<ConversationDto> conversationDtoPage = conversationService.fetchAllConversationByUsername(username, pageNumber.orElse(0), pageSize.orElse(5));
+                                                                                @RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
+        Page<ConversationDto> conversationDtoPage = conversationService.fetchAllConversationByUsername(username, pageNumber, pageSize);
         return ResponseEntity.ok(conversationDtoPage);
     }
 

@@ -12,10 +12,10 @@ import java.util.List;
 import static com.myTrade.utility.pojo.AdCategory.*;
 import static com.myTrade.utility.pojo.City.*;
 
-public class AdUtility {
+public final class AdUtility {
     public static final Long INITIAL_AD_VIEW_COUNT = 0L;
     public static final int AD_VIEW_COUNT = 1;
-    public static final int ONE_DAY = 1;
+    public static final int AD_HIGHLIGHTING_DURATION_IN_DAYS = 1;
     public static final int REFRESH_DELAY_IN_DAYS = 7;
     public static final List<City> CITIES_LIST = List.of(EVERYWHERE,WARSAW,BERLIN,PARIS,LONDON,PORTO,MOSCOW);
     public static final List<AdCategory> AD_CATEGORIES_LIST = List.of(CLOTHES,APPLIANCES,BOOKS,FURNITURE,OTHER);
@@ -37,9 +37,10 @@ public class AdUtility {
         adEntity.setOwnerUsername(ownerUsername);
     }
 
-    public static void setValuesFromAdFormDto(AdEntity adEntity, AdEditDto adEditDto) {
+    public static void setValuesFromAdEditDto(AdEntity adEntity, AdEditDto adEditDto) {
         adEntity.setTitle(adEditDto.getTitle());
         adEntity.setDescription(adEditDto.getDescription());
+        adEntity.setCity(adEditDto.getCity());
         adEntity.setPrice(adEditDto.getPrice());
         adEntity.setAdCategory(adEditDto.getAdCategory());
         adEntity.setModifiedDate(LocalDate.now());

@@ -4,12 +4,12 @@ import com.myTrade.dto.AdEditDto;
 
 import java.util.function.Predicate;
 
-public class AdFormValidator implements Predicate<AdEditDto> {
-    AdCategoryValidator adCategoryValidator = new AdCategoryValidator();
-    CityValidator cityValidator = new CityValidator();
-    TitleValidator titleValidator = new TitleValidator();
-    DescriptionValidator descriptionValidator = new DescriptionValidator();
-    PriceValidator priceValidator = new PriceValidator();
+public final class AdFormValidator implements Predicate<AdEditDto> {
+    private final AdCategoryValidator adCategoryValidator = new AdCategoryValidator();
+    private final CityValidator cityValidator = new CityValidator();
+    private final TitleValidator titleValidator = new TitleValidator();
+    private final DescriptionValidator descriptionValidator = new DescriptionValidator();
+    private final PriceValidator priceValidator = new PriceValidator();
 
     @Override
     public boolean test(AdEditDto adEditDto) {

@@ -19,7 +19,7 @@ import static com.myTrade.utility.pojo.UserRole.USER;
 @Builder
 @Table(name = "user")
 
-public class UserEntity {
+public final class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ConversationRepository extends JpaRepository<ConversationEntity,Long> {
+public interface ConversationRepository extends JpaRepository<ConversationEntity, Long> {
 
-    @Query(value ="SELECT * FROM conversation WHERE conversation.sender_username = :username OR conversation.recipient_username =:username", nativeQuery = true)
-    Page<ConversationEntity> findConversationEntityPageByRecipientUsernameOrSenderUsername(String username, Pageable pageable);
+    @Query(value = "SELECT * FROM conversation WHERE conversation.sender_username = :username OR conversation.recipient_username =:username", nativeQuery = true)
+    Page<ConversationEntity> findConversationEntityPageByRecipientOrSenderUsername(String username, Pageable pageable);
 }

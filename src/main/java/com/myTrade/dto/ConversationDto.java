@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Builder
-public class ConversationDto {
+public final class ConversationDto {
     private Long id;
     private String senderUsername;
     private String recipientUsername;

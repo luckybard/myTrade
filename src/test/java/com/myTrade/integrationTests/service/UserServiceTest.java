@@ -32,7 +32,6 @@ import static org.junit.Assert.assertThrows;
 @Transactional
 @WithMockUser(username = "brad@brad.brad")
 public class UserServiceTest {
-
     private UserRepository userRepository;
     private UserService userService;
     private AdRepository adRepository;
@@ -63,7 +62,7 @@ public class UserServiceTest {
     @ParameterizedTest
     @WithAnonymousUser
     @MethodSource("invalidUserRegistrationRequests")
-    public void whenInvalidUserRegistrationRequestIsProvided_thenShouldThrowUserValidationException(RegistrationRequest registrationRequest){
+    public void whenInvalidUserRegistrationRequestIsProvided_thenShouldThrowUserValidationException(RegistrationRequest registrationRequest) {
         //given
         //when & then
         assertThrows(UserValidationException.class, () -> {
@@ -73,18 +72,18 @@ public class UserServiceTest {
 
     private static Stream<Arguments> invalidUserRegistrationRequests() {
         return Stream.of(
-                Arguments.of(new RegistrationRequest("brad@brad","brad@brad", "brad@brad")),
-                Arguments.of(new RegistrationRequest("            ","brad@brad", "brad@brad")),
-                Arguments.of(new RegistrationRequest("brad@brad","12345", "brad@brad")),
-                Arguments.of(new RegistrationRequest("br","brad@brad.com","brad@brad")),
-                Arguments.of(new RegistrationRequest("br","            ","brad@brad")),
-                Arguments.of(new RegistrationRequest("        ","      ","        ")),
-                Arguments.of(new RegistrationRequest("","",""))
+                Arguments.of(new RegistrationRequest("brad@brad", "brad@brad", "brad@brad")),
+                Arguments.of(new RegistrationRequest("            ", "brad@brad", "brad@brad")),
+                Arguments.of(new RegistrationRequest("brad@brad", "12345", "brad@brad")),
+                Arguments.of(new RegistrationRequest("br", "brad@brad.com", "brad@brad")),
+                Arguments.of(new RegistrationRequest("br", "            ", "brad@brad")),
+                Arguments.of(new RegistrationRequest("        ", "      ", "        ")),
+                Arguments.of(new RegistrationRequest("", "", ""))
         );
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {4,5,6,7,8})
+    @ValueSource(longs = {4, 5, 6, 7, 8})
     public void whenValidAdIdIsProvided_thenAdShouldBeAddedToUserFavouriteAdEntityList(Long adId) {
         //given
         AdEntity expectedAdEntity = adRepository.getById(adId);
@@ -96,7 +95,7 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {4,5,6,7,8})
+    @ValueSource(longs = {4, 5, 6, 7, 8})
     public void whenValidAdIdIsProvided_thenAdShouldBeRemovedFromUserFavouriteAdEntityList(Long adId) {
         //given
         AdEntity notExpectedAdEntity = adRepository.getById(adId);

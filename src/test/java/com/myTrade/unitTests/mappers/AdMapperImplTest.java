@@ -15,11 +15,10 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AdMapperImplTest {
-
-    AdMapperImpl adMapper = new AdMapperImpl();
+    private final AdMapperImpl adMapper = new AdMapperImpl();
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/adEntity.csv",numLinesToSkip = 1)
+    @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
     public void shouldMapAdEntityToAdDto(Long id,
                                          AdCategory adCategory,
                                          String title,
@@ -69,7 +68,7 @@ public class AdMapperImplTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/adEntity.csv",numLinesToSkip = 1)
+    @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
     public void shouldMapAdEntityToAdEditDto(Long id,
                                              AdCategory adCategory,
                                              String title,
@@ -83,7 +82,7 @@ public class AdMapperImplTest {
                                              LocalDate modifiedDate,
                                              LocalDate refreshDate,
                                              LocalDate expirationHighlightDate
-    ){
+    ) {
         //given
         AdEntity adEntity = AdEntity.builder().id(id)
                 .adCategory(adCategory)
@@ -114,7 +113,7 @@ public class AdMapperImplTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/adEntity.csv",numLinesToSkip = 1)
+    @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
     public void shouldMapAdEntityToAdOwnerDto(Long id,
                                               AdCategory adCategory,
                                               String title,
@@ -165,13 +164,13 @@ public class AdMapperImplTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/adEditDto.csv",numLinesToSkip = 1)
+    @CsvFileSource(resources = "/adEditDto.csv", numLinesToSkip = 1)
     public void shouldMapAdEditDtoToAdEntity(Long id,
-                                         AdCategory adCategory,
-                                         String title,
-                                         String description,
-                                         City city,
-                                         Double price
+                                             AdCategory adCategory,
+                                             String title,
+                                             String description,
+                                             City city,
+                                             Double price
     ) {
         //given
         AdEditDto adEditDto = AdEditDto.builder().id(id)

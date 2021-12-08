@@ -6,19 +6,16 @@ import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.services.AdService;
 import com.myTrade.utility.pojo.AdCategory;
 import com.myTrade.utility.pojo.City;
-import com.myTrade.utility.pojo.PriceRange;
+import com.myTrade.utility.pojo.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
-import static com.myTrade.utility.pojo.City.EVERYWHERE;
-
 @RestController
 @RequestMapping(path = "/ad")
-public class AdController {
+public final class AdController {
     private final AdService adService;
 
     @Autowired
@@ -29,21 +26,26 @@ public class AdController {
     @PostMapping("/save")
     public ResponseEntity saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(@RequestBody AdEditDto adEditDto) {
         adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<Page<AdDto>> fetchActiveAdDtoPageBySearchRequest(@RequestParam String searchText, @RequestParam Optional<Boolean> searchInDescription, @RequestParam Optional<City> city,
-                                                                           @RequestParam Optional<AdCategory> category, @RequestParam Optional<PriceRange> priceRange,
-                                                                           @RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        Page<AdDto> adDtoPage = adService.fetchActiveAdDtoPageBySearchRequest(searchText, searchInDescription.orElse(false), city.orElse(EVERYWHERE), category.orElse(AdCategory.ALL),
-                priceRange.orElse(new PriceRange(0, 2_147_483_647)), pageNumber.orElse(0), pageSize.orElse(10));
+    public ResponseEntity<Page<AdDto>> fetchActiveAdDtoPageBySearchRequest(@RequestParam String searchText,
+                                                                           @RequestParam Boolean isSearchedInDescription,
+                                                                           @RequestParam City city,
+                                                                           @RequestParam AdCategory adCategory,
+                                                                           @RequestParam Integer priceFrom,
+                                                                           @RequestParam Integer priceTo,
+                                                                           @RequestParam Integer pageNumber,
+                                                                           @RequestParam Integer pageSize) {
+        Page<AdDto> adDtoPage = adService.fetchActiveAdDtoPageBySearchRequest(new SearchRequest(
+                searchText, adCategory, isSearchedInDescription, city, priceFrom, priceTo, pageNumber, pageSize));
         return ResponseEntity.ok(adDtoPage);
     }
 
     @GetMapping("/fetch/random")
-    public ResponseEntity<Page<AdDto>> fetchRandomAdDtoPage(@RequestParam Optional<Integer> pageSize) {
-        Page<AdDto> adDtoPage = adService.fetchRandomAdDtoPage(pageSize.orElse(10));
+    public ResponseEntity<Page<AdDto>> fetchRandomAdDtoPage(@RequestParam Integer pageSize) {
+        Page<AdDto> adDtoPage = adService.fetchRandomAdDtoPage(pageSize);
         return ResponseEntity.ok(adDtoPage);
     }
 
@@ -55,26 +57,29 @@ public class AdController {
 
     @GetMapping("/fetch/edit/{id}")
     public ResponseEntity<AdEditDto> fetchAdEditDto(@PathVariable(value = "id") Long adId) {
-        adService.fetchAdEditDto(adId);
-        return ResponseEntity.ok().build();
+        AdEditDto adEditDto = adService.fetchAdEditDto(adId);
+        return ResponseEntity.ok(adEditDto);
     }
 
     @GetMapping("/fetch/adList")
-    public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(@RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        Page<AdOwnerDto> adOwnerDtoPage = adService.fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(pageNumber.orElse(0), pageSize.orElse(10));
+    public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(@RequestParam Integer pageNumber,
+                                                                                                         @RequestParam Integer pageSize) {
+        Page<AdOwnerDto> adOwnerDtoPage = adService.fetchAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(pageNumber, pageSize);
         return ResponseEntity.ok(adOwnerDtoPage);
     }
 
     @GetMapping("/fetch/adList/{username}")
     public ResponseEntity<Page<AdDto>> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(@PathVariable(value = "username") String username,
-                                                                                            @RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        Page<AdDto> adDtoPage = adService.fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(username, pageNumber.orElse(0), pageSize.orElse(10));
+                                                                                            @RequestParam Integer pageNumber,
+                                                                                            @RequestParam Integer pageSize) {
+        Page<AdDto> adDtoPage = adService.fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(username, pageNumber, pageSize);
         return ResponseEntity.ok(adDtoPage);
     }
 
     @GetMapping("/fetch/favourite/adList")
-    public ResponseEntity<Page<AdDto>> fetchUserFavouriteAdDtoPage(@RequestParam Optional<Integer> pageNumber, @RequestParam Optional<Integer> pageSize) {
-        Page<AdDto> adDtoPage = adService.fetchUserFavouriteAdDtoPage(pageNumber.orElse(0), pageSize.orElse(10));
+    public ResponseEntity<Page<AdDto>> fetchUserFavouriteAdDtoPage(@RequestParam Integer pageNumber,
+                                                                   @RequestParam Integer pageSize) {
+        Page<AdDto> adDtoPage = adService.fetchUserFavouriteAdDtoPage(pageNumber, pageSize);
         return ResponseEntity.ok(adDtoPage);
     }
 

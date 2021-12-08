@@ -24,7 +24,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,19 +40,19 @@ import static org.mockito.Mockito.verify;
 class AdServiceUnitTest {
 
     @Mock
-    AdRepository adRepository;
+    private AdRepository adRepository;
 
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @InjectMocks
-    AdService adService;
+    private AdService adService;
 
     @Captor
-    ArgumentCaptor<AdEntity> adEntityArgumentCaptor;
+    private ArgumentCaptor<AdEntity> adEntityArgumentCaptor;
 
     @Captor
-    ArgumentCaptor<UserEntity> userEntityArgumentCaptor;
+    private ArgumentCaptor<UserEntity> userEntityArgumentCaptor;
 
     private final UserEntity user = new UserEntity();
 
@@ -103,8 +102,9 @@ class AdServiceUnitTest {
         verify(adRepository).getById(id);
         verify(adRepository).save(adEntity);
     }
+
     @Test
-    public void whenAdEntityPageIsProvided_thenShouldSetIsAdUserFavourite(){
+    public void whenAdEntityPageIsProvided_thenShouldSetIsAdUserFavourite() {
         //given
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);
         Page<AdEntity> adEntityPage = new PageImpl<>(user.getFavouriteAdEntityList());
@@ -117,7 +117,7 @@ class AdServiceUnitTest {
     }
 
     @Test
-    public void whenAdEntityIsProvided_thenShouldSetIsAdUserFavourite(){
+    public void whenAdEntityIsProvided_thenShouldSetIsAdUserFavourite() {
         //given
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);
         AdEntity adEntity = user.getFavouriteAdEntityList().stream().findFirst().get();
@@ -131,7 +131,7 @@ class AdServiceUnitTest {
 
 
     @Test
-    public void shouldRetrievedUserFavouriteAdsIdInList(){
+    public void shouldRetrievedUserFavouriteAdsIdInList() {
         //given
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);
         //when
@@ -145,11 +145,11 @@ class AdServiceUnitTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/adEditDto.csv", numLinesToSkip = 1)
     public void whenValidAdEditDtoIsProvided_thenAdShouldBeSavedWithInitialValuesAndBeAssignedToUserAdList(Long id,
-                                                                              AdCategory adCategory,
-                                                                              String title,
-                                                                              String description,
-                                                                              City city,
-                                                                              Double price
+                                                                                                           AdCategory adCategory,
+                                                                                                           String title,
+                                                                                                           String description,
+                                                                                                           City city,
+                                                                                                           Double price
     ) {
         //given
         AdEditDto adEditDto = AdEditDto.builder().id(id)
@@ -271,7 +271,6 @@ class AdServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    @WithMockUser(username = "mike@mike.mike")
     public void whenValidAdIdIsProvided_thenNewHighlightDateShouldBeSetAndHighlightPointsShouldBeDeductedFromUser(Long id,
                                                                                                                   AdCategory adCategory,
                                                                                                                   String title,

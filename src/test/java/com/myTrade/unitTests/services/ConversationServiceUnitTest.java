@@ -29,13 +29,13 @@ import static org.mockito.Mockito.verify;
 class ConversationServiceUnitTest {
 
     @Mock
-    ConversationRepository conversationRepository;
+    private ConversationRepository conversationRepository;
 
     @InjectMocks
-    ConversationService conversationService;
+    private ConversationService conversationService;
 
     @Captor
-    ArgumentCaptor<ConversationEntity> conversationEntityArgumentCaptor;
+    private ArgumentCaptor<ConversationEntity> conversationEntityArgumentCaptor;
 
     private UserEntity user = new UserEntity();
 

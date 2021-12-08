@@ -18,13 +18,13 @@ import static com.myTrade.utility.AdUtility.INITIAL_AD_VIEW_COUNT;
 @Builder
 @Entity
 @Table(name = "ad")
-public class AdEntity {
+public final class AdEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     private Long id;
-    @Column(nullable = false,updatable = false)
+    @Column(nullable = false, updatable = false)
     private String ownerUsername;
 
     @Column(nullable = false)
@@ -75,7 +75,7 @@ public class AdEntity {
     private Boolean isUserAbleToHighlight;
 
     @PostLoad
-    public void postLoad(){
+    public void postLoad() {
         setIsRefreshable(false);
         setIsUserFavourite(false);
         setIsUserAbleToHighlight(false);

@@ -29,18 +29,18 @@ import static org.mockito.Mockito.verify;
 class MessageServiceUnitTest {
 
     @Mock
-    MessageRepository messageRepository;
+    private MessageRepository messageRepository;
 
     @Mock
-    ConversationRepository conversationRepository;
+    private ConversationRepository conversationRepository;
 
     @InjectMocks
-    MessageService messageService;
+    private MessageService messageService;
 
     private UserEntity user = new UserEntity();
 
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         TestUtility.setUpDefaultUserEntity(user);
         TestUtility.setUpSecurityContext(user);
     }

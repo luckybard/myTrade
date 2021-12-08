@@ -39,19 +39,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser(username = "brad@brad.brad")
 public class UserControllerTest {
-
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final MockMvc mockMvc;
+    private final UserRepository userRepository;
+    private final AdRepository adRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    private AdRepository adRepository;
-
-    @Autowired
-    ObjectMapper objectMapper = new ObjectMapper();
+    public UserControllerTest(MockMvc mockMvc, UserRepository userRepository, AdRepository adRepository, ObjectMapper objectMapper) {
+        this.mockMvc = mockMvc;
+        this.userRepository = userRepository;
+        this.adRepository = adRepository;
+        this.objectMapper = objectMapper;
+    }
 
     @ParameterizedTest
     @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
@@ -103,7 +102,7 @@ public class UserControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {4,5,6,7,8})
+    @ValueSource(longs = {4, 5, 6, 7, 8})
     public void whenProperAdIdIsProvided_thenShouldAddAdToUserFavouriteAdListAndReturnStatus200(Long adId) {
         //given
         //when & then
@@ -119,7 +118,7 @@ public class UserControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {1,2,3,4,5,6,7,8})
+    @ValueSource(longs = {1, 2, 3, 4, 5, 6, 7, 8})
     public void whenProperAdIdIsProvided_thenShouldRemoveAdFromUserFavouriteAdListAndReturnStatus200(Long adId) {
         //given
         //when && then

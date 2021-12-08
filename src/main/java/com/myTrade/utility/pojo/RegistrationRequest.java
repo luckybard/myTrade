@@ -1,11 +1,11 @@
 package com.myTrade.utility.pojo;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @AllArgsConstructor
-public class RegistrationRequest {
+public final class RegistrationRequest {
     private String username;
     private String email;
     private String password;

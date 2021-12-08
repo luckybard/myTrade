@@ -9,13 +9,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig {
 
     @Bean
-    public WebMvcConfigurer getCorsConfiguration(){
+    public WebMvcConfigurer getCorsConfiguration() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-             registry.addMapping("/**").allowedOrigins("http://localhost:3000")
-                     .exposedHeaders("Authorization","Access-Control-Allow-Headers","Set-Cookie","Cookie","Access-Control-Allow-Credentials")
-                     .allowCredentials(true);
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000")
+                        .exposedHeaders("Authorization", "Access-Control-Allow-Headers", "Set-Cookie", "Cookie", "Access-Control-Allow-Credentials")
+                        .allowCredentials(true);
             }
         };
     }

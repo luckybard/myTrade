@@ -6,8 +6,11 @@ import com.myTrade.dto.AdOwnerDto;
 import com.myTrade.entities.AdEntity;
 
 public interface AdMapper {
-    AdDto adEntityToAdDto (AdEntity adEntity);
+    AdDto adEntityToAdDto(AdEntity adEntity);
+
     AdEditDto adEntityToAdEditDto(AdEntity adEntity);
+
     AdEntity adEditDtoToAdEntity(AdEditDto adEditDto);
+
     AdOwnerDto adEntityToAdOwnerDto(AdEntity adEntity);
 }

@@ -40,7 +40,6 @@ import static org.junit.Assert.assertThrows;
 @Transactional
 @WithMockUser(username = "brad@brad.brad")
 class AdServiceTest {
-
     private AdService adService;
     private AdRepository adRepository;
     private UserRepository userRepository;

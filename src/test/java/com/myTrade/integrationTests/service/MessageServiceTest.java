@@ -25,20 +25,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @WithMockUser(username = "brad@brad.brad")
 public class MessageServiceTest {
-
-
     private ConversationRepository conversationRepository;
     private MessageService messageService;
 
     @Autowired
-    public MessageServiceTest( ConversationRepository conversationRepository, MessageService messageService) {
+    public MessageServiceTest(ConversationRepository conversationRepository, MessageService messageService) {
         this.conversationRepository = conversationRepository;
         this.messageService = messageService;
     }
 
     @ParameterizedTest
     @MethodSource("messageDtoWithConversationId")
-    public void whenValidMessageDtoAndConversationIdIsProvided_shouldSaveMessageAndAssignToConversation(MessageDto messageDto, Long conversationId){
+    public void whenValidMessageDtoAndConversationIdIsProvided_shouldSaveMessageAndAssignToConversation(MessageDto messageDto, Long conversationId) {
         //given
         int expectedConversationMessageAmount = conversationRepository.findById(conversationId).get().getMessageList().size() + ONE_ADDITIONAL_MESSAGE;
         //when
@@ -50,15 +48,15 @@ public class MessageServiceTest {
 
     private static Stream<Arguments> messageDtoWithConversationId() {
         return Stream.of(
-                Arguments.of(MessageDto.builder().text("Hi Adam!").build(),1L),
-                Arguments.of(MessageDto.builder().text("Nice!").build(),1L),
-                Arguments.of(MessageDto.builder().text("I'm interested").build(),1L)
+                Arguments.of(MessageDto.builder().text("Hi Adam!").build(), 1L),
+                Arguments.of(MessageDto.builder().text("Nice!").build(), 1L),
+                Arguments.of(MessageDto.builder().text("I'm interested").build(), 1L)
         );
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {1,2})
-    public void whenConversationIdIsProvided_thenMessageDtoListShouldBeFetchedByConversationId(long conversationId){
+    @ValueSource(longs = {1, 2})
+    public void whenConversationIdIsProvided_thenMessageDtoListShouldBeFetchedByConversationId(long conversationId) {
         //given
         int FIRST_MESSAGE = 0;
         //when

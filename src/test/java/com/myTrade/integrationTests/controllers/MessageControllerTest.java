@@ -34,18 +34,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser(username = "brad@brad.brad")
 public class MessageControllerTest {
+    private final MockMvc mockMvc;
+    private final MessageRepository messageRepository;
+    private final ConversationRepository conversationRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private MessageRepository messageRepository;
-
-    @Autowired
-    private ConversationRepository conversationRepository;
-
-    @Autowired
-    ObjectMapper objectMapper;
+    public MessageControllerTest(MockMvc mockMvc, MessageRepository messageRepository, ConversationRepository conversationRepository, ObjectMapper objectMapper) {
+        this.mockMvc = mockMvc;
+        this.messageRepository = messageRepository;
+        this.conversationRepository = conversationRepository;
+        this.objectMapper = objectMapper;
+    }
 
     @ParameterizedTest
     @MethodSource("messageDtoWithConversationId")

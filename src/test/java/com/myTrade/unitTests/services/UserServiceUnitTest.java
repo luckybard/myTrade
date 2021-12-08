@@ -45,9 +45,9 @@ public class UserServiceUnitTest {
     private UserService userService;
 
     @Captor
-    ArgumentCaptor<UserEntity> userEntityArgumentCaptor;
+    private ArgumentCaptor<UserEntity> userEntityArgumentCaptor;
 
-    UserEntity user = new UserEntity();
+    private UserEntity user = new UserEntity();
 
     @BeforeEach
     public void beforeEach() {

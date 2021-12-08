@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MessageService {
+public final class MessageService {
     private final ConversationRepository conversationRepository;
     private final MessageRepository messageRepository;
     private final MessageMapperImpl messageMapper = new MessageMapperImpl();
@@ -28,18 +28,21 @@ public class MessageService {
 
     public void saveMessageDtoAndAssignToConversationById(MessageDto messageDto, Long conversationId) {
         MessageEntity messageEntity = messageMapper.messageDtoToMessageEntity(messageDto);
-        ConversationEntity conversationEntity = conversationRepository.findById(conversationId).get();
+        ConversationEntity conversationEntity = conversationRepository.getById(conversationId);
+        prepareMessageToBeSavedIntoConversation(messageEntity, conversationEntity);
+        conversationRepository.save(conversationEntity);
+    }
+
+    private void prepareMessageToBeSavedIntoConversation(MessageEntity messageEntity, ConversationEntity conversationEntity) {
         List<MessageEntity> messageEntityList = new ArrayList<>(conversationEntity.getMessageList());
         messageEntity.setDateTime(LocalDateTime.now());
         messageEntity.setAuthorUsername(UserUtility.getUsernameFromContext());
         messageEntityList.add(messageEntity);
         conversationEntity.setMessageList(messageEntityList);
-        conversationRepository.save(conversationEntity);
     }
 
     public List<MessageDto> fetchMessageDtoListByConversationId(Long conversationId) {
         List<MessageEntity> messageEntityList = messageRepository.findMessageEntityListByConversationId(conversationId);
-        List<MessageDto> messageDtoList = messageMapper.messageEntityListToMessageDtoList(messageEntityList);
-        return messageDtoList;
+        return messageMapper.messageEntityListToMessageDtoList(messageEntityList);
     }
 }

@@ -5,5 +5,6 @@ import com.myTrade.entities.ConversationEntity;
 
 public interface ConversationMapper {
     ConversationDto conversationEntityToConversationDto(ConversationEntity conversationEntity);
+
     ConversationEntity conversationDtoToConversationEntity(ConversationDto conversationDto);
 }

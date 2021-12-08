@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myTrade.dto.ConversationDto;
 import com.myTrade.dto.MessageDto;
 import com.myTrade.repositories.ConversationRepository;
-import com.myTrade.repositories.UserRepository;
 import com.myTrade.utility.UserUtility;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,19 +30,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @WithMockUser(username = "brad@brad.brad")
 public class ConversationControllerTest {
+    private final MockMvc mockMvc;
+    private final ConversationRepository conversationRepository;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ConversationRepository conversationRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
+    public ConversationControllerTest(MockMvc mockMvc, ConversationRepository conversationRepository, ObjectMapper objectMapper) {
+        this.mockMvc = mockMvc;
+        this.conversationRepository = conversationRepository;
+        this.objectMapper = objectMapper;
+    }
 
     @Test
     public void whenUsernameIsProvided_thenShouldFetchUserConversationsAndRetrieved200() {

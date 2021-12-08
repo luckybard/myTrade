@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @WithMockUser(username = "brad@brad.brad")
 public class ConversationServiceTest {
-
     private ConversationService conversationService;
     private ConversationRepository conversationRepository;
 
@@ -35,11 +34,11 @@ public class ConversationServiceTest {
     }
 
     @Test
-    public void whenUsernameIsProvided_thenShouldFetchUserConversations(){
+    public void whenUsernameIsProvided_thenShouldFetchUserConversations() {
         //given
         //when
         Page<ConversationDto> conversationDtoPage = conversationService
-                .fetchAllConversationByUsername(getUsernameFromContext(), DEFAULT_PAGE_NUMBER,DEFAULT_PAGE_SIZE );
+                .fetchAllConversationByUsername(getUsernameFromContext(), DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
         //then
         assertThat(conversationDtoPage.getTotalElements()).isGreaterThan(0);
         assertThat(conversationDtoPage.getContent().stream().findFirst().get().getTitle()).isNotNull();
@@ -49,7 +48,7 @@ public class ConversationServiceTest {
     }
 
     @Test
-    public void whenConversationDtoIsProvided_thenShouldBeSavedWithInitialValues(){
+    public void whenConversationDtoIsProvided_thenShouldBeSavedWithInitialValues() {
         //given
         ConversationDto conversationDto = ConversationDto.builder()
                 .senderUsername(getUsernameFromContext())
@@ -65,7 +64,7 @@ public class ConversationServiceTest {
         //when
         conversationService.saveInitialConversationWithMessageByConversationDto(conversationDto);
         //then
-        Long actualUserConversationListSize =  conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(
+        Long actualUserConversationListSize = conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(
                 getUsernameFromContext(), Pageable.unpaged()).getTotalElements();
         assertThat(actualUserConversationListSize).isEqualTo(expectedUserConversationListSize);
     }

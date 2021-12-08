@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class UserDetailsImpl implements UserDetails {
+public final class UserDetailsImpl implements UserDetails {
     private String username;
     private String password;
     private List<GrantedAuthority> authorities;

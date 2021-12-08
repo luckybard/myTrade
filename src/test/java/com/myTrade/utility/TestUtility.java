@@ -19,7 +19,6 @@ import static com.myTrade.utility.pojo.City.*;
 import static com.myTrade.utility.pojo.UserRole.USER;
 
 public class TestUtility {
-
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int ONE_ADDITIONAL_AD = 1;

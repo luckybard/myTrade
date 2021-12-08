@@ -11,18 +11,17 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MessageMapperImplTest {
-
-    MessageMapperImpl messageMapper = new MessageMapperImpl();
+    private final MessageMapperImpl messageMapper = new MessageMapperImpl();
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/message.csv",numLinesToSkip = 1)
+    @CsvFileSource(resources = "/message.csv", numLinesToSkip = 1)
     public void shouldMapMessageEntityToMessageDto(Long id,
                                                    String authorUsername,
                                                    LocalDateTime dateTime,
                                                    String text) {
 
         //given
-        MessageEntity messageEntity = new MessageEntity(id,authorUsername,text, dateTime);
+        MessageEntity messageEntity = new MessageEntity(id, authorUsername, text, dateTime);
         //when
         MessageDto messageDto = messageMapper.messageEntityToMessageDto(messageEntity);
         //then
@@ -35,13 +34,13 @@ public class MessageMapperImplTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(resources = "/message.csv",numLinesToSkip = 1)
+    @CsvFileSource(resources = "/message.csv", numLinesToSkip = 1)
     public void shouldMapToEntityWithNestedObjects(Long id,
                                                    String authorUsername,
                                                    LocalDateTime dateTime,
                                                    String text) {
         //given
-        MessageDto messageDto = new MessageDto(id,authorUsername,text,dateTime);
+        MessageDto messageDto = new MessageDto(id, authorUsername, text, dateTime);
         //when
         MessageEntity messageEntity = messageMapper.messageDtoToMessageEntity(messageDto);
         //then
