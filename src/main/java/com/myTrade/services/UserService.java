@@ -55,5 +55,10 @@ public final class UserService {
             userRepository.save(userEntity);
         } else throw new UserValidationException();
     }
+
+    public Integer fetchUserHighlightPoints() {
+        UserEntity user = userRepository.getByUsername(getUsernameFromContext());
+        return user.getHighlightPoints();
+    }
 }
 

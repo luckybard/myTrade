@@ -9,6 +9,7 @@ import com.myTrade.services.UserService;
 import com.myTrade.utility.UserUtility;
 import com.myTrade.utility.pojo.RegistrationRequest;
 import com.myTrade.utility.pojo.UserRole;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvFileSource;
@@ -104,5 +105,15 @@ public class UserServiceTest {
         List<AdEntity> actualUserFavouriteAddEntityList = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getFavouriteAdEntityList();
         //then
         assertThat(actualUserFavouriteAddEntityList).doesNotContain(notExpectedAdEntity);
+    }
+
+    @Test
+    public void whenUserIsLoggedIn_shouldRetrievedUserHighlightPoints(){
+        //given
+        Integer expectedUserHighlightPoints = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getHighlightPoints();
+        //when
+        Integer actualUserHighlightPoints = userService.fetchUserHighlightPoints();
+        //then
+        assertThat(actualUserHighlightPoints).isEqualTo(expectedUserHighlightPoints);
     }
 }

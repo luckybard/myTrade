@@ -11,6 +11,7 @@ import com.myTrade.utility.pojo.City;
 import com.myTrade.utility.pojo.RegistrationRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -152,5 +153,16 @@ public class UserServiceUnitTest {
         //then
         verify(userRepository).save(userEntityArgumentCaptor.capture());
         assertThat(userEntityArgumentCaptor.getValue().getFavouriteAdEntityList()).doesNotContain(adEntity);
+    }
+
+    @Test
+    public void whenUserIsLoggedIn_shouldRetrievedUserHighlightPoints(){
+        //given
+        Integer expectedUserHighlightPoints = user.getHighlightPoints();
+        given(userRepository.getByUsername(user.getUsername())).willReturn(user);
+        //when
+        Integer actualUserHighlightPoints = userService.fetchUserHighlightPoints();
+        //then
+        assertThat(actualUserHighlightPoints).isEqualTo(expectedUserHighlightPoints);
     }
 }

@@ -29,6 +29,12 @@ public final class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/points")
+    public ResponseEntity fetchUserHighlightPoints(){
+        Integer userHighlightPoints = userService.fetchUserHighlightPoints();
+        return ResponseEntity.ok(userHighlightPoints);
+    }
+
     @PatchMapping("/favourite/remove/{id}")
     public ResponseEntity removeAdFromUserFavouriteAdListById(@PathVariable(value = "id") Long adId) {
         userService.removeAdFromUserFavouriteAdListById(adId);

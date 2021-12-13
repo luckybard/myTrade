@@ -8,6 +8,7 @@ import com.myTrade.repositories.AdRepository;
 import com.myTrade.repositories.UserRepository;
 import com.myTrade.utility.UserUtility;
 import com.myTrade.utility.pojo.RegistrationRequest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvFileSource;
@@ -28,10 +29,9 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -133,6 +133,22 @@ public class UserControllerTest {
         List<AdEntity> userFavouriteAdEntityList = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getFavouriteAdEntityList();
         AdEntity favouriteAd = adRepository.getById(adId);
         assertThat(userFavouriteAdEntityList).doesNotContain(favouriteAd);
+    }
+
+    @Test
+    public void whenUserIsLoggedIn_shouldRetrievedUserHighlightPoints(){
+        //given
+        //when && then
+        try {
+            mockMvc.perform(get("/user/points"))
+                    .andDo(print())
+                    .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
+                    .andExpect(jsonPath("$").isNotEmpty())
+                    .andExpect(jsonPath("$").isNumber())
+                    .andExpect(status().is(200));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
