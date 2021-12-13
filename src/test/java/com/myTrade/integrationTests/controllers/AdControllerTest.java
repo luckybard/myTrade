@@ -294,7 +294,7 @@ public class AdControllerTest {
             e.printStackTrace();
         }
         Boolean actualStatus = adRepository.getById(userAdEntity.getId()).getIsActive();
-        assertThat(expectedStatus).isEqualTo(expectedStatus);
+        assertThat(actualStatus).isEqualTo(expectedStatus);
     }
 }
 
