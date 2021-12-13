@@ -55,7 +55,7 @@ public class MessageControllerTest {
         int expectedMessageListSize = messageRepository.findMessageEntityListByConversationId(conversationId).size() + ONE_ADDITIONAL_MESSAGE;
         //when & then
         try {
-            mockMvc.perform(post("/message/save/{id}", String.valueOf(conversationId)).contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(post("/message/{id}", String.valueOf(conversationId)).contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(messageDto)))
                     .andDo(print())
                     .andExpect(status().is(201));
@@ -87,7 +87,7 @@ public class MessageControllerTest {
                 .getId();
         //when & then
         try {
-            mockMvc.perform(get("/message/fetch/list/{id}", String.valueOf(conversationId)))
+            mockMvc.perform(get("/message/list/{id}", String.valueOf(conversationId)))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))

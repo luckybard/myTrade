@@ -18,14 +18,14 @@ public final class ConversationController {
         this.conversationService = conversationService;
     }
 
-    @GetMapping(path = "/fetch/{username}")
+    @GetMapping(path = "/{username}")
     public ResponseEntity<Page<ConversationDto>> fetchAllConversationByUsername(@PathVariable(value = "username") String username,
                                                                                 @RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
         Page<ConversationDto> conversationDtoPage = conversationService.fetchAllConversationByUsername(username, pageNumber, pageSize);
         return ResponseEntity.ok(conversationDtoPage);
     }
 
-    @PostMapping(path = "/save")
+    @PostMapping
     public ResponseEntity saveInitialConversationWithMessageByConversationDto(@RequestBody ConversationDto conversationDto) {
         conversationService.saveInitialConversationWithMessageByConversationDto(conversationDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();

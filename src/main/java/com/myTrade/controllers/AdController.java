@@ -23,13 +23,13 @@ public final class AdController {
         this.adService = adService;
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(@RequestBody AdEditDto adEditDto) {
         adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/fetch")
+    @GetMapping
     public ResponseEntity<Page<AdDto>> fetchActiveAdDtoPageBySearchRequest(@RequestParam String searchText,
                                                                            @RequestParam Boolean isSearchedInDescription,
                                                                            @RequestParam City city,
@@ -43,32 +43,32 @@ public final class AdController {
         return ResponseEntity.ok(adDtoPage);
     }
 
-    @GetMapping("/fetch/random")
+    @GetMapping("/random")
     public ResponseEntity<Page<AdDto>> fetchRandomAdDtoPage(@RequestParam Integer pageSize) {
         Page<AdDto> adDtoPage = adService.fetchRandomAdDtoPage(pageSize);
         return ResponseEntity.ok(adDtoPage);
     }
 
-    @GetMapping("/fetch/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AdDto> fetchAdDtoByIdAndSetIsUserFavourite(@PathVariable(value = "id") Long adId) {
         AdDto adDto = adService.fetchAdDtoByIdAndSetIsUserFavourite(adId);
         return ResponseEntity.ok(adDto);
     }
 
-    @GetMapping("/fetch/edit/{id}")
+    @GetMapping("/edit/{id}")
     public ResponseEntity<AdEditDto> fetchAdEditDto(@PathVariable(value = "id") Long adId) {
         AdEditDto adEditDto = adService.fetchAdEditDto(adId);
         return ResponseEntity.ok(adEditDto);
     }
 
-    @GetMapping("/fetch/adList")
+    @GetMapping("/adList")
     public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(@RequestParam Integer pageNumber,
                                                                                                          @RequestParam Integer pageSize) {
         Page<AdOwnerDto> adOwnerDtoPage = adService.fetchAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(pageNumber, pageSize);
         return ResponseEntity.ok(adOwnerDtoPage);
     }
 
-    @GetMapping("/fetch/adList/{username}")
+    @GetMapping("/adList/{username}")
     public ResponseEntity<Page<AdDto>> fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(@PathVariable(value = "username") String username,
                                                                                             @RequestParam Integer pageNumber,
                                                                                             @RequestParam Integer pageSize) {
@@ -76,32 +76,32 @@ public final class AdController {
         return ResponseEntity.ok(adDtoPage);
     }
 
-    @GetMapping("/fetch/favourite/adList")
+    @GetMapping("/favourite/adList")
     public ResponseEntity<Page<AdDto>> fetchUserFavouriteAdDtoPage(@RequestParam Integer pageNumber,
                                                                    @RequestParam Integer pageSize) {
         Page<AdDto> adDtoPage = adService.fetchUserFavouriteAdDtoPage(pageNumber, pageSize);
         return ResponseEntity.ok(adDtoPage);
     }
 
-    @PatchMapping("/patch")
+    @PutMapping
     public ResponseEntity patchAdEntityByAdEditDto(@RequestBody AdEditDto adEditDto) {
         adService.patchAdEntityByAdEditDto(adEditDto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/patch/refresh/{id}")
+    @PatchMapping("/refresh/{id}")
     public ResponseEntity refreshAdById(@PathVariable(value = "id") Long adId) {
         adService.refreshAdById(adId);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/patch/highlight/{id}")
+    @PatchMapping("/highlight/{id}")
     public ResponseEntity highlightAdByIdAndDeductHighlightPointFromUser(@PathVariable(value = "id") Long adId) {
         adService.highlightAdByIdAndDeductHighlightPointFromUser(adId);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/patch/active/{id}")
+    @PatchMapping("/active/{id}")
     public ResponseEntity changeAdStatusById(@PathVariable(value = "id") Long adId) {
         adService.changeAdStatusById(adId);
         return ResponseEntity.ok().build();

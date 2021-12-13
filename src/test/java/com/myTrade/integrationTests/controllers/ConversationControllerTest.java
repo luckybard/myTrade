@@ -47,7 +47,7 @@ public class ConversationControllerTest {
         String username = UserUtility.getUsernameFromContext();
         //when && then
         try {
-            mockMvc.perform(get("/conversation/fetch/{username}", username))
+            mockMvc.perform(get("/conversation/{username}?pageNumber=0&pageSize=2", username))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
@@ -80,7 +80,7 @@ public class ConversationControllerTest {
         Long expectedConversationListSize = conversationRepository.findConversationEntityPageByRecipientOrSenderUsername(senderUsername, Pageable.unpaged()).getTotalElements() + ONE_ADDITIONAL_CONVERSATION;
         //when & then
         try {
-            mockMvc.perform(post("/conversation/save").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(conversationDto)))
+            mockMvc.perform(post("/conversation").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(conversationDto)))
                     .andDo(print())
                     .andExpect(status().is(201));
         } catch (Exception e) {

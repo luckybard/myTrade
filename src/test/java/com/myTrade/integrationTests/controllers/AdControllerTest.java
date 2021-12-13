@@ -67,7 +67,7 @@ public class AdControllerTest {
         int expectedUserAdListSize = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().size() + ONE_ADDITIONAL_AD;
         //when & then
         try {
-            mockMvc.perform(post("/ad/save")
+            mockMvc.perform(post("/ad")
                             .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(adEditDto)))
                     .andDo(print())
                     .andExpect(status().is(201));
@@ -83,7 +83,7 @@ public class AdControllerTest {
         //given
         //when && then
         try {
-            mockMvc.perform(get("/ad/fetch/random"))
+            mockMvc.perform(get("/ad/random?pageNumber=0&pageSize=2"))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
@@ -106,7 +106,7 @@ public class AdControllerTest {
         AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream().findFirst().get();
         //when & then
         try {
-            mockMvc.perform(get("/ad/fetch/edit/{id}", String.valueOf(userAdEntity.getId())))
+            mockMvc.perform(get("/ad/edit/{id}", String.valueOf(userAdEntity.getId())))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
@@ -125,7 +125,7 @@ public class AdControllerTest {
         //given
         //when & then
         try {
-            mockMvc.perform(get("/ad/fetch/{id}", String.valueOf(adId)))
+            mockMvc.perform(get("/ad/{id}", String.valueOf(adId)))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
@@ -143,7 +143,7 @@ public class AdControllerTest {
         //given
         //when & then
         try {
-            mockMvc.perform(get("/ad/fetch/adList"))
+            mockMvc.perform(get("/ad/adList?pageNumber=0&pageSize=2"))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
@@ -166,7 +166,7 @@ public class AdControllerTest {
         String username = "john@john.john";
         //when && then
         try {
-            mockMvc.perform(get("/ad/fetch/adList/{username}", username))
+            mockMvc.perform(get("/ad/adList/{username}?pageNumber=0&pageSize=2", username))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
@@ -189,7 +189,7 @@ public class AdControllerTest {
         //given
         //when && then
         try {
-            mockMvc.perform(get("/ad/fetch/favourite/adList"))
+            mockMvc.perform(get("/ad/favourite/adList?pageNumber=0&pageSize=2"))
                     .andDo(print())
                     .andExpect(status().is(200))
                     .andExpect((content().contentType(MediaType.APPLICATION_JSON)))
@@ -226,7 +226,7 @@ public class AdControllerTest {
                 .build();
         //when && then
         try {
-            mockMvc.perform(patch("/ad/patch").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(adEditDto)))
+            mockMvc.perform(put("/ad").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(adEditDto)))
                     .andDo(print())
                     .andExpect(status().is(200));
         } catch (Exception e) {
@@ -249,7 +249,7 @@ public class AdControllerTest {
                 .get();
         //when & then
         try {
-            mockMvc.perform(patch("/ad/patch/refresh/{id}", String.valueOf(userAdEntity.getId())))
+            mockMvc.perform(patch("/ad/refresh/{id}", String.valueOf(userAdEntity.getId())))
                     .andDo(print())
                     .andExpect(status().is(200));
         } catch (Exception e) {
@@ -268,7 +268,7 @@ public class AdControllerTest {
                 .get();
         //when & then
         try {
-            mockMvc.perform(patch("/ad/patch/highlight/{id}", String.valueOf(userAdEntity.getId())))
+            mockMvc.perform(patch("/ad/highlight/{id}", String.valueOf(userAdEntity.getId())))
                     .andDo(print())
                     .andExpect(status().is(200));
         } catch (Exception e) {
@@ -287,7 +287,7 @@ public class AdControllerTest {
         Boolean expectedStatus = !userAdEntity.getIsActive();
         //when & then
         try {
-            mockMvc.perform(patch("/ad/patch/active/{id}", String.valueOf(userAdEntity.getId())))
+            mockMvc.perform(patch("/ad/active/{id}", String.valueOf(userAdEntity.getId())))
                     .andDo(print())
                     .andExpect(status().is(200));
         } catch (Exception e) {

@@ -19,13 +19,13 @@ public final class MessageController {
         this.messageService = messageService;
     }
 
-    @PostMapping("/save/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity saveMessage(@RequestBody MessageDto messageDto, @PathVariable(value = "id") Long conversationId) {
         messageService.saveMessageDtoAndAssignToConversationById(messageDto, conversationId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/fetch/list/{id}")
+    @GetMapping("/list/{id}")
     public ResponseEntity<List<MessageDto>> fetchMessageDtoListByConversationId(@PathVariable(value = "id") Long conversationId) {
         List<MessageDto> messageDtoList = messageService.fetchMessageDtoListByConversationId(conversationId);
         return ResponseEntity.ok(messageDtoList);

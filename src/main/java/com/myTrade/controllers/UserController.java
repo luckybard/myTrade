@@ -17,19 +17,19 @@ public final class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/save")
+    @PostMapping
     public ResponseEntity saveUserEntityByRegistrationRequest(@RequestBody RegistrationRequest registrationRequest) {
         userService.saveUserEntityByRegistrationRequest(registrationRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/patch/favourite/add/{id}")
+    @PatchMapping("/favourite/add/{id}")
     public ResponseEntity addAdFromUserFavouriteAdListById(@PathVariable(value = "id") Long adId) {
         userService.addAdFromUserFavouriteAdListById(adId);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/patch/favourite/remove/{id}")
+    @PatchMapping("/favourite/remove/{id}")
     public ResponseEntity removeAdFromUserFavouriteAdListById(@PathVariable(value = "id") Long adId) {
         userService.removeAdFromUserFavouriteAdListById(adId);
         return ResponseEntity.ok().build();

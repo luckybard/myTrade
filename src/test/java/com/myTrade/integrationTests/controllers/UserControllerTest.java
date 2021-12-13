@@ -61,7 +61,7 @@ public class UserControllerTest {
         RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         //when & then
         try {
-            mockMvc.perform(post("/user/save").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(registrationRequest)))
+            mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(registrationRequest)))
                     .andDo(print())
                     .andExpect(status().is(201));
         } catch (Exception e) {
@@ -82,7 +82,7 @@ public class UserControllerTest {
         //given
         //when & then
         try {
-            mockMvc.perform(post("/user/save").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(registrationRequest)))
+            mockMvc.perform(post("/user").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(registrationRequest)))
                     .andDo(print())
                     .andExpect(status().is(406));
         } catch (Exception e) {
@@ -108,7 +108,7 @@ public class UserControllerTest {
         //given
         //when & then
         try {
-            mockMvc.perform(patch("/user/patch/favourite/add/{id}", String.valueOf(adId)))
+            mockMvc.perform(patch("/user/favourite/add/{id}", String.valueOf(adId)))
                     .andExpect(status().is(200));
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,7 +124,7 @@ public class UserControllerTest {
         //given
         //when && then
         try {
-            mockMvc.perform(patch("/user/patch/favourite/remove/{id}", String.valueOf(adId)))
+            mockMvc.perform(patch("/user/favourite/remove/{id}", String.valueOf(adId)))
                     .andDo(print())
                     .andExpect(status().is(200));
         } catch (Exception e) {
