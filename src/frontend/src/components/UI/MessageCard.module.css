@@ -1,0 +1,16 @@
+.user {
+    background: #ffc107;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border-radius: 10px;
+    padding-block: 10px;
+    padding-inline: 10px;
+    text-align: right;
+}
+
+.sender {
+    background: #ffffffab;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border-radius: 10px;
+    padding-block: 10px;
+    padding-inline: 10px;
+}

@@ -1,0 +1,15 @@
+.normal {
+    background: #ffffffab;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border-radius: 10px;
+    padding-block: 20px;
+    padding-inline: 20px;
+}
+
+.highlighted{
+    background: #FCDB6C;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    border-radius: 10px;
+    padding-block: 20px;
+    padding-inline: 20px;
+}
