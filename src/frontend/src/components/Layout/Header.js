@@ -31,11 +31,11 @@ const Header = () => {
                             </NavLink>
                         </li>
                         }
-                        <li>
+                        {authCtx.isLoggedIn && <li>
                             <NavLink activeClassName={classes.active} to="/create-ad">
                                 Create Ad
                             </NavLink>
-                        </li>
+                        </li>}
                     </ul>
                 </nav>
             </header>
