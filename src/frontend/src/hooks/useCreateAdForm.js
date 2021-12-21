@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 
-const useCreateAdForm = (callback, validate) => {
+const useCreateAdForm = (validate) => {
   const history = useHistory();
   const [values, setValues] = useState({
     title: "",
@@ -30,7 +30,6 @@ const useCreateAdForm = (callback, validate) => {
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
-      // callback();
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,7 +41,13 @@ const useCreateAdForm = (callback, validate) => {
           city: values.city,
         }),
       };
-      fetch("http://localhost:8080/ad/create", requestOptions).then(history.push("/home"));
+      fetch("http://localhost:8080/ad", requestOptions).then((response) =>  {
+        if (response.ok) {
+          history.push("/home")
+        } else {
+          throw new Error("Sorry something went wrong")
+        }
+      })
     }
   }, [errors]);
 

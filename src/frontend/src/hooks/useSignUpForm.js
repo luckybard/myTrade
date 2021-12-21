@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 
-const useSignUpForm = (validate, callback ) => {
+const useSignUpForm = (validate) => {
   const history = useHistory();
   const [values, setValues] = useState({
     username: "",
@@ -22,7 +22,6 @@ const useSignUpForm = (validate, callback ) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     setErrors(validate(values));
     setIsSubmitting(true);  
 
@@ -30,7 +29,6 @@ const useSignUpForm = (validate, callback ) => {
 
   useEffect(() => {
     if (Object.keys(errors).length === 0 && isSubmitting) {
-      // callback();
       const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,7 +38,13 @@ const useSignUpForm = (validate, callback ) => {
           password: values.password,
         }),
       };
-      fetch("http://localhost:8080/user/register", requestOptions).then(history.push("/sign-in"));
+      fetch("http://localhost:8080/user/save", requestOptions).then((response) =>  {
+        if (response.ok) {
+          history.push("/sign-in");
+        } else {
+          throw new Error("Sorry something went wrong")
+        }
+      });
     }
   }, [errors]);
 

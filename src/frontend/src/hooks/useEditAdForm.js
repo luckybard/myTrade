@@ -14,14 +14,6 @@ const useEditAdForm = (validate, ad) => {
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // useEffect(() =>
-    //     setValues({
-    //             ...values,
-    //             adCategory: ad.adCategory
-    //         }
-    //         , []
-    //     ));
-
     const handleChange = (e) => {
         const {name, value} = e.target;
         setValues({
@@ -38,7 +30,6 @@ const useEditAdForm = (validate, ad) => {
 
     useEffect(() => {
         if (Object.keys(errors).length === 0 && isSubmitting) {
-            // callback();
             const requestOptions = {
                 method: "PATCH",
                 headers: {"Content-Type": "application/json"},
@@ -51,9 +42,13 @@ const useEditAdForm = (validate, ad) => {
                     city: values.city,
                 }),
             };
-            fetch("http://localhost:8080/ad/patch", requestOptions).then(
-                history.push("/home")
-            );
+            fetch("http://localhost:8080/ad", requestOptions).then((response) =>  {
+                if (response.ok) {
+                    history.push("/home")
+                } else {
+                    throw new Error("Sorry something went wrong")
+                }
+            })
         }
     }, [errors]);
 

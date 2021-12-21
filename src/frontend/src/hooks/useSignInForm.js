@@ -2,7 +2,7 @@ import {useState, useEffect, useContext} from "react";
 import AuthContext from "../store/auth-context";
 import {useHistory} from "react-router-dom";
 
-const useSignInForm = (validate, callback) => {
+const useSignInForm = (validate) => {
     const history = useHistory();
     const authCtx = useContext(AuthContext);
     const [values, setValues] = useState({
@@ -22,14 +22,12 @@ const useSignInForm = (validate, callback) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         setErrors(validate(values));
         setIsSubmitting(true);
     };
 
     useEffect(() => {
         if (Object.keys(errors).length === 0 && isSubmitting) {
-            // callback();
             const requestOptions = {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -38,10 +36,13 @@ const useSignInForm = (validate, callback) => {
                     password: values.password,
                 }),
             };
-            fetch("http://localhost:8080/login", requestOptions).then((response) => {
-                authCtx.login(response.headers.get("Authorization"));
+            fetch("http://localhost:8080/login", requestOptions).then((response) =>  {
+                if (response.ok) {
+                    authCtx.login(response.headers.get("Authorization"));
+                } else {
+                    throw new Error("Sorry something went wrong")
+                }
             }).then(history.push("/home"));
-
         }
     }, [errors]);
 
