@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc(addFilters = false)
-@WithMockUser(username = "brad@brad.brad")
+@WithMockUser(username = "brad@brad.brad", authorities = {"ad:write","ad:read"})
 public class AdControllerTest {
     private final MockMvc mockMvc;
     private final UserRepository userRepository;

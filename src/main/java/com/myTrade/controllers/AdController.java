@@ -11,11 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/ad")
-public final class AdController {
+public class AdController {
     private final AdService adService;
 
     @Autowired
@@ -24,6 +25,7 @@ public final class AdController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ad:write')")
     public ResponseEntity saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(@RequestBody AdEditDto adEditDto) {
         adService.saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList(adEditDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -56,12 +58,14 @@ public final class AdController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('ad:read')")
     public ResponseEntity<AdEditDto> fetchAdEditDto(@PathVariable(value = "id") Long adId) {
         AdEditDto adEditDto = adService.fetchAdEditDto(adId);
         return ResponseEntity.ok(adEditDto);
     }
 
     @GetMapping("/adList")
+    @PreAuthorize("hasAuthority('ad:read')")
     public ResponseEntity<Page<AdOwnerDto>> fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(@RequestParam Integer pageNumber,
                                                                                                          @RequestParam Integer pageSize) {
         Page<AdOwnerDto> adOwnerDtoPage = adService.fetchAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh(pageNumber, pageSize);
@@ -77,6 +81,7 @@ public final class AdController {
     }
 
     @GetMapping("/favourite/adList")
+    @PreAuthorize("hasAuthority('ad:read')")
     public ResponseEntity<Page<AdDto>> fetchUserFavouriteAdDtoPage(@RequestParam Integer pageNumber,
                                                                    @RequestParam Integer pageSize) {
         Page<AdDto> adDtoPage = adService.fetchUserFavouriteAdDtoPage(pageNumber, pageSize);
@@ -84,24 +89,28 @@ public final class AdController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('ad:write')")
     public ResponseEntity patchAdEntityByAdEditDto(@RequestBody AdEditDto adEditDto) {
         adService.patchAdEntityByAdEditDto(adEditDto);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/refresh/{id}")
+    @PreAuthorize("hasAuthority('ad:write')")
     public ResponseEntity refreshAdById(@PathVariable(value = "id") Long adId) {
         adService.refreshAdById(adId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/highlight/{id}")
+    @PreAuthorize("hasAuthority('ad:write')")
     public ResponseEntity highlightAdByIdAndDeductHighlightPointFromUser(@PathVariable(value = "id") Long adId) {
         adService.highlightAdByIdAndDeductHighlightPointFromUser(adId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/active/{id}")
+    @PreAuthorize("hasAuthority('ad:write')")
     public ResponseEntity changeAdStatusById(@PathVariable(value = "id") Long adId) {
         adService.changeAdStatusById(adId);
         return ResponseEntity.ok().build();

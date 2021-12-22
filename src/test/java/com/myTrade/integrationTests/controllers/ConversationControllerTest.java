@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc(addFilters = false)
-@WithMockUser(username = "brad@brad.brad")
+@WithMockUser(username = "brad@brad.brad", authorities = {"message:write","conversation:read"})
 public class ConversationControllerTest {
     private final MockMvc mockMvc;
     private final ConversationRepository conversationRepository;
