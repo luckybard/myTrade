@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import EditAd from "../components/editAd/EditAd";
+import EditAdForm from "../components/editAd/EditAdForm";
 
 const EditAdPage = ({match}) => {
     const [ad, setAd] = useState([])
@@ -14,7 +14,11 @@ const EditAdPage = ({match}) => {
                 },
             })
                 .then((response) => {
-                    return response.json();
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        throw new Error("Sorry something went wrong")
+                    }
                 })
                 .then((data) => {
                     setAd(data);
@@ -24,7 +28,7 @@ const EditAdPage = ({match}) => {
     );
 
     return (<div>
-        {isFetched && <EditAd ad={ad}/>}
+        {isFetched && <EditAdForm ad={ad}/>}
     </div>)
 }
 
