@@ -9,14 +9,7 @@ const CreateAdForm = () => {
 
   return (
     <Container>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-          marginTop: "7rem",
-        }}
-      >
+      <div className="position-absolute top-50 start-50 translate-middle">
         <form onSubmit={handleSubmit} noValidate>
           <h1>Now it's time for create your ad!</h1>
           <div className="form-group">
