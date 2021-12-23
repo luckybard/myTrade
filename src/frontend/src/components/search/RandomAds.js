@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import AdList from "../ad/AdList";
 import {Container} from "react-bootstrap";
 
@@ -24,6 +24,7 @@ const RandomAds = () => {
     );
     return (
         <Container>
+            <div className="text-center"><h4>Random Advertisements</h4></div>
             <AdList data={ads}/>
         </Container>);
 };
