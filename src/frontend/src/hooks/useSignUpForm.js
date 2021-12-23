@@ -38,7 +38,7 @@ const useSignUpForm = (validate) => {
           password: values.password,
         }),
       };
-      fetch("http://localhost:8080/user/save", requestOptions).then((response) =>  {
+      fetch("http://localhost:8080/user/", requestOptions).then((response) =>  {
         if (response.ok) {
           history.push("/sign-in");
         } else {
