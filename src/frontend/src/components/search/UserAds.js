@@ -13,7 +13,7 @@ const UserAds = (props) => {
     const [pageSize, setPageSize] = useState(2)
 
     const fetchData = (pageNumber) => {
-        fetch(`http://localhost:8080/ad/adList/${props.username}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+        fetch(`https://mytrade-bmucha.herokuapp.com/ad/adList/${props.username}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",

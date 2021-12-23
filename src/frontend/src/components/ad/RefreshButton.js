@@ -9,7 +9,7 @@ const RefreshButton = (props) => {
             method: "PATCH",
         };
         fetch(
-            `http://localhost:8080/ad/refresh/${props.id}`,
+            `https://mytrade-bmucha.herokuapp.com/ad/refresh/${props.id}`,
             requestOptions
         ).then((response) => {
             if (response.ok) {

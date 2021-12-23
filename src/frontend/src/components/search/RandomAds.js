@@ -7,7 +7,7 @@ const RandomAds = () => {
 
     useEffect(
         () =>
-            fetch(`http://localhost:8080/ad/random?pageSize=5`, {
+            fetch(`https://mytrade-bmucha.herokuapp.com/ad/random?pageSize=5`, {
                 credentials: "include",
                 headers: {
                     "Access-Control-Allow-Origin": "*",

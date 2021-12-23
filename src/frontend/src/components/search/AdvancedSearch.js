@@ -25,7 +25,7 @@ const AdvancedSearch = ({match}) => {
         if (searchedText.trim()) {
             const encodedText = encodeURIComponent(`%${searchedText}%`);
             fetch(
-                `http://localhost:8080/ad?searchText=${encodedText}&isSearchedInDescription=${isSearchedInDescription}
+                `https://mytrade-bmucha.herokuapp.com/ad?searchText=${encodedText}&isSearchedInDescription=${isSearchedInDescription}
             &adCategory=${adCategory}&city=${city}&priceFrom=${priceFrom}&priceTo=${priceTo}&pageNumber=${pageNumber}&pageSize=${pageSize}`
             )
                 .then((response) => {

@@ -3,9 +3,11 @@ import AuthContext from "../../../store/auth-context";
 import validate from "./ValidateMessage";
 import {useHistory} from "react-router";
 import {Container} from "react-bootstrap";
+import {useLocation} from "react-router-dom";
 
 const SendMessage = ({match}) => {
     const history = useHistory();
+    const location = useLocation();
     const authCtx = useContext(AuthContext);
     const [enteredText, setEnteredText] = useState("");
     const [errors, setErrors] = useState({});
@@ -31,10 +33,8 @@ const SendMessage = ({match}) => {
                     text: enteredText,
                 }),
             };
-            fetch(`http://localhost:8080/message/${match.params.id}`, requestOptions).then((response) => {
-                if (response.ok) {
-                    history.go(0)
-                } else {
+            fetch(`https://mytrade-bmucha.herokuapp.com/message/${match.params.id}`, requestOptions).then((response) => {
+                if (!response.ok) {
                     throw new Error("Sorry something went wrong")
                 }
             })

@@ -7,7 +7,7 @@ const EditAdPage = ({match}) => {
 
     useEffect(
         () =>
-            fetch(`http://localhost:8080/ad/edit/${match.params.id}`, {
+            fetch(`https://mytrade-bmucha.herokuapp.com/ad/edit/${match.params.id}`, {
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json",

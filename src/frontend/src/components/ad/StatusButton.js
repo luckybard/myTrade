@@ -7,7 +7,7 @@ const StatusButton = (props) => {
         const requestOptions = {
             method: "PATCH",
         };
-        fetch(`http://localhost:8080/ad/active/${props.id}`, requestOptions).then((response) => {
+        fetch(`https://mytrade-bmucha.herokuapp.com/ad/active/${props.id}`, requestOptions).then((response) => {
             if (response.ok) {
                 setIsActive(prevState => !prevState);
             } else {

@@ -36,7 +36,7 @@ const StartConversation = (props) => {
                     ]
                 }),
             };
-            fetch(`http://localhost:8080/conversation`, requestOptions)
+            fetch(`https://mytrade-bmucha.herokuapp.com/conversation`, requestOptions)
                 .then((response) => {
                     if (response.ok) {
                         setIsMessageSent(true);

@@ -7,7 +7,7 @@ const Logout = () => {
     const [isLogout, setIsLogout] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:8080/logout").then(
+        fetch("https://mytrade-bmucha.herokuapp.com/logout").then(
             setIsLogout(true));
         authCtx.logout();
     }, []);

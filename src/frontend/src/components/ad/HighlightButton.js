@@ -12,7 +12,7 @@ const HighlightButton = (props) => {
             method: "PATCH",
         };
         fetch(
-            `http://localhost:8080/ad/highlight/${props.id}`,
+            `https://mytrade-bmucha.herokuapp.com/ad/highlight/${props.id}`,
             requestOptions
         ).then((response) => {
             if (response.ok) {

@@ -15,7 +15,7 @@ const FavouriteButton = (props) => {
       method: "PATCH",
     };
     fetch(
-      `http://localhost:8080/user/favourite/${endpoint}/${props.id}`,
+      `https://mytrade-bmucha.herokuapp.com/user/favourite/${endpoint}/${props.id}`,
       requestOptions
     ).then((response) => {
       if (response.ok) {

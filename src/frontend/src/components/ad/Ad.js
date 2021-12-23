@@ -13,7 +13,7 @@ const Ad = ({match}) => {
 
     useEffect(
         () =>
-            fetch(`http://localhost:8080/ad/${match.params.id}`, {
+            fetch(`https://mytrade-bmucha.herokuapp.com/ad/${match.params.id}`, {
                 headers: {
                     "Content-Type": "application/json",
                 },

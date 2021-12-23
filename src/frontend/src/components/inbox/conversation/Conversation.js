@@ -8,7 +8,7 @@ const Conversation = ({match}) => {
 
     useEffect(
         () =>
-            fetch(`http://localhost:8080/message/list/${match.params.id}`, {
+            fetch(`https://mytrade-bmucha.herokuapp.com/message/list/${match.params.id}`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -23,7 +23,7 @@ const Conversation = ({match}) => {
                 .then((data) => {
                     setMessages(data);
                     setIsLoaded(true);
-                }), []);
+                }), [SendMessage]);
     return (
         <div>
             {isLoaded && (

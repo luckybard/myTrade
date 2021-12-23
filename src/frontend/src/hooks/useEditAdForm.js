@@ -42,7 +42,7 @@ const useEditAdForm = (validate, ad) => {
                     city: values.city,
                 }),
             };
-            fetch("http://localhost:8080/ad", requestOptions).then((response) =>  {
+            fetch("https://mytrade-bmucha.herokuapp.com/ad", requestOptions).then((response) =>  {
                 if (response.ok) {
                     history.push("/home")
                 } else {

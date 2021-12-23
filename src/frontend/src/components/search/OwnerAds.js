@@ -12,7 +12,7 @@ const OwnerAds = () => {
     const [totalPages, setTotalPages] = useState(0);
 
     const fetchData = (pageNumber) => {
-        fetch(`http://localhost:8080/ad/adList?pageNumber=${pageNumber}&pageSize=2`, {
+        fetch(`https://mytrade-bmucha.herokuapp.com/ad/adList?pageNumber=${pageNumber}&pageSize=2`, {
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",

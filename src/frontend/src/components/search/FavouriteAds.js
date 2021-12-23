@@ -14,7 +14,7 @@ const FavouriteAds = () => {
     const [totalPages, setTotalPages] = useState(0);
 
     const fetchData = (pageNumber) => {
-        fetch(`http://localhost:8080/ad/favourite/adList?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+        fetch(`https://mytrade-bmucha.herokuapp.com/ad/favourite/adList?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             credentials: "include",
             headers: {
                 "Access-Control-Allow-Origin": "*",

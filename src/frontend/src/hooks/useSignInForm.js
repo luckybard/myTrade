@@ -36,7 +36,7 @@ const useSignInForm = (validate) => {
                     password: values.password,
                 }),
             };
-            fetch("http://localhost:8080/login", requestOptions).then((response) =>  {
+            fetch("https://mytrade-bmucha.herokuapp.com/login", requestOptions).then((response) =>  {
                 if (response.ok) {
                     authCtx.login(response.headers.get("Authorization"));
                 } else {

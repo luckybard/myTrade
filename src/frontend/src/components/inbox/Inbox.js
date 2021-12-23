@@ -15,7 +15,7 @@ const Inbox = () => {
     const [pageSize, setPageSize] = useState(2)
 
     const fetchData = (pageNumber) => {
-        fetch(`http://localhost:8080/conversation/${authCtx.username}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
+        fetch(`https://mytrade-bmucha.herokuapp.com/conversation/${authCtx.username}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
