@@ -17,8 +17,15 @@ const FavouriteButton = (props) => {
     fetch(
       `http://localhost:8080/user/favourite/${endpoint}/${props.id}`,
       requestOptions
-    ).then(setIsFavourite((prevState) => !prevState));
+    ).then((response) => {
+      if (response.ok) {
+          setIsFavourite((prevState) => !prevState);
+      } else {
+        throw new Error("Sorry something went wrong")
+      }
+    })
   };
+
   return (
     <div>
       {isFavourite ? (

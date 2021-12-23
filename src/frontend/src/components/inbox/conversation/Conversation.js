@@ -14,7 +14,11 @@ const Conversation = ({match}) => {
                 },
             })
                 .then((response) => {
-                    return response.json();
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        throw new Error("Sorry something went wrong")
+                    }
                 })
                 .then((data) => {
                     setMessages(data);

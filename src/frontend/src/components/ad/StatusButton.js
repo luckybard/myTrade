@@ -7,8 +7,14 @@ const StatusButton = (props) => {
         const requestOptions = {
             method: "PATCH",
         };
-        fetch(`http://localhost:8080/ad/active/${props.id}`, requestOptions).then(
-            setIsActive(prevState => !prevState));
+        fetch(`http://localhost:8080/ad/active/${props.id}`, requestOptions).then((response) => {
+            if (response.ok) {
+                setIsActive(prevState => !prevState);
+            } else {
+                throw new Error("Sorry something went wrong")
+            }
+        })
+
     }
     return (
         <div>

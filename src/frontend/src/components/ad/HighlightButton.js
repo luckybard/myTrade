@@ -14,9 +14,16 @@ const HighlightButton = (props) => {
         fetch(
             `http://localhost:8080/ad/highlight/${props.id}`,
             requestOptions
-        ).then(setIsHighlighted(true));
-        setIsUserAbleToHighlight(false);
+        ).then((response) => {
+            if (response.ok) {
+                setIsHighlighted(true);
+                setIsUserAbleToHighlight(false);
+            } else {
+                throw new Error("Sorry something went wrong")
+            }
+        })
     };
+
     return (
         <div className={"d-flex justify-content-center"}>
             {isUserAbleToHighlight ? (

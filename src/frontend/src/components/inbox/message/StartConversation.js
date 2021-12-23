@@ -36,7 +36,14 @@ const StartConversation = (props) => {
                     ]
                 }),
             };
-            fetch(`http://localhost:8080/conversation`, requestOptions).then(history.push("/inbox"));
+            fetch(`http://localhost:8080/conversation`, requestOptions)
+                .then((response) => {
+                    if (response.ok) {
+                        setIsMessageSent(true);
+                    } else {
+                        throw new Error("Sorry something went wrong")
+                    }
+                })
         }
     }, [errors]);
 

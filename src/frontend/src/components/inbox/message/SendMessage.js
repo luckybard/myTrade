@@ -31,7 +31,13 @@ const SendMessage = ({match}) => {
                     text: enteredText,
                 }),
             };
-            fetch(`http://localhost:8080/message/${match.params.id}`, requestOptions).then(history.go(0));
+            fetch(`http://localhost:8080/message/${match.params.id}`, requestOptions).then((response) => {
+                if (response.ok) {
+                    history.go(0)
+                } else {
+                    throw new Error("Sorry something went wrong")
+                }
+            })
         }
     }, [errors]);
     return (
@@ -49,7 +55,6 @@ const SendMessage = ({match}) => {
                     <button class="btn btn-warning" onClick={handleSubmit}>Send</button>
                 </div>
             </div>
-            {/*{errors.text && <p>{errors.text}</p>}*/}
         </Container>)
 
 }

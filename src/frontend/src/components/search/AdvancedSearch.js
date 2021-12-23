@@ -29,7 +29,11 @@ const AdvancedSearch = ({match}) => {
             &adCategory=${adCategory}&city=${city}&priceFrom=${priceFrom}&priceTo=${priceTo}&pageNumber=${pageNumber}&pageSize=${pageSize}`
             )
                 .then((response) => {
-                    return response.json();
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        throw new Error("Sorry something went wrong")
+                    }
                 })
                 .then((data) => {
                     setAds(data.content);

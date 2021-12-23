@@ -15,13 +15,18 @@ const RandomAds = () => {
                 },
             })
                 .then((response) => {
-                    return response.json();
+                    if (response.ok) {
+                        return response.json()
+                    } else {
+                        throw new Error("Sorry something went wrong")
+                    }
                 })
                 .then((data) => {
                     setAds(data.content);
                 }),
         []
     );
+
     return (
         <Container>
             <div className="text-center"><h4>Random Advertisements</h4></div>

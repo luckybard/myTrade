@@ -11,8 +11,15 @@ const RefreshButton = (props) => {
         fetch(
             `http://localhost:8080/ad/refresh/${props.id}`,
             requestOptions
-        ).then(setIsRefreshable(false));
+        ).then((response) => {
+            if (response.ok) {
+                setIsRefreshable(false);
+            } else {
+                throw new Error("Sorry something went wrong")
+            }
+        })
     };
+
     return (
         <div>
             {isRefreshable ? (
