@@ -11,13 +11,13 @@ import AuthContext from "./store/auth-context";
 import SignInForm from "./components/auth/signIn/SignInForm";
 import SignUpForm from "./components/auth/signUp/SignUpForm";
 import ProfilePage from "./pages/ProfilePage";
-import UserAdsPage from "./components/search/OwnerAds";
 import FavouriteAdsPage from "./pages/FavouriteAdsPage";
 import EditAdPage from "./pages/EditAdPage";
 import LogoutPage from "./pages/LogoutPage";
 import UserPage from "./pages/UserPage";
 import ConversationPage from "./pages/ConversationPage";
 import InboxPage from "./pages/InboxPage";
+ import OwnerAdsPage from "./pages/OwnerAdsPage";
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -34,7 +34,7 @@ function App() {
           <Route exact path="/home" component={HomePage} />
           <Route path="/edit/:id" component={EditAdPage} />
           <Route exact path="/profile" component={ProfilePage} />
-          <Route exact path="/profile/userAds" component={UserAdsPage} />
+          <Route exact path="/profile/userAds" component={OwnerAdsPage} />
           <Route path="/profile/inbox" component={InboxPage}/>
           <Route path="/profile/userFavouriteAds" component={FavouriteAdsPage} />
           <Route exact path="/sign-in" component={SignInForm} />
