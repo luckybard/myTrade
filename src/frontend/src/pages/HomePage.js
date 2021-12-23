@@ -1,7 +1,11 @@
-import HomePageSearch from "../components/search/MainSearch";
+import TextSearch from "../components/search/TextSearch";
+import RandomAds from "../components/search/RandomAds";
 
 const HomePage = () => {
-    return <HomePageSearch/>
+    return (<div>
+        <TextSearch/>
+        <RandomAds/>
+    </div>)
 };
 
 export default HomePage;

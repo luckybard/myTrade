@@ -1,10 +1,7 @@
-import MainSearchResults from "../components/search/MainSearchResults";
-import Card from '../components/UI/Card';
+import AdvancedSearch from "../components/search/AdvancedSearch";
 
 const SearchPage = ({match}) => {
-    return (
-            <MainSearchResults match={match}/>
-    )
+    return <AdvancedSearch match={match}/>
 };
 
 export default SearchPage;

@@ -1,4 +1,4 @@
-import AdPagination from "../backup/AdPagination";
+import UserAds from "../components/search/UserAds";
 
 const UserPage = ({match}) => {
     return <div>
