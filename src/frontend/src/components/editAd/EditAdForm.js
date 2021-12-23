@@ -11,16 +11,9 @@ const EditAdForm = (props) => {
 
   return (
     <Container>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-          marginTop: "7rem",
-        }}
-      >
+      <div className="position-absolute top-50 start-50 translate-middle">
         <form onSubmit={handleSubmit} noValidate>
-          <h1>Edit your ad</h1>
+          <h1>Now you can edit your ad</h1>
           <div className="form-group">
             <label htmlFor="adCategory">Category</label>
             <select
