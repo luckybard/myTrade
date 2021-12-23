@@ -6,7 +6,7 @@ const AdDetail = (props) => {
         <AdCard isHighlighted={props.isHighlighted}>
             <li>
                 <h2>{props.title}</h2>
-                <p>{props.description.substring(0, 100)}...</p>
+                <p>{props.description.substring(0, 150)}...</p>
             </li>
         </AdCard>
     );

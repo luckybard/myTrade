@@ -1,11 +1,9 @@
 import {Link, Redirect, useHistory} from "react-router-dom";
 import AdDetail from "./AdDetail";
-import {Container} from "react-bootstrap";
 
 const AdList = (props) => {
     return (
-        <Container>
-            <div style={{marginTop: "7rem"}}>
+            <div>
                 <ul style={{listStyle: "none"}}>
                     {props.data.map((ad) => (
                         <Link style={{textDecoration: "none", color: 'black'}} to={`/ad/${ad.id}`}>
@@ -20,8 +18,7 @@ const AdList = (props) => {
                         </Link>
                     ))}
                 </ul>
-            </div>
-        </Container>
+        </div>
     );
 };
 

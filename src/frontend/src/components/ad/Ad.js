@@ -47,10 +47,12 @@ const Ad = ({match}) => {
                             <h6>Owner:{ad.ownerUsername}</h6>
                             <Link to={`/user/${ad.ownerUsername}`}>Other ads from this user</Link>
                             {(authCtx.isLoggedIn && authCtx.username !== ad.ownerUsername) && (
+                                <div className="d-md-flex justify-content-md-end">
                                 <StartConversation
                                     ownerUsername={ad.ownerUsername}
                                     title={ad.title}
                                 />
+                                </div>
                             )}
                         </div>
                     )}
