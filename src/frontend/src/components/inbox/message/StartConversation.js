@@ -1,14 +1,13 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../store/auth-context";
 import validate from "./ValidateMessage";
-import {useHistory} from "react-router";
 
 const StartConversation = (props) => {
-    const history = useHistory();
     const authCtx = useContext(AuthContext);
     const [enteredText, setEnteredText] = useState("");
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isMessageSent, setIsMessageSent] = useState(false);
 
     const enteredTextChangeHandler = (e) => {
         setEnteredText(e.target.value);
@@ -40,17 +39,30 @@ const StartConversation = (props) => {
             fetch(`http://localhost:8080/conversation`, requestOptions).then(history.push("/inbox"));
         }
     }, [errors]);
+
     return <div>
-        <label htmlFor="textMessage">Message</label>
-        <input
-            type="text"
-            name="textMessage"
-            placeholder="Enter your message"
-            onChange={enteredTextChangeHandler}
-        />
-        {errors.text && <p>{errors.text}</p>}
-        <button onClick={handleSubmit}>Send</button>
-    </div>;
+        {isMessageSent ? (
+                <div>
+                    <h6 style={{textAlign: 'center'}}>Message has been send, check your inbox</h6>
+                </div>
+            )
+            :
+            (
+                <div className="form-group">
+                    <div className="d-md-flex justify-content-md-end">
+                    <textarea
+                        class="form-control"
+                        type="text"
+                        rows="3"
+                        name="textMessage"
+                        placeholder="Enter your message to the add owner"
+                        onChange={enteredTextChangeHandler}
+                    />
+                        <button className="btn btn-warning" onClick={handleSubmit}>Send</button>
+                        {errors.text && <p>{errors.text}</p>}
+                    </div>
+                </div>)}
+    </div>
 }
 
 export default StartConversation
