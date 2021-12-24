@@ -35,7 +35,6 @@ const StatusButton = (props) => {
                             <div style={{ display: "flex", justifyContent: "center" }}>
                                 <button class="btn btn-secondary " onClick={onClickHandler}>Change status</button>
                             </div>
-                            )}
                         </div>)}
                 </div>
             </div>
