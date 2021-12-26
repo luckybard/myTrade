@@ -42,7 +42,7 @@ public class ConversationControllerTest {
     }
 
     @Test
-    public void whenUsernameIsProvided_thenShouldFetchUserConversationsAndRetrieved200() {
+    public void fetchAllConversationByUsername_usernameAndPageRequest_shouldRetrieveUserConversationsDtoAndReturn200() {
         //given
         String username = UserUtility.getUsernameFromContext();
         //when && then
@@ -62,7 +62,7 @@ public class ConversationControllerTest {
     }
 
     @Test
-    public void whenConversationDtoIsProvided_thenShouldSaveConversationWithInitialMessageAndRetrieved201() {
+    public void saveInitialConversationWithMessageByConversationDto_conversationDto_shouldSaveConversationWithInitialMessageAndReturn201() {
         //given
         String senderUsername = UserUtility.getUsernameFromContext();
         String recipientUsername = "john@john.john";

@@ -49,7 +49,7 @@ public class MessageControllerTest {
 
     @ParameterizedTest
     @MethodSource("messageDtoWithConversationId")
-    public void whenProperMessageDtoAndConversationIdIsProvided_thenMessageDtoShouldBeSavedAndRetrieved201(MessageDto messageDto, Long conversationId) {
+    public void saveMessage_messageDtoAndConversationId_shouldSaveMessageDtoAndAssignToConversationAndReturn201(MessageDto messageDto, Long conversationId) {
         //given
         int ONE_ADDITIONAL_MESSAGE = 1;
         int expectedMessageListSize = messageRepository.findMessageEntityListByConversationId(conversationId).size() + ONE_ADDITIONAL_MESSAGE;
@@ -76,7 +76,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void whenConversationIdIsProvided_thenMessageDtoListShouldBeFetchedByConversationIdAndRetrieved200() {
+    public void fetchMessageDtoListByConversationId_conversationId_shouldRetrieveMessageDtoListAndReturn200() {
         //given
         String username = UserUtility.getUsernameFromContext();
         Long conversationId = conversationRepository

@@ -51,11 +51,11 @@ public class AdControllerTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEditDtoWithoutId.csv", numLinesToSkip = 1)
-    public void whenAdEditDtoIsProvided_thenAdShouldBeSavedAndRetrieved201(AdCategory adCategory,
-                                                                           String title,
-                                                                           String description,
-                                                                           City city,
-                                                                           Double price) {
+    public void saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList_adEditDtoWithoutId_shouldSaveAdAndReturn201(AdCategory adCategory,
+                                                                                                                    String title,
+                                                                                                                    String description,
+                                                                                                                    City city,
+                                                                                                                    Double price) {
         //given
         AdEditDto adEditDto = AdEditDto.builder()
                 .adCategory(adCategory)
@@ -79,7 +79,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenPageSizeIsProvided_thenShouldFetchRandomAdDtoPageAndRetrieved200() {
+    public void fetchRandomAdDtoPage_pageSize_shouldRetrieveRandomAdDtoPageAndReturn200() {
         //given
         //when && then
         try {
@@ -101,7 +101,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenProperAdIdIsProvided_thenAdEditDtoShouldBeFetchByIdAndRetrieved200() {
+    public void fetchAdEditDto_adId_shouldRetrieveAdEditDtoAndReturn200() {
         //given
         AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream().findFirst().get();
         //when & then
@@ -121,7 +121,7 @@ public class AdControllerTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
-    public void whenProperAdIdIsProvided_thenAdDtoShouldBeFetchByIdAndRetrieved200(Long adId) {
+    public void fetchAdDtoByIdAndSetIsUserFavourite_adId_shouldRetrieveAdDtoAndReturn200(Long adId) {
         //given
         //when & then
         try {
@@ -139,7 +139,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenPageNumberAndPageSizeIsProvided_thenShouldFetchAdOwnerDtoPageAndRetrieved200() {
+    public void fetchUserAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh_pageRequest_shouldRetrieveAdOwnerDtoPageAndReturn200() {
         //given
         //when & then
         try {
@@ -161,7 +161,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenUsernamePageNumberAndPageSizeIsProvided_thenShouldFetchOwnerAdDtoPageByUsernameAndRetrieved200() {
+    public void fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite_usernameAndPageRequest_shouldRetrieveAdDtoPageAndReturn200() {
         //given
         String username = "john@john.john";
         //when && then
@@ -185,7 +185,7 @@ public class AdControllerTest {
 
     @Test
 
-    public void whenPageNumberAndPageSizeIsProvided_thenShouldFetchUserFavouriteAdDtoPageAndRetrieved200() {
+    public void fetchUserFavouriteAdDtoPage_pageRequest_shouldRetrieveAdDtoPageAndReturn200() {
         //given
         //when && then
         try {
@@ -207,7 +207,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenValidAdEditDtoIsProvided_thenNewValuesShouldBeSetForAdEntityAndRetrieved200() {
+    public void patchAdEntityByAdEditDto_adEditDto_shouldUpdateAdAndReturn200() {
         //given
         Long userAdEntityId = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
                 .findFirst()
@@ -241,7 +241,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenProperAdIdIsProvided_thenNewRefreshDateShouldBeSetAndRetrieved200() {
+    public void refreshAdById_adId_shouldUpdateRefreshDateAndRetrieved200() {
         //given
         LocalDate expectedDate = LocalDate.now();
         AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
@@ -260,7 +260,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenProperAdIdIsProvided_thenNewHighlightDateShouldBeSetAndRetrieved200() {
+    public void highlightAdByIdAndDeductHighlightPointFromUser_adId_shouldUpdateHighlightDateAndReturn200() {
         //given
         LocalDate expectedDate = LocalDate.now().plusDays(AdUtility.AD_HIGHLIGHTING_DURATION_IN_DAYS);
         AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
@@ -279,7 +279,7 @@ public class AdControllerTest {
     }
 
     @Test
-    public void whenProperAdIdIsProvided_thenAdStatusShouldBeChangeAndRetrieved200() {
+    public void changeAdStatusById_adId_shouldUpdateAdStatusAndReturn200() {
         //given
         AdEntity userAdEntity = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getAdEntityList().stream()
                 .findFirst()

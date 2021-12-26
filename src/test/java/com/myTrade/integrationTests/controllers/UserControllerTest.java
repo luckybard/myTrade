@@ -56,7 +56,7 @@ public class UserControllerTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
     @WithAnonymousUser
-    public void whenProperUserEntityIsProvided_thenShouldReturnStatus201(String username, String email, String password) {
+    public void saveUserEntityByRegistrationRequest_registrationRequest_shouldSaveUserAndReturn201(String username, String email, String password) {
         //given
         RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         //when & then
@@ -78,7 +78,7 @@ public class UserControllerTest {
     @ParameterizedTest
     @WithAnonymousUser
     @MethodSource("invalidUserRegistrationRequests")
-    public void whenInvalidRegistrationRequestIsProvided_thenShouldReturnStatus406(RegistrationRequest registrationRequest) {
+    public void saveUserEntityByRegistrationRequest_invalidRegistrationRequest_shouldReturn406(RegistrationRequest registrationRequest) {
         //given
         //when & then
         try {
@@ -104,7 +104,7 @@ public class UserControllerTest {
 
     @ParameterizedTest
     @ValueSource(longs = {4, 5, 6, 7, 8})
-    public void whenProperAdIdIsProvided_thenShouldAddAdToUserFavouriteAdListAndReturnStatus200(Long adId) {
+    public void addAdFromUserFavouriteAdListById_adId_shouldAddAdToUserFavouriteAdListAndReturnStatus200(Long adId) {
         //given
         //when & then
         try {
@@ -120,7 +120,7 @@ public class UserControllerTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3, 4, 5, 6, 7, 8})
-    public void whenProperAdIdIsProvided_thenShouldRemoveAdFromUserFavouriteAdListAndReturnStatus200(Long adId) {
+    public void removeAdFromUserFavouriteAdListById_adId_shouldRemoveAdFromUserFavouriteAdListAndReturnStatus200(Long adId) {
         //given
         //when && then
         try {
@@ -136,7 +136,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void whenUserIsLoggedIn_shouldRetrievedUserHighlightPoints(){
+    public void fetchUserHighlightPoints_shouldRetrieveUserHighlightPoints(){
         //given
         //when && then
         try {
