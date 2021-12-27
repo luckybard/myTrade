@@ -34,7 +34,7 @@ public class ConversationServiceTest {
     }
 
     @Test
-    public void whenUsernameIsProvided_thenShouldFetchUserConversations() {
+    public void fetchAllConversationByUsername_usernameAndPageRequest_shouldRetrieveUserConversations() {
         //given
         //when
         Page<ConversationDto> conversationDtoPage = conversationService
@@ -48,7 +48,7 @@ public class ConversationServiceTest {
     }
 
     @Test
-    public void whenConversationDtoIsProvided_thenShouldBeSavedWithInitialValues() {
+    public void saveInitialConversationWithMessageByConversationDto_conversationDto_shouldSetInitialValueOnFirstMessage() {
         //given
         ConversationDto conversationDto = ConversationDto.builder()
                 .senderUsername(getUsernameFromContext())

@@ -53,7 +53,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3})
-    public void whenValidAdIdIsProvided_thenNewRefreshTimeShouldBeSet(Long adId) {
+    public void refreshAdById_adId_shouldSetNewRefreshTime(Long adId) {
         //given
         LocalDate expectedRefreshTime = LocalDate.now();
         //when
@@ -65,7 +65,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3})
-    public void whenValidAdIdIsProvided_thenAdStatusShouldBeChanged(Long adId) {
+    public void changeAdStatusById_adId_shouldChangeAdStatus(Long adId) {
         //given
         Boolean expectedStatus = !adRepository.getById(adId).getIsActive();
         //when
@@ -77,7 +77,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3})
-    public void whenValidAdIdAndUserCredentialsIsProvided_thenAdShouldBeHighlighted(Long adId) {
+    public void highlightAdByIdAndDeductHighlightPointFromUser_adId_shouldHighlightAd(Long adId) {
         //given
         //when
         adService.highlightAdByIdAndDeductHighlightPointFromUser(adId);
@@ -88,7 +88,7 @@ class AdServiceTest {
     }
 
     @Test
-    public void whenUserHasEnoughHighlightPoints_thenProperAmountOfPointsShouldBeDeductFromUser() {
+    public void deductHighlightPointFromUser_shouldDeductHighlightPointsFromUserAccount() {
         //given
         Integer userHighlightPoints = userRepository.getByUsername(getUsernameFromContext()).getHighlightPoints();
         Integer expectedHighlightPoints = userHighlightPoints - POINTS_COST_OF_HIGHLIGHTING_AD;
@@ -101,7 +101,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5, 8})
-    public void whenPageSizeIsProvided_thenShouldRetrievedRandomAdsDtoPage(int pageSize) {
+    public void fetchRandomAdDtoPage_pageSize_shouldRetrieveRandomAdsDtoPage(int pageSize) {
         //given
         //when
         Page<AdDto> adDtoPage = adService.fetchRandomAdDtoPage(pageSize);
@@ -111,7 +111,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"brad@brad.brad", "john@john.john"})
-    public void whenOwnerUsernameAndPageRequestIsProvided_thenShouldRetrievedOwnerAdsDtoPage(String username) {
+    public void fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite_usernameAndPageRequest_shouldRetrieveOwnerAdsDtoPage(String username) {
         //given
         //when
         Page<AdDto> adDtoPage = adService.fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite(username, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE);
@@ -123,7 +123,7 @@ class AdServiceTest {
 
 
     @Test
-    public void whenValidPageRequestIsProvided_thenShouldRetrievedUserFavouriteAdDtoPage() {
+    public void fetchUserFavouriteAdDtoPage_pageRequest_shouldRetrieveUserFavouriteAdDtoPage() {
         //given
         Long expectedAmountOfUserFavouriteAds = Long.valueOf(userRepository.getByUsername(getUsernameFromContext()).getFavouriteAdEntityList().size());
         //when
@@ -134,7 +134,7 @@ class AdServiceTest {
     }
 
     @Test
-    public void whenValidPageRequestIsProvided_thenShouldRetrievedAdOwnerDtoPage() {
+    public void fetchAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh_pageRequest_shouldRetrieveAdOwnerDtoPage(){
         //given
         Long expectedAmountOfUserAds = Long.valueOf(userRepository.getByUsername(getUsernameFromContext()).getAdEntityList().size());
         //when
@@ -147,7 +147,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3})
-    public void whenValidAdEditDtoIsProvided_thenAdEntityShouldBePatched(Long adId) {
+    public void patchAdEntityByAdEditDto_adId_thenAdShouldBeUpdated(Long adId) {
         AdEditDto adEditDto = AdEditDto.builder().id(adId)
                 .adCategory(AdCategory.OTHER)
                 .city(City.EVERYWHERE)
@@ -170,11 +170,11 @@ class AdServiceTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEditDtoWithoutId.csv", numLinesToSkip = 1)
-    public void whenValidAdEditDtoIsProvided_thenAdShouldBeSavedAndAssignToUserAdList(AdCategory adCategory,
-                                                                                      String title,
-                                                                                      String description,
-                                                                                      City city,
-                                                                                      Double price) {
+    public void saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList_adEditDtoWithoutId_shouldSaveAdAndAssignToUserAdList(AdCategory adCategory,
+                                                                                                                             String title,
+                                                                                                                             String description,
+                                                                                                                             City city,
+                                                                                                                             Double price) {
         //given
         AdEditDto adEditDto = AdEditDto.builder()
                 .adCategory(adCategory)
@@ -193,7 +193,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @MethodSource("invalidAdEditDto")
-    public void whenInvalidAdEditDtoIsProvided_thenShouldThrowAdValidationException(AdEditDto adEditDto) {
+    public void saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList_invalidAdEditDto_shouldThrowAdValidationException(AdEditDto adEditDto) {
         //given
         //when & then
         assertThrows(AdValidationException.class, () -> {
@@ -222,7 +222,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1, 2, 3})
-    public void whenValidAdIdIsProvided_thenAdEditDtoShouldBeFetched(Long adId) {
+    public void fetchAdEditDto_adId_shouldRetrieveAdEditDto(Long adId) {
         //given
         //when
         AdEditDto adEditDto = adService.fetchAdEditDto(adId);
@@ -233,7 +233,7 @@ class AdServiceTest {
     }
 
     @Test
-    public void shouldRetrievedUserFavouriteAdsIdList() {
+    public void getUserFavouriteAdsId_shouldRetrieveUserFavouriteAdsIdList() {
         //given
         //when
         List<Long> userFavouriteAdsIdList = adService.getUserFavouriteAdsId();
@@ -242,7 +242,7 @@ class AdServiceTest {
     }
 
     @Test
-    public void whenAdEntityIsProvided_thenShouldSetIsAdUserFavourite() {
+    public void setIsAdUserFavourite_adEntity_shouldSetIsAdUserFavourite() {
         //given
         Long userFavouriteAdId = userRepository.getByUsername(getUsernameFromContext()).getFavouriteAdEntityList().stream()
                 .findFirst()
@@ -256,7 +256,7 @@ class AdServiceTest {
     }
 
     @Test
-    public void whenAdEntityPageIsProvided_thenShouldSetIsAdUserFavourite() {
+    public void setIsAdUserFavourite_adEntityPage_shouldSetIsAdsUserFavourite() {
         //given
         Page<AdEntity> userFavouriteAdEntityPage = adRepository.findUserFavouriteAdEntityPageByUserId(
                 userRepository.getByUsername(getUsernameFromContext()).getId(), PageRequest.of(DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE));
@@ -268,7 +268,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
-    public void whenAdEntityIsProvided_thenShouldAddAdViewCountAndBeSaved(Long adId) {
+    public void addAdViewCounter_adId_shouldAddAdViewCount(Long adId) {
         //given
         AdEntity adEntity = adRepository.getById(adId);
         Long expectedAdViewsAmount = adEntity.getCountView() + AdUtility.AD_VIEW_COUNT;
@@ -281,7 +281,7 @@ class AdServiceTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
-    public void whenAdEntityIsProvided_thenShouldRetriedAdDto(Long adId) {
+    public void fetchAdDtoByIdAndSetIsUserFavourite_adId_shouldRetrieveAdDto(Long adId) {
         //given
         //when
         AdDto adDto = adService.fetchAdDtoByIdAndSetIsUserFavourite(adId);

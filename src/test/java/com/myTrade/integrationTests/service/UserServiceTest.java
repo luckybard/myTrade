@@ -47,7 +47,7 @@ public class UserServiceTest {
     @ParameterizedTest
     @WithAnonymousUser
     @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
-    public void whenValidUserRegistrationRequestIsProvided_thenUserEntityShouldBeSaved(String username, String email, String password) {
+    public void saveUserEntityByRegistrationRequest_registrationRequest_shouldSaveUser(String username, String email, String password) {
         //given
         RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         ///when
@@ -63,7 +63,7 @@ public class UserServiceTest {
     @ParameterizedTest
     @WithAnonymousUser
     @MethodSource("invalidUserRegistrationRequests")
-    public void whenInvalidUserRegistrationRequestIsProvided_thenShouldThrowUserValidationException(RegistrationRequest registrationRequest) {
+    public void saveUserEntityByRegistrationRequest_invalidRegistrationRequest_shouldThrowUserValidationException(RegistrationRequest registrationRequest) {
         //given
         //when & then
         assertThrows(UserValidationException.class, () -> {
@@ -85,7 +85,7 @@ public class UserServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {4, 5, 6, 7, 8})
-    public void whenValidAdIdIsProvided_thenAdShouldBeAddedToUserFavouriteAdEntityList(Long adId) {
+    public void addAdFromUserFavouriteAdListById_adId_shouldAddAddToUserFavouriteAdEntityList(Long adId) {
         //given
         AdEntity expectedAdEntity = adRepository.getById(adId);
         //when
@@ -97,7 +97,7 @@ public class UserServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {4, 5, 6, 7, 8})
-    public void whenValidAdIdIsProvided_thenAdShouldBeRemovedFromUserFavouriteAdEntityList(Long adId) {
+    public void removeAdFromUserFavouriteAdListById_adId_shouldRemoveAdFromUserFavouriteAdEntityList(Long adId) {
         //given
         AdEntity notExpectedAdEntity = adRepository.getById(adId);
         //when
@@ -108,7 +108,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void whenUserIsLoggedIn_shouldRetrievedUserHighlightPoints(){
+    public void fetchUserHighlightPoints_shouldRetrieveUserHighlightPoints(){
         //given
         Integer expectedUserHighlightPoints = userRepository.getByUsername(UserUtility.getUsernameFromContext()).getHighlightPoints();
         //when

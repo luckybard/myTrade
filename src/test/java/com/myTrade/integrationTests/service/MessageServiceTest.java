@@ -36,7 +36,7 @@ public class MessageServiceTest {
 
     @ParameterizedTest
     @MethodSource("messageDtoWithConversationId")
-    public void whenValidMessageDtoAndConversationIdIsProvided_shouldSaveMessageAndAssignToConversation(MessageDto messageDto, Long conversationId) {
+    public void saveMessageDtoAndAssignToConversationById_messageDtoAndConversationId_shouldSaveMessageAndAssignToConversation(MessageDto messageDto, Long conversationId) {
         //given
         int expectedConversationMessageAmount = conversationRepository.findById(conversationId).get().getMessageList().size() + ONE_ADDITIONAL_MESSAGE;
         //when
@@ -56,7 +56,7 @@ public class MessageServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1, 2})
-    public void whenConversationIdIsProvided_thenMessageDtoListShouldBeFetchedByConversationId(long conversationId) {
+    public void fetchMessageDtoListByConversationId_conversationId_shouldRetrieveMessageDtoList(long conversationId) {
         //given
         int FIRST_MESSAGE = 0;
         //when
