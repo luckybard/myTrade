@@ -10,7 +10,6 @@ import com.myTrade.utility.pojo.AdCategory;
 import com.myTrade.utility.pojo.City;
 import com.myTrade.utility.pojo.RegistrationRequest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,19 +53,6 @@ public class UserServiceUnitTest {
     public void beforeEach() {
         setUpDefaultUserEntity(user);
         setUpSecurityContext(user);
-    }
-
-    @Disabled
-    @ParameterizedTest
-    @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
-    public void saveUserEntityByRegistrationRequest_registrationRequest_shouldSaveUser(String username, String email, String password) {
-        //given
-        RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
-        //when
-        userService.saveUserEntityByRegistrationRequest(registrationRequest);
-        //then
-        verify(userRepository).save(userEntityArgumentCaptor.capture());
-        assertThat(userEntityArgumentCaptor.getValue().getId()).isNotNull();
     }
 
     @ParameterizedTest
