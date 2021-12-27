@@ -64,19 +64,19 @@ class AdServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void whenValidAdIdIsProvided_thenRetrievedAdDtoHasNoNullFieldsOrProperties(Long id,
-                                                                                      AdCategory adCategory,
-                                                                                      String title,
-                                                                                      String description,
-                                                                                      City city,
-                                                                                      Double price,
-                                                                                      String ownerUsername,
-                                                                                      Long countView,
-                                                                                      Boolean isActive,
-                                                                                      LocalDate createdDate,
-                                                                                      LocalDate modifiedDate,
-                                                                                      LocalDate refreshDate,
-                                                                                      LocalDate expirationHighlightDate) {
+    public void fetchAdDtoByIdAndSetIsUserFavourite_adId_shouldRetrieveAdDto(Long id,
+                                                                             AdCategory adCategory,
+                                                                             String title,
+                                                                             String description,
+                                                                             City city,
+                                                                             Double price,
+                                                                             String ownerUsername,
+                                                                             Long countView,
+                                                                             Boolean isActive,
+                                                                             LocalDate createdDate,
+                                                                             LocalDate modifiedDate,
+                                                                             LocalDate refreshDate,
+                                                                             LocalDate expirationHighlightDate) {
         //given
         AdEntity adEntity = AdEntity.builder().id(id)
                 .adCategory(adCategory)
@@ -104,7 +104,7 @@ class AdServiceUnitTest {
     }
 
     @Test
-    public void whenAdEntityPageIsProvided_thenShouldSetIsAdUserFavourite() {
+    public void setIsAdUserFavourite_adEntityPage_shouldSetIsAdsUserFavourite() {
         //given
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);
         Page<AdEntity> adEntityPage = new PageImpl<>(user.getFavouriteAdEntityList());
@@ -117,7 +117,7 @@ class AdServiceUnitTest {
     }
 
     @Test
-    public void whenAdEntityIsProvided_thenShouldSetIsAdUserFavourite() {
+    public void setIsAdUserFavourite_adEntity_shouldSetIsAdUserFavourite() {
         //given
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);
         AdEntity adEntity = user.getFavouriteAdEntityList().stream().findFirst().get();
@@ -131,7 +131,7 @@ class AdServiceUnitTest {
 
 
     @Test
-    public void shouldRetrievedUserFavouriteAdsIdInList() {
+    public void getUserFavouriteAdsId_shouldRetrieveUserFavouriteAdsIdList() {
         //given
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);
         //when
@@ -144,12 +144,13 @@ class AdServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEditDto.csv", numLinesToSkip = 1)
-    public void whenValidAdEditDtoIsProvided_thenAdShouldBeSavedWithInitialValuesAndBeAssignedToUserAdList(Long id,
-                                                                                                           AdCategory adCategory,
-                                                                                                           String title,
-                                                                                                           String description,
-                                                                                                           City city,
-                                                                                                           Double price
+    public void saveAdByAdEditDtoWithInitialValuesAndAssignToUserAdList_adEditDtoWithoutId_shouldSaveAdAndAssignToUserAdList(
+            Long id,
+            AdCategory adCategory,
+            String title,
+            String description,
+            City city,
+            Double price
     ) {
         //given
         AdEditDto adEditDto = AdEditDto.builder().id(id)
@@ -173,12 +174,12 @@ class AdServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEditDto.csv", numLinesToSkip = 1)
-    public void whenValidAdEditDtoIsProvided_thenShouldSetNewValuesToAdEntity(Long id,
-                                                                              AdCategory adCategory,
-                                                                              String title,
-                                                                              String description,
-                                                                              City city,
-                                                                              Double price
+    public void patchAdEntityByAdEditDto_adId_thenAdShouldBeUpdated(Long id,
+                                                                    AdCategory adCategory,
+                                                                    String title,
+                                                                    String description,
+                                                                    City city,
+                                                                    Double price
     ) {
         //given
         AdEditDto adEditDto = AdEditDto.builder().id(id)
@@ -206,7 +207,7 @@ class AdServiceUnitTest {
     }
 
     @Test
-    public void whenPageNumberAndPageSizeIsProvided_thenShouldRetrieveUserAdOwnerDtoPage() {
+    public void fetchAdOwnerDtoPageAndSetIsUserAbleToHighlightAndRefresh_pageRequest_shouldRetrieveAdOwnerDtoPage() {
         //given
         List<AdEntity> adEntityList = user.getAdEntityList();
         adEntityList.forEach(AdEntity::postLoad);
@@ -222,7 +223,7 @@ class AdServiceUnitTest {
     }
 
     @Test
-    public void whenPageNumberAndPageSizeIsProvided_thenShouldRetrieveUserFavouriteAdDtoPage() {
+    public void fetchUserFavouriteAdDtoPage_pageRequest_shouldRetrieveUserFavouriteAdDtoPage() {
         //given
         List<AdEntity> adEntityList = user.getFavouriteAdEntityList();
         adEntityList.forEach(AdEntity::postLoad);
@@ -238,7 +239,7 @@ class AdServiceUnitTest {
     }
 
     @Test
-    public void whenUsernameIsProvidedWithPageRequest_thenShouldRetrieveAdOwnerDtoPage() {
+    public void fetchAdDtoPageByOwnerUsernameAndSetUpIsUserFavourite_usernameAndPageRequest_shouldRetrieveOwnerAdsDtoPage() {
         //given
         List<AdEntity> adEntityList = user.getAdEntityList();
         adEntityList.forEach(AdEntity::postLoad);
@@ -254,7 +255,7 @@ class AdServiceUnitTest {
 
 
     @Test
-    public void whenPageSizeIsProvided_thenShouldRetrievePageAdDto() {
+    public void fetchRandomAdDtoPage_pageSize_shouldRetrieveRandomAdsDtoPage() {
         //given
         List<AdEntity> adEntityList = getAdEntityList();
         adEntityList.forEach(AdEntity::postLoad);
@@ -271,19 +272,19 @@ class AdServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void whenValidAdIdIsProvided_thenNewHighlightDateShouldBeSetAndHighlightPointsShouldBeDeductedFromUser(Long id,
-                                                                                                                  AdCategory adCategory,
-                                                                                                                  String title,
-                                                                                                                  String description,
-                                                                                                                  City city,
-                                                                                                                  Double price,
-                                                                                                                  String ownerUsername,
-                                                                                                                  Long countView,
-                                                                                                                  Boolean isActive,
-                                                                                                                  LocalDate createdDate,
-                                                                                                                  LocalDate modifiedDate,
-                                                                                                                  LocalDate refreshDate,
-                                                                                                                  LocalDate expirationHighlightDate) {
+    public void highlightAdByIdAndDeductHighlightPointFromUser_adId_shouldHighlightAd(Long id,
+                                                                                      AdCategory adCategory,
+                                                                                      String title,
+                                                                                      String description,
+                                                                                      City city,
+                                                                                      Double price,
+                                                                                      String ownerUsername,
+                                                                                      Long countView,
+                                                                                      Boolean isActive,
+                                                                                      LocalDate createdDate,
+                                                                                      LocalDate modifiedDate,
+                                                                                      LocalDate refreshDate,
+                                                                                      LocalDate expirationHighlightDate) {
         //given
         LocalDate expectedDate = LocalDate.now().plusDays(AD_HIGHLIGHTING_DURATION_IN_DAYS);
         Integer expectedUserHighlightPoints = user.getHighlightPoints() - UserUtility.POINTS_COST_OF_HIGHLIGHTING_AD;
@@ -319,7 +320,7 @@ class AdServiceUnitTest {
     }
 
     @Test
-    public void whenUserHasEnoughHighlightPoints_thenProperAmountOfPointsShouldBeDeductedFromUser() {
+    public void deductHighlightPointFromUser_shouldDeductHighlightPointsFromUserAccount() {
         //given
         Integer expectedUserHighlightPoints = user.getHighlightPoints() - UserUtility.POINTS_COST_OF_HIGHLIGHTING_AD;
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);
@@ -334,19 +335,19 @@ class AdServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void whenValidAdIdIsProvided_thenNewActiveStatusShouldBeSetAndSaved(Long id,
-                                                                               AdCategory adCategory,
-                                                                               String title,
-                                                                               String description,
-                                                                               City city,
-                                                                               Double price,
-                                                                               String ownerUsername,
-                                                                               Long countView,
-                                                                               Boolean isActive,
-                                                                               LocalDate createdDate,
-                                                                               LocalDate modifiedDate,
-                                                                               LocalDate refreshDate,
-                                                                               LocalDate expirationHighlightDate) {
+    public void changeAdStatusById_adId_shouldChangeAdStatus(Long id,
+                                                             AdCategory adCategory,
+                                                             String title,
+                                                             String description,
+                                                             City city,
+                                                             Double price,
+                                                             String ownerUsername,
+                                                             Long countView,
+                                                             Boolean isActive,
+                                                             LocalDate createdDate,
+                                                             LocalDate modifiedDate,
+                                                             LocalDate refreshDate,
+                                                             LocalDate expirationHighlightDate) {
         //given
         Boolean expectedStatus = !isActive;
         AdEntity adEntity = AdEntity.builder().id(id)
@@ -376,19 +377,19 @@ class AdServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void whenValidAdIdIsProvided_thenNewRefreshDateShouldBeSetAndSaved(Long id,
-                                                                              AdCategory adCategory,
-                                                                              String title,
-                                                                              String description,
-                                                                              City city,
-                                                                              Double price,
-                                                                              String ownerUsername,
-                                                                              Long countView,
-                                                                              Boolean isActive,
-                                                                              LocalDate createdDate,
-                                                                              LocalDate modifiedDate,
-                                                                              LocalDate refreshDate,
-                                                                              LocalDate expirationHighlightDate) {
+    public void refreshAdById_adId_shouldSetNewRefreshTime(Long id,
+                                                           AdCategory adCategory,
+                                                           String title,
+                                                           String description,
+                                                           City city,
+                                                           Double price,
+                                                           String ownerUsername,
+                                                           Long countView,
+                                                           Boolean isActive,
+                                                           LocalDate createdDate,
+                                                           LocalDate modifiedDate,
+                                                           LocalDate refreshDate,
+                                                           LocalDate expirationHighlightDate) {
         //given
         LocalDate expectedDate = LocalDate.now();
         AdEntity adEntity = AdEntity.builder().id(id)

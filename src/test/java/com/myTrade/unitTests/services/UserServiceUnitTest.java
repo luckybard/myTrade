@@ -59,7 +59,7 @@ public class UserServiceUnitTest {
     @Disabled
     @ParameterizedTest
     @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
-    public void whenValidRegistrationRequestIsProvided_thenUserEntityShouldBeSaved(String username, String email, String password) {
+    public void saveUserEntityByRegistrationRequest_registrationRequest_shouldSaveUser(String username, String email, String password) {
         //given
         RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         //when
@@ -71,7 +71,7 @@ public class UserServiceUnitTest {
 
     @ParameterizedTest
     @MethodSource("invalidUserRegistrationRequests")
-    public void whenInvalidRegistrationRequestIsProvided_thenShouldReturnStatus406(RegistrationRequest registrationRequest) {
+    public void saveUserEntityByRegistrationRequest_invalidRegistrationRequest_shouldThrowUserValidationException(RegistrationRequest registrationRequest) {
         //given
         //when & then
         assertThrows(UserValidationException.class, () -> {
@@ -93,7 +93,7 @@ public class UserServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void whenProperAdIdIsProvided_thenShouldAddAdToUserFavouriteAdListAndReturnStatus200(Long id,
+    public void addAdFromUserFavouriteAdListById_adId_shouldAddAddToUserFavouriteAdEntityList(Long id,
                                                                                                 AdCategory adCategory,
                                                                                                 String title,
                                                                                                 String description,
@@ -139,7 +139,7 @@ public class UserServiceUnitTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adId.csv", numLinesToSkip = 1)
-    public void whenProperAdIdIsProvided_thenShouldRemoveAdFromUserFavouriteAdListAndReturnStatus200(Long adId) {
+    public void removeAdFromUserFavouriteAdListById_adId_shouldRemoveAdFromUserFavouriteAdEntityList(Long adId) {
         //given
         AdEntity adEntity = getAdEntity();
         UserEntity userEntity = UserEntity.builder()
@@ -156,7 +156,7 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    public void whenUserIsLoggedIn_shouldRetrievedUserHighlightPoints(){
+    public void fetchUserHighlightPoints_shouldRetrieveUserHighlightPoints(){
         //given
         Integer expectedUserHighlightPoints = user.getHighlightPoints();
         given(userRepository.getByUsername(user.getUsername())).willReturn(user);

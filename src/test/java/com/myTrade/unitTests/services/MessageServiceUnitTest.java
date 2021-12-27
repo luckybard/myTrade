@@ -47,7 +47,10 @@ class MessageServiceUnitTest {
 
     @ParameterizedTest
     @MethodSource("messageDtoWithConversationId")
-    public void whenProperMessageDtoAndConversationIdIsProvided_thenRetrieved201(MessageDto messageDto, Long conversationId) {
+    public void saveMessageDtoAndAssignToConversationById_messageDtoAndConversationId_shouldSaveMessageAndAssignToConversation(
+            MessageDto messageDto,
+            Long conversationId
+    ) {
         //given
         ConversationEntity conversationEntity =
                 new ConversationEntity(conversationId, user.getUsername(), "john@john.john", "title", setUpMessageEntityList());
@@ -67,7 +70,7 @@ class MessageServiceUnitTest {
     }
 
     @Test
-    public void whenConversationIdIsProvided_thenMessageDtoListShouldBeFetchedByConversationId() {
+    public void fetchMessageDtoListByConversationId_conversationId_shouldRetrieveMessageDtoList() {
         //given
         Long conversationId = 1L;
         List<MessageEntity> messageEntityList = setUpMessageEntityList();

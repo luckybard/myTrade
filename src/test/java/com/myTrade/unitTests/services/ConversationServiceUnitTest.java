@@ -46,7 +46,7 @@ class ConversationServiceUnitTest {
     }
 
     @Test
-    public void whenConversationEntityIsProvided_thenShouldBeSavedIntoRepository() {
+    public void saveInitialConversationWithMessageByConversationDto_conversationDto_shouldSetInitialValueOnFirstMessage() {
         //given
         ConversationDto conversationDto = ConversationDto.builder()
                 .senderUsername(user.getUsername())
@@ -65,7 +65,7 @@ class ConversationServiceUnitTest {
     }
 
     @Test
-    public void whenUsernameIsProvided_thenShouldFetchUserConversations() {
+    public void fetchAllConversationByUsername_usernameAndPageRequest_shouldRetrieveUserConversations() {
         //when
         List<ConversationEntity> conversationEntityList = getConversationEntityList();
         Page<ConversationEntity> conversationEntityPage = new PageImpl<>(conversationEntityList);
