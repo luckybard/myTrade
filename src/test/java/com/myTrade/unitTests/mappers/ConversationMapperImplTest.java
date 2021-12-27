@@ -21,7 +21,10 @@ public class ConversationMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/conversation.csv", numLinesToSkip = 1)
-    public void shouldMapToDtoWithNestedObjects(Long id, String recipientUsername, String senderUsername, String title) {
+    public void conversationEntityToConversationDto_conversationEntity_shouldMapToDtoWithNestedObjects(Long id,
+                                                                                                       String recipientUsername,
+                                                                                                       String senderUsername,
+                                                                                                       String title) {
         //given
         ConversationEntity conversationEntity = new ConversationEntity(id, senderUsername, recipientUsername, title,
                 setUpMessageEntityList(recipientUsername, senderUsername));
@@ -56,7 +59,10 @@ public class ConversationMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/conversation.csv", numLinesToSkip = 1)
-    public void shouldMapToEntityWithNestedObjects(Long id, String recipientUsername, String senderUsername, String title) {
+    public void conversationDtoToConversationEntity_conversationDto_shouldMapToEntityWithNestedObjects(Long id,
+                                                                                                       String recipientUsername,
+                                                                                                       String senderUsername,
+                                                                                                       String title) {
         //given
         ConversationDto conversationDto = new ConversationDto(id, senderUsername, recipientUsername, title,
                 setUpMessageDtoList(recipientUsername, senderUsername));

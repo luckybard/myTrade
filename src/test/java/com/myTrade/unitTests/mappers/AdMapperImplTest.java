@@ -19,19 +19,19 @@ public class AdMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void shouldMapAdEntityToAdDto(Long id,
-                                         AdCategory adCategory,
-                                         String title,
-                                         String description,
-                                         City city,
-                                         Double price,
-                                         String ownerUsername,
-                                         Long countView,
-                                         Boolean isActive,
-                                         LocalDate createdDate,
-                                         LocalDate modifiedDate,
-                                         LocalDate refreshDate,
-                                         LocalDate expirationHighlightDate
+    public void adEntityToAdDto_adEntity_shouldMapAdEntityToAdDto(Long id,
+                                                                  AdCategory adCategory,
+                                                                  String title,
+                                                                  String description,
+                                                                  City city,
+                                                                  Double price,
+                                                                  String ownerUsername,
+                                                                  Long countView,
+                                                                  Boolean isActive,
+                                                                  LocalDate createdDate,
+                                                                  LocalDate modifiedDate,
+                                                                  LocalDate refreshDate,
+                                                                  LocalDate expirationHighlightDate
     ) {
         //given
         AdEntity adEntity = AdEntity.builder().id(id)
@@ -69,19 +69,19 @@ public class AdMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void shouldMapAdEntityToAdEditDto(Long id,
-                                             AdCategory adCategory,
-                                             String title,
-                                             String description,
-                                             City city,
-                                             Double price,
-                                             String ownerUsername,
-                                             Long countView,
-                                             Boolean isActive,
-                                             LocalDate createdDate,
-                                             LocalDate modifiedDate,
-                                             LocalDate refreshDate,
-                                             LocalDate expirationHighlightDate
+    public void adEntityToAdEditDto_adEntity_shouldMapAdEntityToAdEditDto(Long id,
+                                                                          AdCategory adCategory,
+                                                                          String title,
+                                                                          String description,
+                                                                          City city,
+                                                                          Double price,
+                                                                          String ownerUsername,
+                                                                          Long countView,
+                                                                          Boolean isActive,
+                                                                          LocalDate createdDate,
+                                                                          LocalDate modifiedDate,
+                                                                          LocalDate refreshDate,
+                                                                          LocalDate expirationHighlightDate
     ) {
         //given
         AdEntity adEntity = AdEntity.builder().id(id)
@@ -114,19 +114,19 @@ public class AdMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEntity.csv", numLinesToSkip = 1)
-    public void shouldMapAdEntityToAdOwnerDto(Long id,
-                                              AdCategory adCategory,
-                                              String title,
-                                              String description,
-                                              City city,
-                                              Double price,
-                                              String ownerUsername,
-                                              Long countView,
-                                              Boolean isActive,
-                                              LocalDate createdDate,
-                                              LocalDate modifiedDate,
-                                              LocalDate refreshDate,
-                                              LocalDate expirationHighlightDate
+    public void adEntityToAdOwnerDto_adEntity_shouldMapAdEntityToAdOwnerDto(Long id,
+                                                                            AdCategory adCategory,
+                                                                            String title,
+                                                                            String description,
+                                                                            City city,
+                                                                            Double price,
+                                                                            String ownerUsername,
+                                                                            Long countView,
+                                                                            Boolean isActive,
+                                                                            LocalDate createdDate,
+                                                                            LocalDate modifiedDate,
+                                                                            LocalDate refreshDate,
+                                                                            LocalDate expirationHighlightDate
     ) {
         //given
         AdEntity adEntity = AdEntity.builder().id(id)
@@ -165,12 +165,12 @@ public class AdMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/adEditDto.csv", numLinesToSkip = 1)
-    public void shouldMapAdEditDtoToAdEntity(Long id,
-                                             AdCategory adCategory,
-                                             String title,
-                                             String description,
-                                             City city,
-                                             Double price
+    public void adEditDtoToAdEntity_adEditDto_shouldMapAdEditDtoToAdEntity(Long id,
+                                                                           AdCategory adCategory,
+                                                                           String title,
+                                                                           String description,
+                                                                           City city,
+                                                                           Double price
     ) {
         //given
         AdEditDto adEditDto = AdEditDto.builder().id(id)

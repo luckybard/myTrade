@@ -15,10 +15,10 @@ public class MessageMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/message.csv", numLinesToSkip = 1)
-    public void shouldMapMessageEntityToMessageDto(Long id,
-                                                   String authorUsername,
-                                                   LocalDateTime dateTime,
-                                                   String text) {
+    public void messageEntityToMessageDto_messageEntity_shouldMapMessageEntityToMessageDto(Long id,
+                                                                                           String authorUsername,
+                                                                                           LocalDateTime dateTime,
+                                                                                           String text) {
 
         //given
         MessageEntity messageEntity = new MessageEntity(id, authorUsername, text, dateTime);
@@ -35,10 +35,10 @@ public class MessageMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/message.csv", numLinesToSkip = 1)
-    public void shouldMapToEntityWithNestedObjects(Long id,
-                                                   String authorUsername,
-                                                   LocalDateTime dateTime,
-                                                   String text) {
+    public void messageDtoToMessageEntity_messageDto_shouldMapToEntityWithNestedObjects(Long id,
+                                                                                        String authorUsername,
+                                                                                        LocalDateTime dateTime,
+                                                                                        String text) {
         //given
         MessageDto messageDto = new MessageDto(id, authorUsername, text, dateTime);
         //when

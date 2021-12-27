@@ -14,7 +14,9 @@ class UserMapperImplTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/registrationRequest.csv", numLinesToSkip = 1)
-    public void shouldMapRegistrationRequestToUserEntity(String username, String email, String password) {
+    public void registrationRequestToUserEntity_registrationRequest_shouldMapRegistrationRequestToUserEntity(String username,
+                                                                                                             String email,
+                                                                                                             String password) {
         //given
         RegistrationRequest registrationRequest = new RegistrationRequest(username, email, password);
         //when
